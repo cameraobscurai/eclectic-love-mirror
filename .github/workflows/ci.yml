@@ -75,7 +75,6 @@ jobs:
       - name: Unit tests
         run: bun run test
 
-
       - name: Install Playwright Chromium
         run: bunx playwright install --with-deps chromium
 

@@ -11,10 +11,7 @@ export const Route = createFileRoute("/login")({
     redirect: typeof search.redirect === "string" ? search.redirect : "/admin",
   }),
   head: () => ({
-    meta: [
-      { title: "Sign in · Eclectic Hive" },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
+    meta: [{ title: "Sign in · Eclectic Hive" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   component: LoginPage,
 });
@@ -31,7 +28,6 @@ function LoginPage() {
   const [linkSentAt, setLinkSentAt] = useState<number | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
 
   // Staff OR admin may enter the backend — /admin gates the rest per route.
   async function checkOwnAdminRole(userId: string) {
@@ -52,13 +48,10 @@ function LoginPage() {
     const isAdmin = await checkOwnAdminRole(userData.user.id);
     if (!isAdmin) {
       await supabase.auth.signOut();
-      throw new Error(
-        "This account is not authorized for admin access. Contact the site owner.",
-      );
+      throw new Error("This account is not authorized for admin access. Contact the site owner.");
     }
     navigate({ to: redirectTo as "/admin" });
   }
-
 
   useEffect(() => {
     let cancelled = false;
@@ -75,7 +68,9 @@ function LoginPage() {
   }, [navigate, redirectTo]);
 
   async function handleGoogle() {
-    setError(null); setInfo(null); setBusy(true);
+    setError(null);
+    setInfo(null);
+    setBusy(true);
     try {
       const result = await lovable.auth.signInWithOAuth("google", {
         redirect_uri: window.location.origin + "/login",
@@ -92,7 +87,9 @@ function LoginPage() {
 
   async function handleEmailSubmit(e: FormEvent) {
     e.preventDefault();
-    setError(null); setInfo(null); setBusy(true);
+    setError(null);
+    setInfo(null);
+    setBusy(true);
     try {
       if (mode === "signin") {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -116,7 +113,6 @@ function LoginPage() {
         setInfo("Password reset email sent. Check your inbox.");
         setMode("signin");
       }
-
     } catch (err) {
       setError(err instanceof Error ? err.message : "Authentication failed.");
     } finally {
@@ -126,7 +122,9 @@ function LoginPage() {
 
   async function handleResendLink() {
     if (!email) return;
-    setError(null); setInfo(null); setBusy(true);
+    setError(null);
+    setInfo(null);
+    setBusy(true);
     try {
       const { error } = await supabase.auth.signInWithOtp({
         email,
@@ -143,7 +141,6 @@ function LoginPage() {
       setBusy(false);
     }
   }
-
 
   const labelStyle = {
     fontSize: "10px",
@@ -207,10 +204,22 @@ function LoginPage() {
           }}
         >
           <svg width="16" height="16" viewBox="0 0 48 48" aria-hidden="true">
-            <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.6-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/>
-            <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16 19 13 24 13c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
-            <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 34.9 26.7 36 24 36c-5.3 0-9.7-3.4-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/>
-            <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.2 5.6l6.2 5.2C41 35.4 44 30.1 44 24c0-1.3-.1-2.3-.4-3.5z"/>
+            <path
+              fill="#FFC107"
+              d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.6-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"
+            />
+            <path
+              fill="#FF3D00"
+              d="M6.3 14.7l6.6 4.8C14.7 16 19 13 24 13c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"
+            />
+            <path
+              fill="#4CAF50"
+              d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 34.9 26.7 36 24 36c-5.3 0-9.7-3.4-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"
+            />
+            <path
+              fill="#1976D2"
+              d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.2 5.6l6.2 5.2C41 35.4 44 30.1 44 24c0-1.3-.1-2.3-.4-3.5z"
+            />
           </svg>
           {busy ? "…" : "CONTINUE WITH GOOGLE"}
         </button>
@@ -226,7 +235,9 @@ function LoginPage() {
 
         <form onSubmit={handleEmailSubmit} className="space-y-5">
           <div>
-            <label className="block uppercase mb-2" style={labelStyle}>EMAIL</label>
+            <label className="block uppercase mb-2" style={labelStyle}>
+              EMAIL
+            </label>
             <input
               type="email"
               required
@@ -239,7 +250,9 @@ function LoginPage() {
 
           {mode === "signin" && (
             <div>
-              <label className="block uppercase mb-2" style={labelStyle}>PASSWORD</label>
+              <label className="block uppercase mb-2" style={labelStyle}>
+                PASSWORD
+              </label>
               <input
                 type="password"
                 required
@@ -273,7 +286,6 @@ function LoginPage() {
                   ? "EMAIL ME A SIGN-IN LINK"
                   : "SIGN IN"}
           </button>
-
         </form>
 
         <div
@@ -282,24 +294,75 @@ function LoginPage() {
         >
           {mode === "signin" ? (
             <>
-              <button type="button" onClick={() => { setError(null); setInfo(null); setMode("link"); setLinkSentAt(null); }} style={{ color: "rgba(26,26,26,0.7)", background: "none", border: "none", padding: 0, cursor: "pointer" }}>
+              <button
+                type="button"
+                onClick={() => {
+                  setError(null);
+                  setInfo(null);
+                  setMode("link");
+                  setLinkSentAt(null);
+                }}
+                style={{
+                  color: "rgba(26,26,26,0.7)",
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  cursor: "pointer",
+                }}
+              >
                 NO PASSWORD? EMAIL ME A LINK
               </button>
-              <button type="button" onClick={() => { setError(null); setInfo(null); setMode("forgot"); }} style={{ color: "rgba(26,26,26,0.55)", background: "none", border: "none", padding: 0, cursor: "pointer" }}>
+              <button
+                type="button"
+                onClick={() => {
+                  setError(null);
+                  setInfo(null);
+                  setMode("forgot");
+                }}
+                style={{
+                  color: "rgba(26,26,26,0.55)",
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  cursor: "pointer",
+                }}
+              >
                 FORGOT PASSWORD?
               </button>
             </>
           ) : (
-            <button type="button" onClick={() => { setError(null); setInfo(null); setMode("signin"); setLinkSentAt(null); }} style={{ color: "rgba(26,26,26,0.7)", background: "none", border: "none", padding: 0, cursor: "pointer" }}>
+            <button
+              type="button"
+              onClick={() => {
+                setError(null);
+                setInfo(null);
+                setMode("signin");
+                setLinkSentAt(null);
+              }}
+              style={{
+                color: "rgba(26,26,26,0.7)",
+                background: "none",
+                border: "none",
+                padding: 0,
+                cursor: "pointer",
+              }}
+            >
               ← BACK TO SIGN IN
             </button>
           )}
-
         </div>
 
         {info && (
           <div className="mt-6 text-center">
-            <p className="uppercase" style={{ color: "#1a1a1a", fontSize: "11px", letterSpacing: "0.08em", lineHeight: 1.6 }}>
+            <p
+              className="uppercase"
+              style={{
+                color: "#1a1a1a",
+                fontSize: "11px",
+                letterSpacing: "0.08em",
+                lineHeight: 1.6,
+              }}
+            >
               {info}
             </p>
             {mode === "link" && linkSentAt && (
@@ -308,7 +371,15 @@ function LoginPage() {
                 onClick={handleResendLink}
                 disabled={busy}
                 className="uppercase mt-3 disabled:opacity-50"
-                style={{ fontSize: "10px", letterSpacing: "0.18em", color: "rgba(26,26,26,0.7)", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+                style={{
+                  fontSize: "10px",
+                  letterSpacing: "0.18em",
+                  color: "rgba(26,26,26,0.7)",
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  cursor: "pointer",
+                }}
               >
                 {busy ? "SENDING…" : "RESEND SIGN-IN LINK"}
               </button>
@@ -316,7 +387,10 @@ function LoginPage() {
           </div>
         )}
         {error && (
-          <p className="uppercase mt-6 text-center" style={{ color: "#a83232", fontSize: "11px", letterSpacing: "0.08em", lineHeight: 1.6 }}>
+          <p
+            className="uppercase mt-6 text-center"
+            style={{ color: "#a83232", fontSize: "11px", letterSpacing: "0.08em", lineHeight: 1.6 }}
+          >
             {error}
           </p>
         )}

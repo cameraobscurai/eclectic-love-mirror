@@ -28,19 +28,40 @@ export function ScaleRuleWidth({ inches }: AxisProps) {
   const label = format(inches);
 
   return (
-    <div
-      className="w-full pointer-events-none select-none"
-      aria-label={`Width: ${label}`}
-    >
+    <div className="w-full pointer-events-none select-none" aria-label={`Width: ${label}`}>
       <svg
         viewBox="0 0 100 6"
         preserveAspectRatio="none"
         className="w-full h-[6px] block text-charcoal/55"
         aria-hidden
       >
-        <line x1="0.5" y1="3" x2="99.5" y2="3" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
-        <line x1="0.5" y1="0.5" x2="0.5" y2="5.5" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
-        <line x1="99.5" y1="0.5" x2="99.5" y2="5.5" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
+        <line
+          x1="0.5"
+          y1="3"
+          x2="99.5"
+          y2="3"
+          stroke="currentColor"
+          strokeWidth="0.4"
+          vectorEffect="non-scaling-stroke"
+        />
+        <line
+          x1="0.5"
+          y1="0.5"
+          x2="0.5"
+          y2="5.5"
+          stroke="currentColor"
+          strokeWidth="0.4"
+          vectorEffect="non-scaling-stroke"
+        />
+        <line
+          x1="99.5"
+          y1="0.5"
+          x2="99.5"
+          y2="5.5"
+          stroke="currentColor"
+          strokeWidth="0.4"
+          vectorEffect="non-scaling-stroke"
+        />
       </svg>
       <div className="text-center text-[10px] uppercase tracking-[0.28em] text-charcoal/65 tabular-nums mt-1.5">
         {label}
@@ -63,9 +84,33 @@ export function ScaleRuleHeight({ inches }: AxisProps) {
         className="h-full w-[6px] block text-charcoal/55"
         aria-hidden
       >
-        <line x1="3" y1="0.5" x2="3" y2="99.5" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
-        <line x1="0.5" y1="0.5" x2="5.5" y2="0.5" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
-        <line x1="0.5" y1="99.5" x2="5.5" y2="99.5" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
+        <line
+          x1="3"
+          y1="0.5"
+          x2="3"
+          y2="99.5"
+          stroke="currentColor"
+          strokeWidth="0.4"
+          vectorEffect="non-scaling-stroke"
+        />
+        <line
+          x1="0.5"
+          y1="0.5"
+          x2="5.5"
+          y2="0.5"
+          stroke="currentColor"
+          strokeWidth="0.4"
+          vectorEffect="non-scaling-stroke"
+        />
+        <line
+          x1="0.5"
+          y1="99.5"
+          x2="5.5"
+          y2="99.5"
+          stroke="currentColor"
+          strokeWidth="0.4"
+          vectorEffect="non-scaling-stroke"
+        />
       </svg>
       <div
         className="ml-2 text-[10px] uppercase tracking-[0.28em] text-charcoal/65 tabular-nums whitespace-nowrap origin-left"

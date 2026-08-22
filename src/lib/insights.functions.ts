@@ -42,7 +42,7 @@ export interface InsightsKpis {
   open_count: number;
   booked_count: number;
   booked_value_total: number; // sum of quote_value where status = 'booked'
-  pipeline_value: number;     // sum of quote_value where status in ('quoted','new')
+  pipeline_value: number; // sum of quote_value where status in ('quoted','new')
   /** ISO date → count, last 30 days oldest → newest. */
   daily: { date: string; count: number }[];
 }
@@ -127,7 +127,8 @@ export const getInsights = createServerFn({ method: "GET" })
         message: r.message,
         created_at: r.created_at,
         status: (r.status ?? "new") as InquiryStatus,
-        quote_value: r.quote_value !== null && r.quote_value !== undefined ? Number(r.quote_value) : null,
+        quote_value:
+          r.quote_value !== null && r.quote_value !== undefined ? Number(r.quote_value) : null,
         outcome_notes: r.outcome_notes,
         outcome_updated_at: r.outcome_updated_at,
         mentioned_items: mentioned.slice(0, 12),
@@ -204,12 +205,7 @@ export const getInsights = createServerFn({ method: "GET" })
 
     // Dead stock — public, has imagery, never mentioned in any inquiry.
     const dead_stock: ItemDemand[] = products
-      .filter(
-        (p) =>
-          p.publicReady &&
-          p.imageCount > 0 &&
-          !itemMentionCount.has(p.id),
-      )
+      .filter((p) => p.publicReady && p.imageCount > 0 && !itemMentionCount.has(p.id))
       .slice(0, 24)
       .map((p) => ({
         id: p.id,
@@ -258,12 +254,7 @@ export const getInsights = createServerFn({ method: "GET" })
 const UpdateOutcomeSchema = z.object({
   id: z.string().uuid(),
   status: z.enum(["new", "quoted", "booked", "lost", "ghosted"]),
-  quote_value: z
-    .number()
-    .min(0)
-    .max(10_000_000)
-    .nullable()
-    .optional(),
+  quote_value: z.number().min(0).max(10_000_000).nullable().optional(),
   outcome_notes: z.string().max(2000).nullable().optional(),
 });
 
@@ -315,4 +306,3 @@ export const restoreInquiries = createServerFn({ method: "POST" })
     if (error) throw error;
     return { ok: true as const, restored: data.ids.length };
   });
-

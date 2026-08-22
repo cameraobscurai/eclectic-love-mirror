@@ -10,13 +10,14 @@ async function main() {
   });
   const page = await context.newPage();
 
-  const url = "https://id-preview--a0ee6478-cac8-4430-9157-0742820605f7.lovable.app/collection?group=chandeliers&subcategory=all&sort=type&layout=grid";
+  const url =
+    "https://id-preview--a0ee6478-cac8-4430-9157-0742820605f7.lovable.app/collection?group=chandeliers&subcategory=all&sort=type&layout=grid";
   console.log("Navigating to:", url);
-  
+
   await page.goto(url, { waitUntil: "networkidle", timeout: 60000 });
-  
+
   // Wait for content to load
-  await page.waitForTimeout(2000); 
+  await page.waitForTimeout(2000);
 
   const screenshotPath = path.resolve("screenshot.png");
   await page.screenshot({

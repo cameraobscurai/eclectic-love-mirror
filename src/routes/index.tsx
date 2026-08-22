@@ -16,14 +16,17 @@ export const Route = createFileRoute("/")({
         content:
           "Denver's luxury event rental house. Furniture, lighting and tableware for weddings, galas, and brand events — plus design and custom fabrication.",
       },
-      { name: "keywords", content: "denver event rentals, denver wedding rentals, colorado event furniture rental, luxury event design denver, wedding furniture rental denver, custom fabrication colorado, event production denver" },
+      {
+        name: "keywords",
+        content:
+          "denver event rentals, denver wedding rentals, colorado event furniture rental, luxury event design denver, wedding furniture rental denver, custom fabrication colorado, event production denver",
+      },
       { name: "geo.region", content: "US-CO" },
       { name: "geo.placename", content: "Denver" },
       { property: "og:title", content: "Eclectic Hive — Denver Event Rentals & Luxury Design" },
       {
         property: "og:description",
-        content:
-          "Cinematic, art-forward environments for weddings, galas, and corporate events.",
+        content: "Cinematic, art-forward environments for weddings, galas, and corporate events.",
       },
       { property: "og:url", content: "https://eclectichive.com/" },
     ],
@@ -32,8 +35,20 @@ export const Route = createFileRoute("/")({
       // Preload the desktop LCP poster (frame 02 — leftmost always-visible
       // frame on md screens) and the mobile LCP poster set. AVIF first; the
       // browser falls back if it can't decode it.
-      { rel: "preload", as: "image", href: "/media/home/02-poster.avif", type: "image/avif", fetchPriority: "high" },
-      { rel: "preload", as: "image", href: "/media/home/01-poster.avif", type: "image/avif", fetchPriority: "high" },
+      {
+        rel: "preload",
+        as: "image",
+        href: "/media/home/02-poster.avif",
+        type: "image/avif",
+        fetchPriority: "high",
+      },
+      {
+        rel: "preload",
+        as: "image",
+        href: "/media/home/01-poster.avif",
+        type: "image/avif",
+        fetchPriority: "high",
+      },
     ],
     scripts: [
       {
@@ -57,7 +72,8 @@ export const Route = createFileRoute("/")({
               name: "Eclectic Hive",
               url: "https://eclectichive.com/",
               email: "info@eclectichive.com",
-              image: "https://storage.googleapis.com/gpt-engineer-file-uploads/BmgCc4OLNyNSZ471TxWoDK8we002/social-images/social-1778320784967-Screenshot_2026-05-09_at_3.59.24_AM.webp",
+              image:
+                "https://storage.googleapis.com/gpt-engineer-file-uploads/BmgCc4OLNyNSZ471TxWoDK8we002/social-images/social-1778320784967-Screenshot_2026-05-09_at_3.59.24_AM.webp",
               priceRange: "$$$",
               description:
                 "Full-service luxury event design, custom fabrication, and furniture rentals based in Denver, Colorado. Weddings, galas, and brand events.",
@@ -82,9 +98,18 @@ export const Route = createFileRoute("/")({
                 name: "Services",
                 itemListElement: [
                   { "@type": "Offer", itemOffered: { "@type": "Service", name: "Event Design" } },
-                  { "@type": "Offer", itemOffered: { "@type": "Service", name: "Custom Fabrication" } },
-                  { "@type": "Offer", itemOffered: { "@type": "Service", name: "Furniture & Decor Rentals" } },
-                  { "@type": "Offer", itemOffered: { "@type": "Service", name: "Wedding Production" } },
+                  {
+                    "@type": "Offer",
+                    itemOffered: { "@type": "Service", name: "Custom Fabrication" },
+                  },
+                  {
+                    "@type": "Offer",
+                    itemOffered: { "@type": "Service", name: "Furniture & Decor Rentals" },
+                  },
+                  {
+                    "@type": "Offer",
+                    itemOffered: { "@type": "Service", name: "Wedding Production" },
+                  },
                 ],
               },
             },
@@ -167,7 +192,6 @@ function HomePage() {
             >
               Designing for Weddings, Corporate, &amp; Social Events
             </p>
-
           </div>
         </div>
       </section>
@@ -186,8 +210,7 @@ function HomePage() {
         className="relative"
         style={{
           ["--fold-unit" as string]: "clamp(1rem, 0.6rem + 1.1vw, 2.25rem)",
-          ["--fold-top" as string]:
-            "calc(var(--nav-h, 4rem) + var(--fold-unit) * 4)",
+          ["--fold-top" as string]: "calc(var(--nav-h, 4rem) + var(--fold-unit) * 4)",
           ["--fold-gap" as string]: "calc(var(--fold-unit) * 1)",
           ["--fold-strip" as string]: "calc(var(--fold-unit) * 3)",
           ["--fold-tail" as string]: "calc(var(--fold-unit) * 3)",
@@ -195,17 +218,12 @@ function HomePage() {
       >
         {/* Heading + tagline on desktop only — mobile uses the sequential reel above */}
         <div className="hidden md:block">
-          <div
-            className="fluid-canvas"
-            style={{ paddingTop: "var(--fold-top)" }}
-          >
+          <div className="fluid-canvas" style={{ paddingTop: "var(--fold-top)" }}>
             <div className="mx-auto" style={{ maxWidth: "min(72rem, 100%)" }}>
               <h1
                 className={cn(
                   "text-center font-display text-charcoal transition-[opacity,transform] [letter-spacing:-0.012em]",
-                  loaded
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-2",
+                  loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2",
                 )}
                 style={{
                   // Fluid: anchored at 1600px → ~5.5rem. Locked min/max so
@@ -259,8 +277,6 @@ function HomePage() {
         >
           <HeroFilmstrip />
         </div>
-
-
       </section>
 
       {/* ── FOLD 3 — Index-style destinations ─────────────────
@@ -268,9 +284,7 @@ function HomePage() {
           Each row: number · title · descriptor · arrow.
           Hover shifts the arrow + lifts the row tone, no fills, no rings.
       */}
-      <EvolutionNarrative
-        footer={<DestinationStack destinations={DESTINATIONS} />}
-      />
+      <EvolutionNarrative footer={<DestinationStack destinations={DESTINATIONS} />} />
 
       {/* Keep LiquidGlass referenced to preserve filter prewarm; harmless no-op */}
       <div className="hidden">

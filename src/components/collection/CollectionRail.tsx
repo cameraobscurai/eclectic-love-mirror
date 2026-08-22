@@ -41,7 +41,7 @@ export function CollectionRail({
 }: CollectionRailProps) {
   const isSheet = variant === "sheet";
   // Spy highlights only when the user hasn't pinned a group manually.
-  const spyHighlightId = !activeGroup ? spyActiveGroup ?? null : null;
+  const spyHighlightId = !activeGroup ? (spyActiveGroup ?? null) : null;
 
   // Build per-group thumbnail src once. CATEGORY_COVERS overrides, otherwise
   // pull from the first product in the bucket that has a primaryImage.
@@ -76,8 +76,7 @@ export function CollectionRail({
           : {
               position: "sticky",
               top: "calc(var(--nav-h) + var(--collection-heading-h, 0px))",
-              maxHeight:
-                "calc(100dvh - (var(--nav-h) + var(--collection-heading-h, 0px) + 1rem))",
+              maxHeight: "calc(100dvh - (var(--nav-h) + var(--collection-heading-h, 0px) + 1rem))",
               overflowY: "auto",
             }
       }
@@ -170,9 +169,7 @@ function CategoryRow({
       className="group w-full flex items-center gap-3 text-left transition-colors focus:outline-none focus-visible:bg-charcoal/[0.04]"
       style={{
         padding: isSheet ? "10px 20px 10px 18px" : "8px 18px 8px 16px",
-        borderLeft: isActive
-          ? "2px solid var(--charcoal)"
-          : "2px solid transparent",
+        borderLeft: isActive ? "2px solid var(--charcoal)" : "2px solid transparent",
         background: isActive ? "rgba(26,26,26,0.03)" : "transparent",
         backdropFilter: isActive ? "blur(6px)" : undefined,
         WebkitBackdropFilter: isActive ? "blur(6px)" : undefined,
@@ -208,7 +205,6 @@ function CategoryRow({
       <span className="flex-1 min-w-0 truncate" style={nameStyle}>
         {label}
       </span>
-
     </button>
   );
 }

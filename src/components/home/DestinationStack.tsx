@@ -1,11 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  type MotionValue,
-} from "framer-motion";
-
+import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
 
 /**
  * DestinationStack
@@ -34,11 +28,7 @@ interface DestinationStackProps {
   destinations: ReadonlyArray<Destination>;
 }
 
-function useCardTransforms(
-  progress: MotionValue<number>,
-  index: number,
-  total: number,
-) {
+function useCardTransforms(progress: MotionValue<number>, index: number, total: number) {
   const center = (total - 1) / 2;
   const offset = index - center; // -1, 0, 1 for 3 cards
   const absOffset = Math.abs(offset);
@@ -62,7 +52,11 @@ function useCardTransforms(
 
   // Tone-down rotateZ ±3°.
   const stackRotateZ = offset * 3;
-  const rotateZ = useTransform(progress, [0, holdEnd, endPoint], [stackRotateZ, stackRotateZ * 0.95, 0]);
+  const rotateZ = useTransform(
+    progress,
+    [0, holdEnd, endPoint],
+    [stackRotateZ, stackRotateZ * 0.95, 0],
+  );
 
   // Editorial 3D tilt — 8° max, falls to 0 on resolve.
   const rotateX = useTransform(progress, [0, holdEnd, endPoint], [8, 7.5, 0]);
@@ -94,8 +88,11 @@ function DestinationCard({
   progress: MotionValue<number>;
   isStatic: boolean;
 }) {
-  const { x, y, scale, rotateZ, rotateX, opacity, detailReveal } =
-    useCardTransforms(progress, index, total);
+  const { x, y, scale, rotateZ, rotateX, opacity, detailReveal } = useCardTransforms(
+    progress,
+    index,
+    total,
+  );
 
   const numberLabel = String(index + 1).padStart(2, "0");
 

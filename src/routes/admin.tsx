@@ -21,10 +21,7 @@ export const Route = createFileRoute("/admin")({
   // Layout allows staff; admin-only subroutes have their own requireAdminOrRedirect.
   beforeLoad: ({ location }) => requireStaffOrRedirect(location.href),
   head: () => ({
-    meta: [
-      { title: "Admin · Eclectic Hive" },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
+    meta: [{ title: "Admin · Eclectic Hive" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   component: AdminLayout,
 });

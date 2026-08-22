@@ -62,15 +62,15 @@ type Edit = {
 type TargetMeta = {
   id: string;
   label: string;
-  rect: DOMRect;        // current screen rect (after canvas transform)
+  rect: DOMRect; // current screen rect (after canvas transform)
   lockMode: LockMode;
 };
 
 type Guide = {
   axis: "x" | "y";
-  pos: number;          // screen coordinate
-  from: number;         // span start (screen)
-  to: number;           // span end (screen)
+  pos: number; // screen coordinate
+  from: number; // span start (screen)
+  to: number; // span end (screen)
 };
 
 type CanvasState = { scale: number; panX: number; panY: number };
@@ -136,7 +136,10 @@ function getLockMode(el: HTMLElement): LockMode {
 
 function unionOfRects(rects: DOMRect[]): DOMRect | null {
   if (rects.length === 0) return null;
-  let l = Infinity, t = Infinity, r = -Infinity, b = -Infinity;
+  let l = Infinity,
+    t = Infinity,
+    r = -Infinity,
+    b = -Infinity;
   for (const rc of rects) {
     if (rc.left < l) l = rc.left;
     if (rc.top < t) t = rc.top;
@@ -156,9 +159,13 @@ export function DevEditOverlay() {
   const [showDone, setShowDone] = useState(false);
   const [showStyle, setShowStyle] = useState(false);
   const [snapEnabled, setSnapEnabled] = useState(true);
-  const [marquee, setMarquee] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
+  const [marquee, setMarquee] = useState<{ x: number; y: number; w: number; h: number } | null>(
+    null,
+  );
   const [activeGuides, setActiveGuides] = useState<Guide[]>([]);
-  const [distanceLabels, setDistanceLabels] = useState<Array<{ x: number; y: number; text: string }>>([]);
+  const [distanceLabels, setDistanceLabels] = useState<
+    Array<{ x: number; y: number; text: string }>
+  >([]);
   const [canvas, setCanvas] = useState<CanvasState>({ scale: 1, panX: 0, panY: 0 });
   const [spaceHeld, setSpaceHeld] = useState(false);
 
@@ -213,7 +220,7 @@ export function DevEditOverlay() {
   // ---------- Rescan tagged elements ----------
   const rescan = useCallback(() => {
     const els = Array.from(
-      document.querySelectorAll<HTMLElement>("[data-devedit], [data-devedit-lock]")
+      document.querySelectorAll<HTMLElement>("[data-devedit], [data-devedit-lock]"),
     );
     const next: TargetMeta[] = els.map((el) => {
       if (!el.id) {
@@ -234,8 +241,12 @@ export function DevEditOverlay() {
   useEffect(() => {
     if (!active) return;
     rescan();
-    const onResize = () => { if (!draggingRef.current) rescan(); };
-    const onScroll = () => { if (!draggingRef.current) rescan(); };
+    const onResize = () => {
+      if (!draggingRef.current) rescan();
+    };
+    const onScroll = () => {
+      if (!draggingRef.current) rescan();
+    };
     window.addEventListener("resize", onResize);
     window.addEventListener("scroll", onScroll, true);
     return () => {
@@ -346,15 +357,22 @@ export function DevEditOverlay() {
             if (el) rects.push(el.getBoundingClientRect());
           });
         } else {
-          document.querySelectorAll<HTMLElement>("[data-devedit], [data-devedit-lock]").forEach((el) => {
-            rects.push(el.getBoundingClientRect());
-          });
+          document
+            .querySelectorAll<HTMLElement>("[data-devedit], [data-devedit-lock]")
+            .forEach((el) => {
+              rects.push(el.getBoundingClientRect());
+            });
         }
         const u = unionOfRects(rects);
         if (!u) return;
         const c = canvasRef.current;
         // Convert union back to canvas (pre-transform) coordinates.
-        const cx = { x: (u.left - c.panX) / c.scale, y: (u.top - c.panY) / c.scale, w: u.width / c.scale, h: u.height / c.scale };
+        const cx = {
+          x: (u.left - c.panX) / c.scale,
+          y: (u.top - c.panY) / c.scale,
+          w: u.width / c.scale,
+          h: u.height / c.scale,
+        };
         const pad = 64;
         const sx = (window.innerWidth - pad * 2) / cx.w;
         const sy = (window.innerHeight - pad * 2) / cx.h;
@@ -380,7 +398,11 @@ export function DevEditOverlay() {
     const startY = e.clientY;
     const start = canvasRef.current;
     const onMove = (ev: PointerEvent) => {
-      setCanvas({ scale: start.scale, panX: start.panX + (ev.clientX - startX), panY: start.panY + (ev.clientY - startY) });
+      setCanvas({
+        scale: start.scale,
+        panX: start.panX + (ev.clientX - startX),
+        panY: start.panY + (ev.clientY - startY),
+      });
     };
     const onUp = () => {
       window.removeEventListener("pointermove", onMove);
@@ -407,7 +429,8 @@ export function DevEditOverlay() {
         if (getLockMode(el) === "position") return;
         const r = el.getBoundingClientRect();
         const current: Edit = nextEdits[id] || {
-          dx: 0, dy: 0,
+          dx: 0,
+          dy: 0,
           width: r.width / canvasRef.current.scale,
           height: r.height / canvasRef.current.scale,
           origWidth: r.width / canvasRef.current.scale,
@@ -450,37 +473,74 @@ export function DevEditOverlay() {
       // Viewport edges + centers
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      candidatesX.push({ pos: 0, from: 0, to: vh }, { pos: vw, from: 0, to: vh }, { pos: vw / 2, from: 0, to: vh });
-      candidatesY.push({ pos: 0, from: 0, to: vw }, { pos: vh, from: 0, to: vw }, { pos: vh / 2, from: 0, to: vw });
+      candidatesX.push(
+        { pos: 0, from: 0, to: vh },
+        { pos: vw, from: 0, to: vh },
+        { pos: vw / 2, from: 0, to: vh },
+      );
+      candidatesY.push(
+        { pos: 0, from: 0, to: vw },
+        { pos: vh, from: 0, to: vw },
+        { pos: vh / 2, from: 0, to: vw },
+      );
 
       // Sibling targets
       targets.forEach((t) => {
         if (excludeIds.has(t.id)) return;
         const r = t.rect;
         candidatesX.push(
-          { pos: r.left, from: Math.min(r.top, activeBox.top), to: Math.max(r.bottom, activeBox.bottom) },
-          { pos: r.right, from: Math.min(r.top, activeBox.top), to: Math.max(r.bottom, activeBox.bottom) },
-          { pos: (r.left + r.right) / 2, from: Math.min(r.top, activeBox.top), to: Math.max(r.bottom, activeBox.bottom) },
+          {
+            pos: r.left,
+            from: Math.min(r.top, activeBox.top),
+            to: Math.max(r.bottom, activeBox.bottom),
+          },
+          {
+            pos: r.right,
+            from: Math.min(r.top, activeBox.top),
+            to: Math.max(r.bottom, activeBox.bottom),
+          },
+          {
+            pos: (r.left + r.right) / 2,
+            from: Math.min(r.top, activeBox.top),
+            to: Math.max(r.bottom, activeBox.bottom),
+          },
         );
         candidatesY.push(
-          { pos: r.top, from: Math.min(r.left, activeBox.left), to: Math.max(r.right, activeBox.right) },
-          { pos: r.bottom, from: Math.min(r.left, activeBox.left), to: Math.max(r.right, activeBox.right) },
-          { pos: (r.top + r.bottom) / 2, from: Math.min(r.left, activeBox.left), to: Math.max(r.right, activeBox.right) },
+          {
+            pos: r.top,
+            from: Math.min(r.left, activeBox.left),
+            to: Math.max(r.right, activeBox.right),
+          },
+          {
+            pos: r.bottom,
+            from: Math.min(r.left, activeBox.left),
+            to: Math.max(r.right, activeBox.right),
+          },
+          {
+            pos: (r.top + r.bottom) / 2,
+            from: Math.min(r.left, activeBox.left),
+            to: Math.max(r.right, activeBox.right),
+          },
         );
       });
 
       const activeXs = [activeBox.left, activeBox.right, (activeBox.left + activeBox.right) / 2];
       const activeYs = [activeBox.top, activeBox.bottom, (activeBox.top + activeBox.bottom) / 2];
 
-      let bestDX = 0, bestDXAbs = Infinity;
-      let bestDY = 0, bestDYAbs = Infinity;
+      let bestDX = 0,
+        bestDXAbs = Infinity;
+      let bestDY = 0,
+        bestDYAbs = Infinity;
 
       candidatesX.forEach((c) => {
         activeXs.forEach((ax) => {
           const d = c.pos - ax;
           if (Math.abs(d) <= radiusScreen) {
             guides.push({ axis: "x", pos: c.pos, from: c.from, to: c.to });
-            if (Math.abs(d) < bestDXAbs) { bestDXAbs = Math.abs(d); bestDX = d; }
+            if (Math.abs(d) < bestDXAbs) {
+              bestDXAbs = Math.abs(d);
+              bestDX = d;
+            }
           }
         });
       });
@@ -489,7 +549,10 @@ export function DevEditOverlay() {
           const d = c.pos - ay;
           if (Math.abs(d) <= radiusScreen) {
             guides.push({ axis: "y", pos: c.pos, from: c.from, to: c.to });
-            if (Math.abs(d) < bestDYAbs) { bestDYAbs = Math.abs(d); bestDY = d; }
+            if (Math.abs(d) < bestDYAbs) {
+              bestDYAbs = Math.abs(d);
+              bestDY = d;
+            }
           }
         });
       });
@@ -529,9 +592,14 @@ export function DevEditOverlay() {
         labels.push({ x: cx, y: activeBox.top - d / 2, text: `${Math.round(d)}px` });
       }
 
-      return { guides, labels, snapDX: bestDXAbs <= radiusScreen ? bestDX : 0, snapDY: bestDYAbs <= radiusScreen ? bestDY : 0 };
+      return {
+        guides,
+        labels,
+        snapDX: bestDXAbs <= radiusScreen ? bestDX : 0,
+        snapDY: bestDYAbs <= radiusScreen ? bestDY : 0,
+      };
     },
-    [targets]
+    [targets],
   );
 
   // ---------- Group drag / resize ----------
@@ -540,7 +608,7 @@ export function DevEditOverlay() {
       meta: TargetMeta,
       mode: "move" | "nw" | "ne" | "sw" | "se",
       e: React.PointerEvent,
-      groupMode: boolean
+      groupMode: boolean,
     ) => {
       e.preventDefault();
       e.stopPropagation();
@@ -573,7 +641,8 @@ export function DevEditOverlay() {
         const r = el.getBoundingClientRect();
         startingScreenRects[id] = r;
         startingEdits[id] = editsRef.current[id] || {
-          dx: 0, dy: 0,
+          dx: 0,
+          dy: 0,
           width: r.width / cStart.scale,
           height: r.height / cStart.scale,
           origWidth: r.width / cStart.scale,
@@ -602,7 +671,7 @@ export function DevEditOverlay() {
             startUnion.left + deltaScreenX,
             startUnion.top + deltaScreenY,
             startUnion.width,
-            startUnion.height
+            startUnion.height,
           );
           if (useSnap && !ev.altKey) {
             const { guides, labels, snapDX, snapDY } = computeGuidesFor(projUnion, idsForOp);
@@ -618,7 +687,7 @@ export function DevEditOverlay() {
               startUnion.left + dxCanvas * c.scale,
               startUnion.top + dyCanvas * c.scale,
               startUnion.width,
-              startUnion.height
+              startUnion.height,
             );
           } else {
             setActiveGuides([]);
@@ -628,7 +697,8 @@ export function DevEditOverlay() {
 
           // Apply delta to every non-position-locked id.
           idsForOp.forEach((id) => {
-            const el = elMap[id]; if (!el) return;
+            const el = elMap[id];
+            if (!el) return;
             if (getLockMode(el) === "position") return;
             const start = startingEdits[id];
             const next: Edit = { ...start, dx: start.dx + dxCanvas, dy: start.dy + dyCanvas };
@@ -637,12 +707,31 @@ export function DevEditOverlay() {
           });
         } else {
           // Resize: scale union proportionally from anchor opposite the dragged corner.
-          let anchorX = startUnion.left, anchorY = startUnion.top;
-          let dW = 0, dH = 0;
-          if (mode === "se") { anchorX = startUnion.left; anchorY = startUnion.top; dW = deltaScreenX; dH = deltaScreenY; }
-          else if (mode === "ne") { anchorX = startUnion.left; anchorY = startUnion.bottom; dW = deltaScreenX; dH = -deltaScreenY; }
-          else if (mode === "sw") { anchorX = startUnion.right; anchorY = startUnion.top; dW = -deltaScreenX; dH = deltaScreenY; }
-          else if (mode === "nw") { anchorX = startUnion.right; anchorY = startUnion.bottom; dW = -deltaScreenX; dH = -deltaScreenY; }
+          let anchorX = startUnion.left,
+            anchorY = startUnion.top;
+          let dW = 0,
+            dH = 0;
+          if (mode === "se") {
+            anchorX = startUnion.left;
+            anchorY = startUnion.top;
+            dW = deltaScreenX;
+            dH = deltaScreenY;
+          } else if (mode === "ne") {
+            anchorX = startUnion.left;
+            anchorY = startUnion.bottom;
+            dW = deltaScreenX;
+            dH = -deltaScreenY;
+          } else if (mode === "sw") {
+            anchorX = startUnion.right;
+            anchorY = startUnion.top;
+            dW = -deltaScreenX;
+            dH = deltaScreenY;
+          } else if (mode === "nw") {
+            anchorX = startUnion.right;
+            anchorY = startUnion.bottom;
+            dW = -deltaScreenX;
+            dH = -deltaScreenY;
+          }
 
           let newW = Math.max(MIN_SIZE, startUnion.width + dW);
           let newH = Math.max(MIN_SIZE, startUnion.height + dH);
@@ -656,7 +745,8 @@ export function DevEditOverlay() {
           const sy = newH / startUnion.height;
 
           idsForOp.forEach((id) => {
-            const el = elMap[id]; if (!el) return;
+            const el = elMap[id];
+            if (!el) return;
             const lock = getLockMode(el);
             if (lock !== "none") return; // size-locked + position-locked both excluded from resize
             const startRect = startingScreenRects[id];
@@ -665,11 +755,23 @@ export function DevEditOverlay() {
             const offX = startRect.left - startUnion.left;
             const offY = startRect.top - startUnion.top;
             // New screen offset within union
-            const newOffX = (anchorX === startUnion.left ? offX * sx : (startUnion.width - offX - startRect.width) * sx);
-            const newOffY = (anchorY === startUnion.top ? offY * sy : (startUnion.height - offY - startRect.height) * sy);
+            const newOffX =
+              anchorX === startUnion.left
+                ? offX * sx
+                : (startUnion.width - offX - startRect.width) * sx;
+            const newOffY =
+              anchorY === startUnion.top
+                ? offY * sy
+                : (startUnion.height - offY - startRect.height) * sy;
             // Recompose target screen position
-            const targetScreenLeft = (anchorX === startUnion.left ? startUnion.left + newOffX : startUnion.right - newOffX - startRect.width * sx);
-            const targetScreenTop = (anchorY === startUnion.top ? startUnion.top + newOffY : startUnion.bottom - newOffY - startRect.height * sy);
+            const targetScreenLeft =
+              anchorX === startUnion.left
+                ? startUnion.left + newOffX
+                : startUnion.right - newOffX - startRect.width * sx;
+            const targetScreenTop =
+              anchorY === startUnion.top
+                ? startUnion.top + newOffY
+                : startUnion.bottom - newOffY - startRect.height * sy;
             const screenDX = targetScreenLeft - startRect.left;
             const screenDY = targetScreenTop - startRect.top;
             const newWCanvas = Math.max(MIN_SIZE, (startRect.width * sx) / c.scale);
@@ -678,8 +780,12 @@ export function DevEditOverlay() {
               ...start,
               width: useSnap ? snap(newWCanvas, SNAP_GRID, true) : newWCanvas,
               height: useSnap ? snap(newHCanvas, SNAP_GRID, true) : newHCanvas,
-              dx: useSnap ? snap(start.dx + screenDX / c.scale, SNAP_GRID, true) : start.dx + screenDX / c.scale,
-              dy: useSnap ? snap(start.dy + screenDY / c.scale, SNAP_GRID, true) : start.dy + screenDY / c.scale,
+              dx: useSnap
+                ? snap(start.dx + screenDX / c.scale, SNAP_GRID, true)
+                : start.dx + screenDX / c.scale,
+              dy: useSnap
+                ? snap(start.dy + screenDY / c.scale, SNAP_GRID, true)
+                : start.dy + screenDY / c.scale,
             };
             applyEditToEl(el, next);
             nextEdits[id] = next;
@@ -689,7 +795,7 @@ export function DevEditOverlay() {
             anchorX === startUnion.left ? startUnion.left : startUnion.right - newW,
             anchorY === startUnion.top ? startUnion.top : startUnion.bottom - newH,
             newW,
-            newH
+            newH,
           );
         }
 
@@ -702,7 +808,7 @@ export function DevEditOverlay() {
             const el = elMap[p.id];
             if (!el) return p;
             return { ...p, rect: el.getBoundingClientRect() };
-          })
+          }),
         );
         // Suppress unused variable lint
         void liveUnion;
@@ -720,124 +826,159 @@ export function DevEditOverlay() {
       window.addEventListener("pointermove", onMove);
       window.addEventListener("pointerup", onUp);
     },
-    [snapEnabled, commitEdits, rescan, computeGuidesFor, selectOnly]
+    [snapEnabled, commitEdits, rescan, computeGuidesFor, selectOnly],
   );
 
   // ---------- Marquee ----------
-  const startMarquee = useCallback((e: React.PointerEvent) => {
-    if (spaceHeld) return; // Space-drag pans instead.
-    e.preventDefault();
-    const startX = e.clientX, startY = e.clientY;
-    setMarquee({ x: startX, y: startY, w: 0, h: 0 });
-    const additive = e.shiftKey || e.metaKey;
-    const onMove = (ev: PointerEvent) => {
-      const x = Math.min(startX, ev.clientX);
-      const y = Math.min(startY, ev.clientY);
-      const w = Math.abs(ev.clientX - startX);
-      const h = Math.abs(ev.clientY - startY);
-      setMarquee({ x, y, w, h });
-    };
-    const onUp = (ev: PointerEvent) => {
-      window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerup", onUp);
-      const x = Math.min(startX, ev.clientX);
-      const y = Math.min(startY, ev.clientY);
-      const w = Math.abs(ev.clientX - startX);
-      const h = Math.abs(ev.clientY - startY);
-      setMarquee(null);
-      if (w < 3 && h < 3) {
-        if (!additive) clearSelection();
-        return;
-      }
-      const hits = targets.filter((t) => {
-        const r = t.rect;
-        return r.right >= x && r.left <= x + w && r.bottom >= y && r.top <= y + h;
-      }).map((t) => t.id);
-      setSelectedIds((prev) => {
-        const next = additive ? new Set(prev) : new Set<string>();
-        hits.forEach((id) => next.add(id));
-        return next;
-      });
-    };
-    window.addEventListener("pointermove", onMove);
-    window.addEventListener("pointerup", onUp);
-  }, [targets, clearSelection, spaceHeld]);
+  const startMarquee = useCallback(
+    (e: React.PointerEvent) => {
+      if (spaceHeld) return; // Space-drag pans instead.
+      e.preventDefault();
+      const startX = e.clientX,
+        startY = e.clientY;
+      setMarquee({ x: startX, y: startY, w: 0, h: 0 });
+      const additive = e.shiftKey || e.metaKey;
+      const onMove = (ev: PointerEvent) => {
+        const x = Math.min(startX, ev.clientX);
+        const y = Math.min(startY, ev.clientY);
+        const w = Math.abs(ev.clientX - startX);
+        const h = Math.abs(ev.clientY - startY);
+        setMarquee({ x, y, w, h });
+      };
+      const onUp = (ev: PointerEvent) => {
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
+        const x = Math.min(startX, ev.clientX);
+        const y = Math.min(startY, ev.clientY);
+        const w = Math.abs(ev.clientX - startX);
+        const h = Math.abs(ev.clientY - startY);
+        setMarquee(null);
+        if (w < 3 && h < 3) {
+          if (!additive) clearSelection();
+          return;
+        }
+        const hits = targets
+          .filter((t) => {
+            const r = t.rect;
+            return r.right >= x && r.left <= x + w && r.bottom >= y && r.top <= y + h;
+          })
+          .map((t) => t.id);
+        setSelectedIds((prev) => {
+          const next = additive ? new Set(prev) : new Set<string>();
+          hits.forEach((id) => next.add(id));
+          return next;
+        });
+      };
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp);
+    },
+    [targets, clearSelection, spaceHeld],
+  );
 
   // ---------- Style edits target primary selection ----------
-  const updateStyle = useCallback((patch: Partial<StyleEdit>) => {
-    const id = primarySelectedId;
-    if (!id) return;
-    const el = document.getElementById(id) as HTMLElement | null;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    const c = canvasRef.current;
-    const current: Edit = editsRef.current[id] || {
-      dx: 0, dy: 0,
-      width: r.width / c.scale, height: r.height / c.scale,
-      origWidth: r.width / c.scale, origHeight: r.height / c.scale,
-    };
-    const next: Edit = { ...current, style: { ...(current.style || {}), ...patch } };
-    applyEditToEl(el, next);
-    commitEdits({ ...editsRef.current, [id]: next });
-  }, [primarySelectedId, commitEdits]);
+  const updateStyle = useCallback(
+    (patch: Partial<StyleEdit>) => {
+      const id = primarySelectedId;
+      if (!id) return;
+      const el = document.getElementById(id) as HTMLElement | null;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const c = canvasRef.current;
+      const current: Edit = editsRef.current[id] || {
+        dx: 0,
+        dy: 0,
+        width: r.width / c.scale,
+        height: r.height / c.scale,
+        origWidth: r.width / c.scale,
+        origHeight: r.height / c.scale,
+      };
+      const next: Edit = { ...current, style: { ...(current.style || {}), ...patch } };
+      applyEditToEl(el, next);
+      commitEdits({ ...editsRef.current, [id]: next });
+    },
+    [primarySelectedId, commitEdits],
+  );
 
   // ---------- Z-order + alignment for primary selection ----------
-  const bumpZ = useCallback((delta: number) => {
-    const id = primarySelectedId;
-    if (!id) return;
-    const cur = editsRef.current[id];
-    const currentZ = cur?.style?.zIndex ?? 0;
-    updateStyle({ zIndex: currentZ + delta });
-  }, [primarySelectedId, updateStyle]);
+  const bumpZ = useCallback(
+    (delta: number) => {
+      const id = primarySelectedId;
+      if (!id) return;
+      const cur = editsRef.current[id];
+      const currentZ = cur?.style?.zIndex ?? 0;
+      updateStyle({ zIndex: currentZ + delta });
+    },
+    [primarySelectedId, updateStyle],
+  );
 
-  const alignSelected = useCallback((where: "tl" | "tr" | "bl" | "br" | "center" | "cx" | "cy") => {
-    const id = primarySelectedId;
-    if (!id) return;
-    const el = document.getElementById(id) as HTMLElement | null;
-    if (!el) return;
-    if (getLockMode(el) === "position") return;
-    const cur = editsRef.current[id];
-    const prevTransform = el.style.transform;
-    el.style.transform = (cur?.style?.rotate ? `rotate(${cur.style.rotate}deg)` : "");
-    const natural = el.getBoundingClientRect();
-    el.style.transform = prevTransform;
+  const alignSelected = useCallback(
+    (where: "tl" | "tr" | "bl" | "br" | "center" | "cx" | "cy") => {
+      const id = primarySelectedId;
+      if (!id) return;
+      const el = document.getElementById(id) as HTMLElement | null;
+      if (!el) return;
+      if (getLockMode(el) === "position") return;
+      const cur = editsRef.current[id];
+      const prevTransform = el.style.transform;
+      el.style.transform = cur?.style?.rotate ? `rotate(${cur.style.rotate}deg)` : "";
+      const natural = el.getBoundingClientRect();
+      el.style.transform = prevTransform;
 
-    const c = canvasRef.current;
-    const w = (cur?.width ?? natural.width / c.scale);
-    const h = (cur?.height ?? natural.height / c.scale);
-    // natural rect is currently in screen coords; convert to canvas.
-    const naturalLeftCanvas = (natural.left - c.panX) / c.scale - (cur?.dx ?? 0);
-    const naturalTopCanvas = (natural.top - c.panY) / c.scale - (cur?.dy ?? 0);
-    const vw = window.innerWidth / c.scale;
-    const vh = window.innerHeight / c.scale;
-    const PAD = 8 / c.scale;
-    let targetLeft = naturalLeftCanvas;
-    let targetTop = naturalTopCanvas;
-    if (where === "tl") { targetLeft = PAD; targetTop = PAD; }
-    else if (where === "tr") { targetLeft = vw - w - PAD; targetTop = PAD; }
-    else if (where === "bl") { targetLeft = PAD; targetTop = vh - h - PAD; }
-    else if (where === "br") { targetLeft = vw - w - PAD; targetTop = vh - h - PAD; }
-    else if (where === "center") { targetLeft = (vw - w) / 2; targetTop = (vh - h) / 2; }
-    else if (where === "cx") { targetLeft = (vw - w) / 2; }
-    else if (where === "cy") { targetTop = (vh - h) / 2; }
+      const c = canvasRef.current;
+      const w = cur?.width ?? natural.width / c.scale;
+      const h = cur?.height ?? natural.height / c.scale;
+      // natural rect is currently in screen coords; convert to canvas.
+      const naturalLeftCanvas = (natural.left - c.panX) / c.scale - (cur?.dx ?? 0);
+      const naturalTopCanvas = (natural.top - c.panY) / c.scale - (cur?.dy ?? 0);
+      const vw = window.innerWidth / c.scale;
+      const vh = window.innerHeight / c.scale;
+      const PAD = 8 / c.scale;
+      let targetLeft = naturalLeftCanvas;
+      let targetTop = naturalTopCanvas;
+      if (where === "tl") {
+        targetLeft = PAD;
+        targetTop = PAD;
+      } else if (where === "tr") {
+        targetLeft = vw - w - PAD;
+        targetTop = PAD;
+      } else if (where === "bl") {
+        targetLeft = PAD;
+        targetTop = vh - h - PAD;
+      } else if (where === "br") {
+        targetLeft = vw - w - PAD;
+        targetTop = vh - h - PAD;
+      } else if (where === "center") {
+        targetLeft = (vw - w) / 2;
+        targetTop = (vh - h) / 2;
+      } else if (where === "cx") {
+        targetLeft = (vw - w) / 2;
+      } else if (where === "cy") {
+        targetTop = (vh - h) / 2;
+      }
 
-    const next: Edit = {
-      ...(cur || {
-        dx: 0, dy: 0, width: w, height: h,
-        origWidth: natural.width / c.scale, origHeight: natural.height / c.scale,
-      }),
-      dx: Math.round(targetLeft - naturalLeftCanvas),
-      dy: Math.round(targetTop - naturalTopCanvas),
-    };
-    applyEditToEl(el, next);
-    commitEdits({ ...editsRef.current, [id]: next });
-    requestAnimationFrame(() => rescan());
-  }, [primarySelectedId, commitEdits, rescan]);
+      const next: Edit = {
+        ...(cur || {
+          dx: 0,
+          dy: 0,
+          width: w,
+          height: h,
+          origWidth: natural.width / c.scale,
+          origHeight: natural.height / c.scale,
+        }),
+        dx: Math.round(targetLeft - naturalLeftCanvas),
+        dy: Math.round(targetTop - naturalTopCanvas),
+      };
+      applyEditToEl(el, next);
+      commitEdits({ ...editsRef.current, [id]: next });
+      requestAnimationFrame(() => rescan());
+    },
+    [primarySelectedId, commitEdits, rescan],
+  );
 
   const editedIds = useMemo(() => Object.keys(edits), [edits]);
   const primaryTarget = useMemo(
-    () => (primarySelectedId ? targets.find((t) => t.id === primarySelectedId) ?? null : null),
-    [primarySelectedId, targets]
+    () => (primarySelectedId ? (targets.find((t) => t.id === primarySelectedId) ?? null) : null),
+    [primarySelectedId, targets],
   );
   const primaryEdit = primarySelectedId ? edits[primarySelectedId] : undefined;
 
@@ -885,7 +1026,9 @@ export function DevEditOverlay() {
             if (e.shiftKey || e.metaKey) toggleSelect(t.id);
             else selectOnly(t.id);
           }}
-          onStart={(meta, mode, e) => startInteraction(meta, mode, e, selectedIds.has(t.id) && selectedIds.size > 1)}
+          onStart={(meta, mode, e) =>
+            startInteraction(meta, mode, e, selectedIds.has(t.id) && selectedIds.size > 1)
+          }
         />
       ))}
 
@@ -957,7 +1100,9 @@ export function DevEditOverlay() {
         onPointerDown={(e) => e.stopPropagation()}
         style={{
           position: "fixed",
-          left: 0, right: 0, bottom: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
           padding: "10px 16px",
           background: "rgba(15,15,15,0.94)",
           color: "#f5f2ed",
@@ -972,14 +1117,28 @@ export function DevEditOverlay() {
         }}
       >
         <span style={{ color: "rgba(255,200,0,0.9)" }}>● Dev Mode</span>
-        <span style={{ opacity: 0.7 }}>{targets.length} tagged · {editedIds.length} edited</span>
+        <span style={{ opacity: 0.7 }}>
+          {targets.length} tagged · {editedIds.length} edited
+        </span>
         {selectedIds.size === 1 && primaryTarget && (
-          <span style={{ opacity: 0.85, color: "rgba(120,220,140,0.95)" }}>▸ {primaryTarget.label}</span>
+          <span style={{ opacity: 0.85, color: "rgba(120,220,140,0.95)" }}>
+            ▸ {primaryTarget.label}
+          </span>
         )}
         {selectedIds.size > 1 && (
-          <span style={{ opacity: 0.85, color: "rgba(120,220,140,0.95)", display: "flex", alignItems: "center", gap: 6 }}>
+          <span
+            style={{
+              opacity: 0.85,
+              color: "rgba(120,220,140,0.95)",
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+            }}
+          >
             ▸ {selectedIds.size} selected
-            <button type="button" onClick={clearSelection} style={miniBtn}>×</button>
+            <button type="button" onClick={clearSelection} style={miniBtn}>
+              ×
+            </button>
           </span>
         )}
         <span style={{ flex: 1 }} />
@@ -992,32 +1151,134 @@ export function DevEditOverlay() {
           {Math.round(canvas.scale * 100)}% ⊕
         </button>
         <label style={{ display: "flex", alignItems: "center", gap: 6, opacity: 0.85 }}>
-          <input type="checkbox" checked={snapEnabled} onChange={(e) => setSnapEnabled(e.target.checked)} style={{ accentColor: "#ffd84d" }} />
+          <input
+            type="checkbox"
+            checked={snapEnabled}
+            onChange={(e) => setSnapEnabled(e.target.checked)}
+            style={{ accentColor: "#ffd84d" }}
+          />
           Snap 8px
         </label>
         <div style={{ display: "flex", gap: 4, opacity: primarySelectedId ? 1 : 0.4 }}>
-          <button type="button" disabled={!primarySelectedId} onClick={() => alignSelected("tl")} style={miniBtn} title="Snap top-left">⌜</button>
-          <button type="button" disabled={!primarySelectedId} onClick={() => alignSelected("tr")} style={miniBtn} title="Snap top-right">⌝</button>
-          <button type="button" disabled={!primarySelectedId} onClick={() => alignSelected("bl")} style={miniBtn} title="Snap bottom-left">⌞</button>
-          <button type="button" disabled={!primarySelectedId} onClick={() => alignSelected("br")} style={miniBtn} title="Snap bottom-right">⌟</button>
-          <button type="button" disabled={!primarySelectedId} onClick={() => alignSelected("cx")} style={miniBtn} title="Center horizontally">↔</button>
-          <button type="button" disabled={!primarySelectedId} onClick={() => alignSelected("cy")} style={miniBtn} title="Center vertically">↕</button>
-          <button type="button" disabled={!primarySelectedId} onClick={() => alignSelected("center")} style={miniBtn} title="Center on screen">◎</button>
+          <button
+            type="button"
+            disabled={!primarySelectedId}
+            onClick={() => alignSelected("tl")}
+            style={miniBtn}
+            title="Snap top-left"
+          >
+            ⌜
+          </button>
+          <button
+            type="button"
+            disabled={!primarySelectedId}
+            onClick={() => alignSelected("tr")}
+            style={miniBtn}
+            title="Snap top-right"
+          >
+            ⌝
+          </button>
+          <button
+            type="button"
+            disabled={!primarySelectedId}
+            onClick={() => alignSelected("bl")}
+            style={miniBtn}
+            title="Snap bottom-left"
+          >
+            ⌞
+          </button>
+          <button
+            type="button"
+            disabled={!primarySelectedId}
+            onClick={() => alignSelected("br")}
+            style={miniBtn}
+            title="Snap bottom-right"
+          >
+            ⌟
+          </button>
+          <button
+            type="button"
+            disabled={!primarySelectedId}
+            onClick={() => alignSelected("cx")}
+            style={miniBtn}
+            title="Center horizontally"
+          >
+            ↔
+          </button>
+          <button
+            type="button"
+            disabled={!primarySelectedId}
+            onClick={() => alignSelected("cy")}
+            style={miniBtn}
+            title="Center vertically"
+          >
+            ↕
+          </button>
+          <button
+            type="button"
+            disabled={!primarySelectedId}
+            onClick={() => alignSelected("center")}
+            style={miniBtn}
+            title="Center on screen"
+          >
+            ◎
+          </button>
         </div>
         <div style={{ display: "flex", gap: 4, opacity: primarySelectedId ? 1 : 0.4 }}>
-          <button type="button" disabled={!primarySelectedId} onClick={() => bumpZ(100)} style={miniBtn} title="Bring to front">▲▲</button>
-          <button type="button" disabled={!primarySelectedId} onClick={() => bumpZ(1)} style={miniBtn} title="Forward">▲</button>
-          <button type="button" disabled={!primarySelectedId} onClick={() => bumpZ(-1)} style={miniBtn} title="Backward">▼</button>
-          <button type="button" disabled={!primarySelectedId} onClick={() => bumpZ(-100)} style={miniBtn} title="Send to back">▼▼</button>
+          <button
+            type="button"
+            disabled={!primarySelectedId}
+            onClick={() => bumpZ(100)}
+            style={miniBtn}
+            title="Bring to front"
+          >
+            ▲▲
+          </button>
+          <button
+            type="button"
+            disabled={!primarySelectedId}
+            onClick={() => bumpZ(1)}
+            style={miniBtn}
+            title="Forward"
+          >
+            ▲
+          </button>
+          <button
+            type="button"
+            disabled={!primarySelectedId}
+            onClick={() => bumpZ(-1)}
+            style={miniBtn}
+            title="Backward"
+          >
+            ▼
+          </button>
+          <button
+            type="button"
+            disabled={!primarySelectedId}
+            onClick={() => bumpZ(-100)}
+            style={miniBtn}
+            title="Send to back"
+          >
+            ▼▼
+          </button>
         </div>
-        <button type="button" onClick={() => setShowStyle((s) => !s)} disabled={!primarySelectedId} style={hudBtn(!primarySelectedId, showStyle)}>Style</button>
+        <button
+          type="button"
+          onClick={() => setShowStyle((s) => !s)}
+          disabled={!primarySelectedId}
+          style={hudBtn(!primarySelectedId, showStyle)}
+        >
+          Style
+        </button>
         <button
           type="button"
           onClick={() => {
             if (!confirm("Reset ALL edits? This clears localStorage too.")) return;
-            document.querySelectorAll<HTMLElement>("[data-devedit], [data-devedit-lock]").forEach((el) => {
-              el.style.cssText = "";
-            });
+            document
+              .querySelectorAll<HTMLElement>("[data-devedit], [data-devedit-lock]")
+              .forEach((el) => {
+                el.style.cssText = "";
+              });
             commitEdits({});
             clearSelection();
             setCanvas({ scale: 1, panX: 0, panY: 0 });
@@ -1027,8 +1288,12 @@ export function DevEditOverlay() {
         >
           Reset
         </button>
-        <button type="button" onClick={() => setShowDone(true)} style={hudBtn(false, true)}>Done ({editedIds.length})</button>
-        <span style={{ opacity: 0.5, fontSize: 9 }}>Shift+D · Esc · ←↑→↓ · Space=pan · ⌘scroll=zoom · `=reset · 1=fit · Alt=free</span>
+        <button type="button" onClick={() => setShowDone(true)} style={hudBtn(false, true)}>
+          Done ({editedIds.length})
+        </button>
+        <span style={{ opacity: 0.5, fontSize: 9 }}>
+          Shift+D · Esc · ←↑→↓ · Space=pan · ⌘scroll=zoom · `=reset · 1=fit · Alt=free
+        </span>
       </div>
 
       {/* Style panel */}
@@ -1053,7 +1318,13 @@ export function DevEditOverlay() {
 // --------------------------------------------------------------------------
 
 function DevEditOutline({
-  target, selected, isPrimary, edited, spaceHeld, onClick, onStart,
+  target,
+  selected,
+  isPrimary,
+  edited,
+  spaceHeld,
+  onClick,
+  onStart,
 }: {
   target: TargetMeta;
   selected: boolean;
@@ -1067,10 +1338,10 @@ function DevEditOutline({
   const outlineColor = isPrimary
     ? "rgba(255,200,0,0.95)"
     : selected
-    ? "rgba(255,200,0,0.7)"
-    : edited
-    ? "rgba(120,220,140,0.7)"
-    : "rgba(255,200,0,0.35)";
+      ? "rgba(255,200,0,0.7)"
+      : edited
+        ? "rgba(120,220,140,0.7)"
+        : "rgba(255,200,0,0.35)";
   const handleSize = 10;
   const positionLocked = target.lockMode === "position";
   const sizeLocked = target.lockMode === "size";
@@ -1086,7 +1357,10 @@ function DevEditOutline({
         }}
         style={{
           position: "fixed",
-          left: r.left, top: r.top, width: r.width, height: r.height,
+          left: r.left,
+          top: r.top,
+          width: r.width,
+          height: r.height,
           outline: `1px dashed ${outlineColor}`,
           outlineOffset: -1,
           background: edited ? "rgba(120,220,140,0.04)" : "transparent",
@@ -1095,7 +1369,8 @@ function DevEditOutline({
         }}
       >
         <span style={labelChip(outlineColor, false)}>
-          {target.label}{target.lockMode !== "none" ? ` · 🔒${target.lockMode}` : ""}
+          {target.label}
+          {target.lockMode !== "none" ? ` · 🔒${target.lockMode}` : ""}
         </span>
       </div>
     );
@@ -1104,8 +1379,14 @@ function DevEditOutline({
   const corners: Array<["nw" | "ne" | "sw" | "se", React.CSSProperties]> = [
     ["nw", { left: r.left - handleSize / 2, top: r.top - handleSize / 2, cursor: "nwse-resize" }],
     ["ne", { left: r.right - handleSize / 2, top: r.top - handleSize / 2, cursor: "nesw-resize" }],
-    ["sw", { left: r.left - handleSize / 2, top: r.bottom - handleSize / 2, cursor: "nesw-resize" }],
-    ["se", { left: r.right - handleSize / 2, top: r.bottom - handleSize / 2, cursor: "nwse-resize" }],
+    [
+      "sw",
+      { left: r.left - handleSize / 2, top: r.bottom - handleSize / 2, cursor: "nesw-resize" },
+    ],
+    [
+      "se",
+      { left: r.right - handleSize / 2, top: r.bottom - handleSize / 2, cursor: "nwse-resize" },
+    ],
   ];
 
   return (
@@ -1120,12 +1401,20 @@ function DevEditOutline({
           if (e.shiftKey || e.metaKey) {
             e.stopPropagation();
             // Forward as a synthetic event with the modifier flags onClick needs.
-            onClick({ shiftKey: e.shiftKey, metaKey: e.metaKey, stopPropagation: () => e.stopPropagation(), preventDefault: () => e.preventDefault() } as unknown as React.PointerEvent);
+            onClick({
+              shiftKey: e.shiftKey,
+              metaKey: e.metaKey,
+              stopPropagation: () => e.stopPropagation(),
+              preventDefault: () => e.preventDefault(),
+            } as unknown as React.PointerEvent);
           }
         }}
         style={{
           position: "fixed",
-          left: r.left, top: r.top, width: r.width, height: r.height,
+          left: r.left,
+          top: r.top,
+          width: r.width,
+          height: r.height,
           outline: `2px solid ${outlineColor}`,
           outlineOffset: -1,
           background: "rgba(255,200,0,0.06)",
@@ -1138,20 +1427,23 @@ function DevEditOutline({
           {target.lockMode !== "none" ? ` · 🔒${target.lockMode}` : ""}
         </span>
       </div>
-      {!sizeLocked && !positionLocked && corners.map(([mode, style]) => (
-        <div
-          key={mode}
-          onPointerDown={(e) => onStart(target, mode, e)}
-          style={{
-            position: "fixed",
-            width: handleSize, height: handleSize,
-            background: outlineColor,
-            border: "1px solid rgba(15,15,15,0.9)",
-            pointerEvents: "auto",
-            ...style,
-          }}
-        />
-      ))}
+      {!sizeLocked &&
+        !positionLocked &&
+        corners.map(([mode, style]) => (
+          <div
+            key={mode}
+            onPointerDown={(e) => onStart(target, mode, e)}
+            style={{
+              position: "fixed",
+              width: handleSize,
+              height: handleSize,
+              background: outlineColor,
+              border: "1px solid rgba(15,15,15,0.9)",
+              pointerEvents: "auto",
+              ...style,
+            }}
+          />
+        ))}
     </>
   );
 }
@@ -1173,24 +1465,48 @@ function labelChip(color: string, primary: boolean): React.CSSProperties {
 }
 
 function GroupBox({
-  rect, onStart,
+  rect,
+  onStart,
 }: {
   rect: DOMRect;
   onStart: (mode: "nw" | "ne" | "sw" | "se", e: React.PointerEvent) => void;
 }) {
   const handleSize = 12;
   const corners: Array<["nw" | "ne" | "sw" | "se", React.CSSProperties]> = [
-    ["nw", { left: rect.left - handleSize / 2, top: rect.top - handleSize / 2, cursor: "nwse-resize" }],
-    ["ne", { left: rect.right - handleSize / 2, top: rect.top - handleSize / 2, cursor: "nesw-resize" }],
-    ["sw", { left: rect.left - handleSize / 2, top: rect.bottom - handleSize / 2, cursor: "nesw-resize" }],
-    ["se", { left: rect.right - handleSize / 2, top: rect.bottom - handleSize / 2, cursor: "nwse-resize" }],
+    [
+      "nw",
+      { left: rect.left - handleSize / 2, top: rect.top - handleSize / 2, cursor: "nwse-resize" },
+    ],
+    [
+      "ne",
+      { left: rect.right - handleSize / 2, top: rect.top - handleSize / 2, cursor: "nesw-resize" },
+    ],
+    [
+      "sw",
+      {
+        left: rect.left - handleSize / 2,
+        top: rect.bottom - handleSize / 2,
+        cursor: "nesw-resize",
+      },
+    ],
+    [
+      "se",
+      {
+        left: rect.right - handleSize / 2,
+        top: rect.bottom - handleSize / 2,
+        cursor: "nwse-resize",
+      },
+    ],
   ];
   return (
     <>
       <div
         style={{
           position: "fixed",
-          left: rect.left, top: rect.top, width: rect.width, height: rect.height,
+          left: rect.left,
+          top: rect.top,
+          width: rect.width,
+          height: rect.height,
           outline: "1px solid rgba(255,200,0,0.55)",
           outlineOffset: 4,
           pointerEvents: "none",
@@ -1202,7 +1518,8 @@ function GroupBox({
           onPointerDown={(e) => onStart(mode, e)}
           style={{
             position: "fixed",
-            width: handleSize, height: handleSize,
+            width: handleSize,
+            height: handleSize,
             background: "rgba(255,200,0,0.95)",
             border: "1px solid rgba(15,15,15,0.9)",
             borderRadius: 2,
@@ -1228,14 +1545,59 @@ const SHADOW_PRESETS: Array<{ label: string; value: string }> = [
 ];
 
 const GLASS_PRESETS: Array<{ label: string; patch: StyleEdit }> = [
-  { label: "Frosted Light", patch: { background: "rgba(255,255,255,0.08)", borderColor: "rgba(255,255,255,0.12)", borderWidth: 1, backdropBlur: 24, backdropSaturate: 130, boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08), 0 24px 56px rgba(0,0,0,0.4)" } },
-  { label: "Frosted Dark",  patch: { background: "rgba(18,18,18,0.48)",   borderColor: "rgba(255,255,255,0.09)", borderWidth: 1, backdropBlur: 20, backdropSaturate: 130, boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06), 0 24px 56px rgba(0,0,0,0.55)" } },
-  { label: "Ghost",         patch: { background: "rgba(255,255,255,0.045)",borderColor: "rgba(255,255,255,0.07)", borderWidth: 1, backdropBlur: 28, backdropSaturate: 120, boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06), 0 30px 80px rgba(0,0,0,0.45)" } },
-  { label: "Clear",         patch: { background: "transparent", borderColor: "transparent", borderWidth: 0, backdropBlur: 0, backdropSaturate: 100, boxShadow: "none" } },
+  {
+    label: "Frosted Light",
+    patch: {
+      background: "rgba(255,255,255,0.08)",
+      borderColor: "rgba(255,255,255,0.12)",
+      borderWidth: 1,
+      backdropBlur: 24,
+      backdropSaturate: 130,
+      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08), 0 24px 56px rgba(0,0,0,0.4)",
+    },
+  },
+  {
+    label: "Frosted Dark",
+    patch: {
+      background: "rgba(18,18,18,0.48)",
+      borderColor: "rgba(255,255,255,0.09)",
+      borderWidth: 1,
+      backdropBlur: 20,
+      backdropSaturate: 130,
+      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06), 0 24px 56px rgba(0,0,0,0.55)",
+    },
+  },
+  {
+    label: "Ghost",
+    patch: {
+      background: "rgba(255,255,255,0.045)",
+      borderColor: "rgba(255,255,255,0.07)",
+      borderWidth: 1,
+      backdropBlur: 28,
+      backdropSaturate: 120,
+      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06), 0 30px 80px rgba(0,0,0,0.45)",
+    },
+  },
+  {
+    label: "Clear",
+    patch: {
+      background: "transparent",
+      borderColor: "transparent",
+      borderWidth: 0,
+      backdropBlur: 0,
+      backdropSaturate: 100,
+      boxShadow: "none",
+    },
+  },
 ];
 
 function ScrubInput({
-  label, value, step, min, max, onChange,
+  label,
+  value,
+  step,
+  min,
+  max,
+  onChange,
 }: {
   label: string;
   value: number;
@@ -1296,7 +1658,11 @@ function ScrubInput({
 }
 
 function StylePanel({
-  target, edit, extraSelectedCount, onUpdate, onClose,
+  target,
+  edit,
+  extraSelectedCount,
+  onUpdate,
+  onClose,
 }: {
   target: TargetMeta;
   edit: Edit | undefined;
@@ -1310,9 +1676,13 @@ function StylePanel({
       onPointerDown={(e) => e.stopPropagation()}
       style={{
         position: "fixed",
-        right: 16, bottom: 80,
-        width: 300, maxHeight: "70vh", overflow: "auto",
-        background: "#0f0f0f", color: "#f5f2ed",
+        right: 16,
+        bottom: 80,
+        width: 300,
+        maxHeight: "70vh",
+        overflow: "auto",
+        background: "#0f0f0f",
+        color: "#f5f2ed",
         border: "1px solid rgba(255,200,0,0.4)",
         padding: 14,
         font: "11px/1.4 ui-monospace, Menlo, monospace",
@@ -1320,30 +1690,42 @@ function StylePanel({
       }}
     >
       <div style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
-        <strong style={{ letterSpacing: "0.18em", textTransform: "uppercase" }}>Style · {target.label}</strong>
+        <strong style={{ letterSpacing: "0.18em", textTransform: "uppercase" }}>
+          Style · {target.label}
+        </strong>
         <span style={{ flex: 1 }} />
-        <button type="button" onClick={onClose} style={hudBtn(false)}>×</button>
+        <button type="button" onClick={onClose} style={hudBtn(false)}>
+          ×
+        </button>
       </div>
       {extraSelectedCount > 0 && (
-        <div style={{
-          marginBottom: 10,
-          padding: "5px 8px",
-          background: "rgba(255,200,0,0.08)",
-          border: "1px solid rgba(255,200,0,0.3)",
-          color: "#f5f2ed",
-          fontSize: 10,
-          letterSpacing: "0.12em",
-          textTransform: "uppercase",
-          opacity: 0.85,
-        }}>
-          Editing primary · {extraSelectedCount} other{extraSelectedCount > 1 ? "s" : ""} selected (style applies to primary only)
+        <div
+          style={{
+            marginBottom: 10,
+            padding: "5px 8px",
+            background: "rgba(255,200,0,0.08)",
+            border: "1px solid rgba(255,200,0,0.3)",
+            color: "#f5f2ed",
+            fontSize: 10,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            opacity: 0.85,
+          }}
+        >
+          Editing primary · {extraSelectedCount} other{extraSelectedCount > 1 ? "s" : ""} selected
+          (style applies to primary only)
         </div>
       )}
 
       <Section title="Glass Presets">
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
           {GLASS_PRESETS.map((p) => (
-            <button key={p.label} type="button" onClick={() => onUpdate(p.patch)} style={hudBtn(false)}>
+            <button
+              key={p.label}
+              type="button"
+              onClick={() => onUpdate(p.patch)}
+              style={hudBtn(false)}
+            >
               {p.label}
             </button>
           ))}
@@ -1351,40 +1733,95 @@ function StylePanel({
       </Section>
 
       <Section title="Background">
-        <input type="text" value={s.background ?? ""} placeholder="rgba(0,0,0,0.5) or #fff"
-          onChange={(e) => onUpdate({ background: e.target.value })} style={inputStyle} />
+        <input
+          type="text"
+          value={s.background ?? ""}
+          placeholder="rgba(0,0,0,0.5) or #fff"
+          onChange={(e) => onUpdate({ background: e.target.value })}
+          style={inputStyle}
+        />
       </Section>
 
       <Section title="Backdrop Blur (px)">
-        <ScrubInput label="blur" step={1} min={0} max={80} value={s.backdropBlur ?? 0} onChange={(v) => onUpdate({ backdropBlur: v })} />
+        <ScrubInput
+          label="blur"
+          step={1}
+          min={0}
+          max={80}
+          value={s.backdropBlur ?? 0}
+          onChange={(v) => onUpdate({ backdropBlur: v })}
+        />
       </Section>
       <Section title="Backdrop Saturate (%)">
-        <ScrubInput label="sat" step={1} min={0} max={300} value={s.backdropSaturate ?? 100} onChange={(v) => onUpdate({ backdropSaturate: v })} />
+        <ScrubInput
+          label="sat"
+          step={1}
+          min={0}
+          max={300}
+          value={s.backdropSaturate ?? 100}
+          onChange={(v) => onUpdate({ backdropSaturate: v })}
+        />
       </Section>
       <Section title="Border">
         <div style={{ display: "flex", gap: 6, marginBottom: 6 }}>
-          <input type="text" value={s.borderColor ?? ""} placeholder="rgba(255,255,255,0.1)"
-            onChange={(e) => onUpdate({ borderColor: e.target.value })} style={{ ...inputStyle, flex: 2 }} />
+          <input
+            type="text"
+            value={s.borderColor ?? ""}
+            placeholder="rgba(255,255,255,0.1)"
+            onChange={(e) => onUpdate({ borderColor: e.target.value })}
+            style={{ ...inputStyle, flex: 2 }}
+          />
         </div>
-        <ScrubInput label="width" step={1} min={0} max={20} value={s.borderWidth ?? 0} onChange={(v) => onUpdate({ borderWidth: v })} />
+        <ScrubInput
+          label="width"
+          step={1}
+          min={0}
+          max={20}
+          value={s.borderWidth ?? 0}
+          onChange={(v) => onUpdate({ borderWidth: v })}
+        />
       </Section>
       <Section title="Border Radius">
-        <ScrubInput label="radius" step={1} min={0} max={120} value={s.borderRadius ?? 0} onChange={(v) => onUpdate({ borderRadius: v })} />
+        <ScrubInput
+          label="radius"
+          step={1}
+          min={0}
+          max={120}
+          value={s.borderRadius ?? 0}
+          onChange={(v) => onUpdate({ borderRadius: v })}
+        />
       </Section>
       <Section title="Box Shadow">
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
           {SHADOW_PRESETS.map((p) => (
-            <button key={p.label} type="button" onClick={() => onUpdate({ boxShadow: p.value })} style={hudBtn(false, s.boxShadow === p.value)}>
+            <button
+              key={p.label}
+              type="button"
+              onClick={() => onUpdate({ boxShadow: p.value })}
+              style={hudBtn(false, s.boxShadow === p.value)}
+            >
               {p.label}
             </button>
           ))}
         </div>
       </Section>
       <Section title="Rotate (deg)">
-        <ScrubInput label="rotate" step={0.5} min={-180} max={180} value={s.rotate ?? 0} onChange={(v) => onUpdate({ rotate: v })} />
+        <ScrubInput
+          label="rotate"
+          step={0.5}
+          min={-180}
+          max={180}
+          value={s.rotate ?? 0}
+          onChange={(v) => onUpdate({ rotate: v })}
+        />
       </Section>
       <Section title="Z-Index">
-        <ScrubInput label="z" step={1} value={s.zIndex ?? 0} onChange={(v) => onUpdate({ zIndex: v })} />
+        <ScrubInput
+          label="z"
+          step={1}
+          value={s.zIndex ?? 0}
+          onChange={(v) => onUpdate({ zIndex: v })}
+        />
       </Section>
     </div>
   );
@@ -1393,7 +1830,15 @@ function StylePanel({
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div style={{ marginBottom: 12 }}>
-      <div style={{ fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", opacity: 0.55, marginBottom: 5 }}>
+      <div
+        style={{
+          fontSize: 9,
+          letterSpacing: "0.2em",
+          textTransform: "uppercase",
+          opacity: 0.55,
+          marginBottom: 5,
+        }}
+      >
         {title}
       </div>
       {children}
@@ -1456,41 +1901,75 @@ function DonePanel({ edits, onClose }: { edits: Record<string, Edit>; onClose: (
     <div
       onPointerDown={(e) => e.stopPropagation()}
       style={{
-        position: "fixed", inset: 0,
+        position: "fixed",
+        inset: 0,
         background: "rgba(0,0,0,0.65)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        padding: 24, pointerEvents: "auto",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 24,
+        pointerEvents: "auto",
       }}
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          width: "min(820px, 100%)", maxHeight: "80vh", overflow: "auto",
-          background: "#0f0f0f", color: "#f5f2ed",
+          width: "min(820px, 100%)",
+          maxHeight: "80vh",
+          overflow: "auto",
+          background: "#0f0f0f",
+          color: "#f5f2ed",
           border: "1px solid rgba(255,200,0,0.4)",
           padding: 20,
           font: "12px/1.5 ui-monospace, Menlo, monospace",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", marginBottom: 14 }}>
-          <strong style={{ letterSpacing: "0.2em", textTransform: "uppercase" }}>CSS Output · {entries.length} edits</strong>
+          <strong style={{ letterSpacing: "0.2em", textTransform: "uppercase" }}>
+            CSS Output · {entries.length} edits
+          </strong>
           <span style={{ flex: 1 }} />
-          <button type="button" onClick={() => navigator.clipboard?.writeText(css)} style={hudBtn(false, true)}>Copy CSS</button>
+          <button
+            type="button"
+            onClick={() => navigator.clipboard?.writeText(css)}
+            style={hudBtn(false, true)}
+          >
+            Copy CSS
+          </button>
           <span style={{ width: 8 }} />
-          <button type="button" onClick={() => navigator.clipboard?.writeText(lockedBrief)} style={hudBtn(false)}>Copy Locked Brief</button>
+          <button
+            type="button"
+            onClick={() => navigator.clipboard?.writeText(lockedBrief)}
+            style={hudBtn(false)}
+          >
+            Copy Locked Brief
+          </button>
           <span style={{ width: 8 }} />
-          <button type="button" onClick={onClose} style={hudBtn(false)}>Close</button>
+          <button type="button" onClick={onClose} style={hudBtn(false)}>
+            Close
+          </button>
         </div>
         {entries.length === 0 ? (
-          <p style={{ opacity: 0.6 }}>No edits yet. Click an element, then drag/resize or open Style.</p>
+          <p style={{ opacity: 0.6 }}>
+            No edits yet. Click an element, then drag/resize or open Style.
+          </p>
         ) : (
-          <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word", background: "#1a1a1a", padding: 14, border: "1px solid rgba(255,255,255,0.08)" }}>
+          <pre
+            style={{
+              whiteSpace: "pre-wrap",
+              wordBreak: "break-word",
+              background: "#1a1a1a",
+              padding: 14,
+              border: "1px solid rgba(255,255,255,0.08)",
+            }}
+          >
             {css}
           </pre>
         )}
         <p style={{ opacity: 0.55, marginTop: 12 }}>
-          Paste into the matching component's CSS and refresh. Edits persist in localStorage so a refresh won't lose them — use Reset to clear.
+          Paste into the matching component's CSS and refresh. Edits persist in localStorage so a
+          refresh won't lose them — use Reset to clear.
         </p>
       </div>
     </div>

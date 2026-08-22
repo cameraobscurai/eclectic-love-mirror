@@ -17,10 +17,7 @@ const mod = (n: number, m: number) => ((n % m) + m) % m;
 export const Route = createFileRoute("/sketch")({
   loader: () => listSketches(),
   head: () => ({
-    meta: [
-      { title: "Sketchbook — Archive 001" },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
+    meta: [{ title: "Sketchbook — Archive 001" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   component: SketchPage,
   errorComponent: ({ error }) => (
@@ -79,20 +76,22 @@ function SketchPage() {
         done += 1;
         setLoaded(done);
       };
-      img.decode().then(finish).catch(() => {
-        if (img.complete) finish();
-        else {
-          img.onload = finish;
-          img.onerror = finish;
-        }
-      });
+      img
+        .decode()
+        .then(finish)
+        .catch(() => {
+          if (img.complete) finish();
+          else {
+            img.onload = finish;
+            img.onerror = finish;
+          }
+        });
     });
 
     return () => {
       cancelled = true;
     };
   }, [sketches, total, FIRST_PAINT_COUNT]);
-
 
   const N = sketches.length;
   const COLS = Math.max(1, Math.ceil(Math.sqrt(N)));
@@ -182,8 +181,6 @@ function SketchPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [N, dynamicZoomMin, vp.w, vp.h, panOrigin, ROWS, COLS, zoomBucket]);
 
-
-
   const applyZoom = useCallback(
     (delta: number, ox: number, oy: number) => {
       const current = scale.get();
@@ -255,9 +252,12 @@ function SketchPage() {
     wheelRaf.current = requestAnimationFrame(tick);
   }, [x, y]);
 
-  useEffect(() => () => {
-    if (wheelRaf.current !== null) cancelAnimationFrame(wheelRaf.current);
-  }, []);
+  useEffect(
+    () => () => {
+      if (wheelRaf.current !== null) cancelAnimationFrame(wheelRaf.current);
+    },
+    [],
+  );
 
   // Track cursor position so keyboard zoom (+/-) can zoom toward whatever
   // tile the user is hovering, not the dead-center of the viewport.
@@ -285,13 +285,12 @@ function SketchPage() {
       panIdleTimer.current = null;
     }, 140);
   }, []);
-  useEffect(() => () => {
-    if (panIdleTimer.current !== null) window.clearTimeout(panIdleTimer.current);
-  }, []);
-
-
-
-
+  useEffect(
+    () => () => {
+      if (panIdleTimer.current !== null) window.clearTimeout(panIdleTimer.current);
+    },
+    [],
+  );
 
   useGesture(
     {
@@ -326,8 +325,6 @@ function SketchPage() {
         dismissHint();
         markPanning();
 
-
-
         if (ctrlKey) {
           // Ctrl+wheel = zoom. Standard mouse wheels fire deltaY ≈ 100+ per
           // notch; unclamped, -dy*0.01 = -1.0 = 100% scale jump in a single
@@ -344,9 +341,7 @@ function SketchPage() {
         // Direct-set matches Figma's trackpad behavior. Coarse mouse wheels
         // (line-mode or |delta| ≥ 40) still get the lerp for smoothness.
         const isTrackpad =
-          (event as WheelEvent).deltaMode === 0 &&
-          Math.abs(dx) < 40 &&
-          Math.abs(dy) < 40;
+          (event as WheelEvent).deltaMode === 0 && Math.abs(dx) < 40 && Math.abs(dy) < 40;
 
         if (reducedMotion.current || isTrackpad) {
           x.stop();
@@ -392,17 +387,10 @@ function SketchPage() {
     },
   );
 
-
   const [openIdx, setOpenIdx] = useState<number | null>(null);
   const close = useCallback(() => setOpenIdx(null), []);
-  const prev = useCallback(
-    () => setOpenIdx((i) => (i === null ? null : (i - 1 + N) % N)),
-    [N],
-  );
-  const next = useCallback(
-    () => setOpenIdx((i) => (i === null ? null : (i + 1) % N)),
-    [N],
-  );
+  const prev = useCallback(() => setOpenIdx((i) => (i === null ? null : (i - 1 + N) % N)), [N]);
+  const next = useCallback(() => setOpenIdx((i) => (i === null ? null : (i + 1) % N)), [N]);
 
   const navigate = Route.useNavigate();
   useEffect(() => {
@@ -420,12 +408,15 @@ function SketchPage() {
         return;
       }
 
-
       const STEP = 200;
-      if (event.key === "ArrowLeft") animate(x, x.get() + STEP, { type: "spring", stiffness: 200, damping: 30 });
-      if (event.key === "ArrowRight") animate(x, x.get() - STEP, { type: "spring", stiffness: 200, damping: 30 });
-      if (event.key === "ArrowUp") animate(y, y.get() + STEP, { type: "spring", stiffness: 200, damping: 30 });
-      if (event.key === "ArrowDown") animate(y, y.get() - STEP, { type: "spring", stiffness: 200, damping: 30 });
+      if (event.key === "ArrowLeft")
+        animate(x, x.get() + STEP, { type: "spring", stiffness: 200, damping: 30 });
+      if (event.key === "ArrowRight")
+        animate(x, x.get() - STEP, { type: "spring", stiffness: 200, damping: 30 });
+      if (event.key === "ArrowUp")
+        animate(y, y.get() + STEP, { type: "spring", stiffness: 200, damping: 30 });
+      if (event.key === "ArrowDown")
+        animate(y, y.get() - STEP, { type: "spring", stiffness: 200, damping: 30 });
       // Zoom toward the last known cursor position (Figma-style) rather
       // than the viewport center — makes +/- feel like it's zooming into
       // whatever the user was looking at. Falls back to center if the
@@ -444,7 +435,21 @@ function SketchPage() {
 
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [openIdx, close, prev, next, x, y, scale, applyZoom, vp.w, vp.h, navigate, initialX, initialY]);
+  }, [
+    openIdx,
+    close,
+    prev,
+    next,
+    x,
+    y,
+    scale,
+    applyZoom,
+    vp.w,
+    vp.h,
+    navigate,
+    initialX,
+    initialY,
+  ]);
 
   useEffect(() => {
     if (scale.get() < dynamicZoomMin) scale.set(dynamicZoomMin);
@@ -467,7 +472,6 @@ function SketchPage() {
     animate(y, initialY, { type: "spring", stiffness: 150, damping: 25 });
     animate(scale, 1, { type: "spring", stiffness: 150, damping: 25 });
   }, [x, y, scale, initialX, initialY]);
-
 
   const pct = total === 0 ? 0 : Math.round((loaded / total) * 100);
 
@@ -502,7 +506,6 @@ function SketchPage() {
         className="absolute inset-0 touch-none cursor-grab active:cursor-grabbing"
         style={{ WebkitUserSelect: "none" }}
       >
-
         <motion.div
           className={`absolute top-0 left-0 will-change-transform ${ready ? "opacity-100" : "opacity-0"}`}
           style={{
@@ -521,19 +524,11 @@ function SketchPage() {
             backgroundColor: "#d4cdc4",
           }}
         >
-
           {cells.map(({ c, r, idx, key }) => {
             const sketch = sketches[idx];
             if (!sketch) return null;
             return (
-              <Tile
-                key={key}
-                tileUrl={sketch.tileUrl}
-                idx={idx}
-                c={c}
-                r={r}
-                onOpen={setOpenIdx}
-              />
+              <Tile key={key} tileUrl={sketch.tileUrl} idx={idx} c={c} r={r} onOpen={setOpenIdx} />
             );
           })}
         </motion.div>
@@ -541,14 +536,17 @@ function SketchPage() {
 
       {/* Persistent top bar — solid backdrop (no blur), always visible,
           always focusable. Sits above canvas + intro drift. */}
-      <nav className="pointer-events-none fixed top-0 left-0 right-0 z-[60] flex justify-between items-center gap-4 px-4 md:px-6 pt-4" aria-label="Sketchbook navigation">
+      <nav
+        className="pointer-events-none fixed top-0 left-0 right-0 z-[60] flex justify-between items-center gap-4 px-4 md:px-6 pt-4"
+        aria-label="Sketchbook navigation"
+      >
         <div className="flex items-center gap-2 md:gap-4">
           <div className="pointer-events-auto flex items-center gap-3 bg-[#ffffff] shadow-[0_2px_18px_rgba(26,26,26,0.08)] px-4 py-2.5 border-r border-[#1a1a1a]/5">
             <span className="text-[10px] md:text-[11px] tracking-[0.4em] uppercase font-bold text-[#1a1a1a]">
               Archive 001
             </span>
           </div>
-          
+
           <button
             type="button"
             onClick={recenter}
@@ -557,7 +555,9 @@ function SketchPage() {
             title="Reset View"
           >
             <Minimize2 size={12} />
-            <span className="hidden sm:inline text-[9px] tracking-[0.3em] uppercase font-medium">Reset</span>
+            <span className="hidden sm:inline text-[9px] tracking-[0.3em] uppercase font-medium">
+              Reset
+            </span>
           </button>
         </div>
 
@@ -596,11 +596,8 @@ function SketchPage() {
         <span className="text-[9px] tracking-[0.4em] uppercase text-[#1a1a1a]/70">
           Drag · Scroll · Pinch
         </span>
-        <span className="text-[9px] tracking-[0.4em] uppercase text-[#1a1a1a]/40">
-          ESC to exit
-        </span>
+        <span className="text-[9px] tracking-[0.4em] uppercase text-[#1a1a1a]/40">ESC to exit</span>
       </div>
-
 
       {openIdx !== null && sketches[openIdx] && (
         <div
@@ -707,11 +704,9 @@ const Tile = memo(function Tile({ tileUrl, idx, c, r, onOpen }: TileProps) {
         // layer — the img then blends against the button's white bg instead
         // of the isolation layer's beige, rendering as an opaque white box.
       }}
-
       aria-label={`Open plate ${label}`}
       draggable={false}
     >
-
       <img
         src={tileUrl}
         alt=""
@@ -719,7 +714,6 @@ const Tile = memo(function Tile({ tileUrl, idx, c, r, onOpen }: TileProps) {
         height={TILE}
         loading={priority ? "eager" : "lazy"}
         fetchPriority={priority ? "high" : "low"}
-
         decoding="async"
         draggable={false}
         className="absolute inset-0 w-full h-full object-cover mix-blend-multiply"

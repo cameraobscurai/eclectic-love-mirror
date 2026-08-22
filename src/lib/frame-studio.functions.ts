@@ -29,9 +29,7 @@ const recipeSchema = z.object({
   crop: z.object({ x: z.number(), y: z.number(), w: z.number(), h: z.number() }).optional(),
   rotate: z.number().finite().optional(),
   bg: z.string().max(64).optional(),
-  shadow: z
-    .object({ opacity: z.number(), blur: z.number(), offsetY: z.number() })
-    .optional(),
+  shadow: z.object({ opacity: z.number(), blur: z.number(), offsetY: z.number() }).optional(),
   normalize: z.boolean().optional(),
   placement: placementSchema,
 });

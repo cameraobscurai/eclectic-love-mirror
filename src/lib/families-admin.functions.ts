@@ -39,8 +39,7 @@ async function admin() {
   return supabaseAdmin;
 }
 
-const MEMBER_COLS =
-  "id, rms_id, title, variant_label, family_position, variant_cover_url, images";
+const MEMBER_COLS = "id, rms_id, title, variant_label, family_position, variant_cover_url, images";
 
 function sortMembers(rows: FamilyMember[]): FamilyMember[] {
   return rows.slice().sort((a, b) => {

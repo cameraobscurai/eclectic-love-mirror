@@ -49,7 +49,8 @@ async function unregisterMatching() {
     await Promise.all(
       regs
         .filter((r) => {
-          const scriptURL = r.active?.scriptURL ?? r.installing?.scriptURL ?? r.waiting?.scriptURL ?? "";
+          const scriptURL =
+            r.active?.scriptURL ?? r.installing?.scriptURL ?? r.waiting?.scriptURL ?? "";
           return scriptURL.endsWith(SW_PATH);
         })
         .map((r) => r.unregister()),

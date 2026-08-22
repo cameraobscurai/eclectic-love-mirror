@@ -37,7 +37,9 @@ let failed = false;
 
 if (withoutSlug.length > 0) {
   failed = true;
-  console.error(`\n[check-sitemap] FAIL: ${withoutSlug.length} public-ready products have no slug:`);
+  console.error(
+    `\n[check-sitemap] FAIL: ${withoutSlug.length} public-ready products have no slug:`,
+  );
   for (const p of withoutSlug.slice(0, 20)) {
     console.error(`  - ${p.id} | ${p.title}`);
   }

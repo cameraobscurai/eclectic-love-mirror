@@ -3,29 +3,45 @@
 // against unmatched/review RMS rows in furniture-class categories only.
 // READ-ONLY. Writes scripts-tmp/reconcile-near-miss-furniture.json + summary.
 
-import fs from 'node:fs';
+import fs from "node:fs";
 
-const SITE = JSON.parse(fs.readFileSync('scripts-tmp/owner-site-products.json', 'utf8'));
-const MANIFEST = JSON.parse(fs.readFileSync('scripts-tmp/image-binding-manifest.json', 'utf8'));
-const REVIEW = JSON.parse(fs.readFileSync('scripts-tmp/reconcile-review-required.json', 'utf8'));
-const UNMATCHED_SITE = JSON.parse(fs.readFileSync('scripts-tmp/reconcile-unmatched-site.json', 'utf8'));
-const RMS_ROWS = fs.readFileSync('/tmp/rms_items.tsv', 'utf8')
-  .split('\n').filter(Boolean)
-  .map((l) => { const [rms_id, title, category] = l.split('\t'); return { rms_id, title, category }; });
+const SITE = JSON.parse(fs.readFileSync("scripts-tmp/owner-site-products.json", "utf8"));
+const MANIFEST = JSON.parse(fs.readFileSync("scripts-tmp/image-binding-manifest.json", "utf8"));
+const REVIEW = JSON.parse(fs.readFileSync("scripts-tmp/reconcile-review-required.json", "utf8"));
+const UNMATCHED_SITE = JSON.parse(
+  fs.readFileSync("scripts-tmp/reconcile-unmatched-site.json", "utf8"),
+);
+const RMS_ROWS = fs
+  .readFileSync("/tmp/rms_items.tsv", "utf8")
+  .split("\n")
+  .filter(Boolean)
+  .map((l) => {
+    const [rms_id, title, category] = l.split("\t");
+    return { rms_id, title, category };
+  });
 
 // ---- Scope ----
-const FURNITURE_CATS = new Set(['bars', 'tables', 'seating', 'lounge', 'lighting', 'rugs', 'storage', 'large-decor']);
+const FURNITURE_CATS = new Set([
+  "bars",
+  "tables",
+  "seating",
+  "lounge",
+  "lighting",
+  "rugs",
+  "storage",
+  "large-decor",
+]);
 // Site category_path -> RMS category (best-effort mapping; only furniture-side matters)
 const SITE_TO_RMS_CAT = {
-  'cocktail-bar': 'bars',
-  'lounge-tables': 'tables',
-  'dining': 'tables',
-  'lounge': 'lounge',
-  'seating': 'seating',
-  'light': 'lighting',
-  'rugs': 'rugs',
-  'large-decor': 'large-decor',
-  'storage': 'storage',
+  "cocktail-bar": "bars",
+  "lounge-tables": "tables",
+  dining: "tables",
+  lounge: "lounge",
+  seating: "seating",
+  light: "lighting",
+  rugs: "rugs",
+  "large-decor": "large-decor",
+  storage: "storage",
 };
 
 const boundIds = new Set(Object.keys(MANIFEST.bindings || {}));
@@ -44,35 +60,93 @@ const candidateRms = RMS_ROWS.filter((r) => FURNITURE_CATS.has(r.category));
 
 // ---- Normalization ----
 const FILLER_DESCRIPTORS = new Set([
-  'cast', 'stone', 'oak', 'weathered', 'flat', 'slat', 'slatted', 'mesh', 'bamboo',
-  'wood', 'wooden', 'marble', 'antique', 'top', 'with', 'and', '&amp;', '&', 'the',
-  'silk', 'cotton', 'linen', 'velvet', 'leather', 'metal', 'brass', 'gold', 'iron',
-  'birch', 'concrete', 'acrylic', 'glass', 'whitewash', 'whitewashed', 'black', 'white',
-  'grey', 'gray', 'natural', 'light', 'dark', 'small', 'large', 'medium', 'mini', 'big',
-  'finish', 'finished', 'tone', 'toned', 'style', 'styled', 'modern', 'rustic',
-  'convertible', 'square', 'round', 'rectangular', 'tambour', 'ceramic',
+  "cast",
+  "stone",
+  "oak",
+  "weathered",
+  "flat",
+  "slat",
+  "slatted",
+  "mesh",
+  "bamboo",
+  "wood",
+  "wooden",
+  "marble",
+  "antique",
+  "top",
+  "with",
+  "and",
+  "&amp;",
+  "&",
+  "the",
+  "silk",
+  "cotton",
+  "linen",
+  "velvet",
+  "leather",
+  "metal",
+  "brass",
+  "gold",
+  "iron",
+  "birch",
+  "concrete",
+  "acrylic",
+  "glass",
+  "whitewash",
+  "whitewashed",
+  "black",
+  "white",
+  "grey",
+  "gray",
+  "natural",
+  "light",
+  "dark",
+  "small",
+  "large",
+  "medium",
+  "mini",
+  "big",
+  "finish",
+  "finished",
+  "tone",
+  "toned",
+  "style",
+  "styled",
+  "modern",
+  "rustic",
+  "convertible",
+  "square",
+  "round",
+  "rectangular",
+  "tambour",
+  "ceramic",
 ]);
 const SIZE_TOKEN_RE = /(\d+(?:\.\d+)?\s*(?:'|ft|feet|"|in|inch|cm|m)\b|\b\d+\b)/gi;
 
-function decodeEntities(s) { return s.replace(/&amp;/g, '&').replace(/&#39;/g, "'").replace(/&quot;/g, '"'); }
+function decodeEntities(s) {
+  return s
+    .replace(/&amp;/g, "&")
+    .replace(/&#39;/g, "'")
+    .replace(/&quot;/g, '"');
+}
 function normalizeFeetInches(s) {
   return s
     .replace(/(\d)\s*(?:feet|ft|′|’)/gi, "$1'")
     .replace(/(\d)\s*(?:inches|inch|in|″|”)/gi, '$1"');
 }
 function tokenize(title) {
-  const decoded = decodeEntities(title || '').toLowerCase();
+  const decoded = decodeEntities(title || "").toLowerCase();
   const norm = normalizeFeetInches(decoded);
-  const sizes = (norm.match(SIZE_TOKEN_RE) || []).map((t) => t.replace(/\s+/g, '').toLowerCase());
+  const sizes = (norm.match(SIZE_TOKEN_RE) || []).map((t) => t.replace(/\s+/g, "").toLowerCase());
   const stripped = norm
-    .replace(SIZE_TOKEN_RE, ' ')
-    .replace(/[^a-z0-9\s]/g, ' ')
-    .replace(/\s+/g, ' ')
+    .replace(SIZE_TOKEN_RE, " ")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
     .trim();
-  const words = stripped.split(' ').filter(Boolean);
+  const words = stripped.split(" ").filter(Boolean);
   const family = words.filter((w) => !FILLER_DESCRIPTORS.has(w));
   const fillers = words.filter((w) => FILLER_DESCRIPTORS.has(w));
-  return { all: words, family, fillers, sizes: new Set(sizes), familyKey: family.join(' ') };
+  return { all: words, family, fillers, sizes: new Set(sizes), familyKey: family.join(" ") };
 }
 
 // ---- Matching ----
@@ -90,7 +164,9 @@ function scorePair(siteTok, rmsTok) {
   const jaccard = inter / union;
 
   // Allow up to one missing filler descriptor on either side; family heads must match.
-  const onlyDiffs = [...new Set([...siteFam, ...rmsFam])].filter((w) => !(siteFam.has(w) && rmsFam.has(w)));
+  const onlyDiffs = [...new Set([...siteFam, ...rmsFam])].filter(
+    (w) => !(siteFam.has(w) && rmsFam.has(w)),
+  );
 
   // Size compatibility: if both sides have sizes, at least one shared
   const siteSz = siteTok.sizes;
@@ -108,7 +184,9 @@ const usedRms = new Set();
 const usedSite = new Set();
 
 // Sort site by category then title for determinism
-unmatchedSite.sort((a, b) => (a.site_category_path + a.site_title).localeCompare(b.site_category_path + b.site_title));
+unmatchedSite.sort((a, b) =>
+  (a.site_category_path + a.site_title).localeCompare(b.site_category_path + b.site_title),
+);
 
 for (const s of unmatchedSite) {
   const rmsCat = SITE_TO_RMS_CAT[s.site_category_path];
@@ -132,10 +210,10 @@ for (const s of unmatchedSite) {
       rms_product_id: null,
       rms_title: null,
       rms_category: rmsCat || null,
-      match_reason: 'no candidate with matching family head in same category',
-      confidence: 'none',
+      match_reason: "no candidate with matching family head in same category",
+      confidence: "none",
       image_count: 0,
-      recommended_action: 'REJECTED_NEAR_MISS',
+      recommended_action: "REJECTED_NEAR_MISS",
     });
     continue;
   }
@@ -148,45 +226,55 @@ for (const s of unmatchedSite) {
   const top = cands[0];
   const peers = cands.filter((c) => Math.abs(c.score.jaccard - top.score.jaccard) < 0.05);
 
-  const variantFamily = peers.length > 1 && rmsCat === 'bars';
-  let action = 'REVIEW_NEAR_MISS';
-  let confidence = 'medium';
+  const variantFamily = peers.length > 1 && rmsCat === "bars";
+  let action = "REVIEW_NEAR_MISS";
+  let confidence = "medium";
   let reason = `family head "${top.score.siteHead}" matches; jaccard=${top.score.jaccard.toFixed(2)}; family diff=${top.score.familyDiff}`;
 
   if (peers.length === 1 && top.score.familyDiff <= 2 && top.score.jaccard >= 0.4) {
-    action = 'APPLY_SAFE_NEAR_MISS';
-    confidence = top.score.familyDiff <= 1 ? 'high' : 'medium';
+    action = "APPLY_SAFE_NEAR_MISS";
+    confidence = top.score.familyDiff <= 1 ? "high" : "medium";
   } else if (variantFamily) {
     // Variant-family binding for bars: Single/Double/Triple
-    action = 'APPLY_SAFE_NEAR_MISS';
-    confidence = 'medium';
+    action = "APPLY_SAFE_NEAR_MISS";
+    confidence = "medium";
     reason += ` (variant-family binding across ${peers.length} bar variants)`;
   } else if (peers.length > 1) {
     reason += ` (ambiguous: ${peers.length} equally-scored candidates)`;
   }
 
   // CSV filename / Squarespace conflict checks (Iraja / Gideon-style)
-  const reviewEntry = peers.flatMap((p) => reviewByRms.get(p.r.rms_id) ? [reviewByRms.get(p.r.rms_id)] : []);
+  const reviewEntry = peers.flatMap((p) =>
+    reviewByRms.get(p.r.rms_id) ? [reviewByRms.get(p.r.rms_id)] : [],
+  );
   const csvFilenames = reviewEntry.map((e) => e.rms_image_filename).filter(Boolean);
   let flagged = false;
   for (const fn of csvFilenames) {
-    const fnNorm = fn.toLowerCase().replace(/[^a-z0-9]/g, ' ').trim().split(/\s+/).filter(Boolean);
-    if (fnNorm.length && !fnNorm.some((w) => sTok.family.includes(w) || w.startsWith(top.score.siteHead.slice(0, 3)))) {
+    const fnNorm = fn
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, " ")
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
+    if (
+      fnNorm.length &&
+      !fnNorm.some((w) => sTok.family.includes(w) || w.startsWith(top.score.siteHead.slice(0, 3)))
+    ) {
       flagged = true;
       reason += ` (FLAG: CSV filename "${fn}" disagrees with site title)`;
-      action = 'REVIEW_NEAR_MISS';
+      action = "REVIEW_NEAR_MISS";
     }
   }
 
   // If recommended candidate is already bound, downgrade to REVIEW
   // (we don't auto-overwrite an existing high-confidence binding).
   const anyAlreadyBound = peers.some((p) => boundIds.has(p.r.rms_id));
-  if (action === 'APPLY_SAFE_NEAR_MISS' && anyAlreadyBound) {
-    action = 'REVIEW_NEAR_MISS';
+  if (action === "APPLY_SAFE_NEAR_MISS" && anyAlreadyBound) {
+    action = "REVIEW_NEAR_MISS";
     reason += ` (target already bound — would replace existing images, send to review)`;
   }
 
-  if (action === 'APPLY_SAFE_NEAR_MISS') {
+  if (action === "APPLY_SAFE_NEAR_MISS") {
     for (const p of peers) usedRms.add(p.r.rms_id);
     usedSite.add(s.detail_url);
   }
@@ -201,7 +289,9 @@ for (const s of unmatchedSite) {
       rms_title: p.r.title,
       rms_category: p.r.category,
       rms_already_bound: boundIds.has(p.r.rms_id),
-      rms_existing_image_count: boundIds.has(p.r.rms_id) ? (MANIFEST.bindings[p.r.rms_id].all_images?.length ?? 0) : 0,
+      rms_existing_image_count: boundIds.has(p.r.rms_id)
+        ? (MANIFEST.bindings[p.r.rms_id].all_images?.length ?? 0)
+        : 0,
       match_reason: reason,
       confidence,
       image_count: imageCount,
@@ -213,24 +303,41 @@ for (const s of unmatchedSite) {
 }
 
 // ---- Stats / revised totals ----
-const safeCount = records.filter((r) => r.recommended_action === 'APPLY_SAFE_NEAR_MISS').length;
-const reviewCount = records.filter((r) => r.recommended_action === 'REVIEW_NEAR_MISS').length;
-const rejectCount = records.filter((r) => r.recommended_action === 'REJECTED_NEAR_MISS').length;
-const newSafeRmsRows = new Set(records.filter((r) => r.recommended_action === 'APPLY_SAFE_NEAR_MISS').map((r) => r.rms_product_id)).size;
+const safeCount = records.filter((r) => r.recommended_action === "APPLY_SAFE_NEAR_MISS").length;
+const reviewCount = records.filter((r) => r.recommended_action === "REVIEW_NEAR_MISS").length;
+const rejectCount = records.filter((r) => r.recommended_action === "REJECTED_NEAR_MISS").length;
+const newSafeRmsRows = new Set(
+  records
+    .filter((r) => r.recommended_action === "APPLY_SAFE_NEAR_MISS")
+    .map((r) => r.rms_product_id),
+).size;
 
-const prevApply = 484, prevReview = 349;
+const prevApply = 484,
+  prevReview = 349;
 const revisedApply = prevApply + newSafeRmsRows;
 const revisedReview = prevReview - newSafeRmsRows;
 const prevImageless = 835 - 713; // 122
 const revisedImageless = Math.max(0, prevImageless - newSafeRmsRows);
-const remainingUnmatchedSite = unmatchedSite.length - new Set(records.filter((r) => r.recommended_action === 'APPLY_SAFE_NEAR_MISS').map((r) => r.detail_url)).size;
+const remainingUnmatchedSite =
+  unmatchedSite.length -
+  new Set(
+    records.filter((r) => r.recommended_action === "APPLY_SAFE_NEAR_MISS").map((r) => r.detail_url),
+  ).size;
 const flaggedConflicts = records.filter((r) => r.flagged).length;
 
 const out = {
   generated_at: new Date().toISOString(),
   scope: {
     furniture_categories: [...FURNITURE_CATS],
-    excluded: ['tableware', 'serveware', 'styling', 'pillows-throws', 'candlelight', 'chandeliers', 'furs-pelts'],
+    excluded: [
+      "tableware",
+      "serveware",
+      "styling",
+      "pillows-throws",
+      "candlelight",
+      "chandeliers",
+      "furs-pelts",
+    ],
     site_unmatched_in_scope: unmatchedSite.length,
     rms_unmatched_in_scope: candidateRms.length,
   },
@@ -250,7 +357,7 @@ const out = {
   records,
 };
 
-fs.writeFileSync('scripts-tmp/reconcile-near-miss-furniture.json', JSON.stringify(out, null, 2));
+fs.writeFileSync("scripts-tmp/reconcile-near-miss-furniture.json", JSON.stringify(out, null, 2));
 
 const summary = `NEAR_MISS_FURNITURE_PASS — ${out.generated_at}
 
@@ -274,5 +381,5 @@ Revised combined totals (no DB writes performed):
 
 Flagged conflicts (CSV filename disagrees with site title): ${flaggedConflicts}
 `;
-fs.writeFileSync('scripts-tmp/reconcile-near-miss-furniture.txt', summary);
+fs.writeFileSync("scripts-tmp/reconcile-near-miss-furniture.txt", summary);
 console.log(summary);

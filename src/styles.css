@@ -76,8 +76,8 @@
 
 :root {
   /* Eclectic Hive — Black, Charcoal, Sand, Cream */
-  --background: #fafaf7;                 /* paper white — brand baseline (repaint 2026-05-05) */
-  --foreground: oklch(0.18 0 0);         /* #1a1a1a charcoal */
+  --background: #fafaf7; /* paper white — brand baseline (repaint 2026-05-05) */
+  --foreground: oklch(0.18 0 0); /* #1a1a1a charcoal */
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.18 0 0);
   --popover: oklch(1 0 0);
@@ -97,12 +97,12 @@
   --ring: oklch(0.18 0 0);
   --radius: 0rem;
 
-  --sand: oklch(0.85 0.012 75);          /* #d4cdc4 */
-  --warm-gray: oklch(0.6 0 0);           /* #8a8a8a */
-  --charcoal: oklch(0.18 0 0);           /* #1a1a1a */
-  --cream: #ffffff;                      /* flat white — brand baseline (flattened 2026-05-05 from paper white #fafaf7 so cutout product photos blend seamlessly). */
-  --cream-accent: #fafaf7;               /* retired warm paper-white, kept one release as optional accent */
-  --paper: #ffffff;                      /* flat white surface — alias of --cream */
+  --sand: oklch(0.85 0.012 75); /* #d4cdc4 */
+  --warm-gray: oklch(0.6 0 0); /* #8a8a8a */
+  --charcoal: oklch(0.18 0 0); /* #1a1a1a */
+  --cream: #ffffff; /* flat white — brand baseline (flattened 2026-05-05 from paper white #fafaf7 so cutout product photos blend seamlessly). */
+  --cream-accent: #fafaf7; /* retired warm paper-white, kept one release as optional accent */
+  --paper: #ffffff; /* flat white surface — alias of --cream */
   --black: oklch(0 0 0);
 
   /* Typography tracking presets */
@@ -116,22 +116,22 @@
    * One source of truth for the auction-house archive page so the filter
    * rail, sticky utility row, and product tiles stay visually coherent.
    * Change a token here and the whole archive page follows. */
-  --nav-h: 4rem;                          /* resting global nav height */
-  --archive-utility-h: 64px;              /* sticky utility row min-height */
-  --archive-rail-width: 15rem;            /* desktop left filter rail */
-  --archive-progress-width: 3rem;         /* desktop right progress rail */
+  --nav-h: 4rem; /* resting global nav height */
+  --archive-utility-h: 64px; /* sticky utility row min-height */
+  --archive-rail-width: 15rem; /* desktop left filter rail */
+  --archive-progress-width: 3rem; /* desktop right progress rail */
   --archive-grid-gap-x: clamp(40px, 4vw, 64px);
-  --archive-canvas-max: 1600px;           /* hairline cage max width */
+  --archive-canvas-max: 1600px; /* hairline cage max width */
 
-  --archive-text:        var(--charcoal);
-  --archive-text-quiet:  color-mix(in oklab, var(--charcoal) 55%, transparent);
-  --archive-text-muted:  color-mix(in oklab, var(--charcoal) 35%, transparent);
-  --archive-rule:        color-mix(in oklab, black 8%, transparent);
+  --archive-text: var(--charcoal);
+  --archive-text-quiet: color-mix(in oklab, var(--charcoal) 55%, transparent);
+  --archive-text-muted: color-mix(in oklab, var(--charcoal) 35%, transparent);
+  --archive-rule: color-mix(in oklab, black 8%, transparent);
   --archive-rule-strong: color-mix(in oklab, black 14%, transparent);
 
   --archive-tile-caption-w: 190px;
 
-  --label-size-micro:     11px;
+  --label-size-micro: 11px;
   --label-tracking-micro: 0.22em;
 
   /* Skeleton minimum-show clock — prevents flash on cached/fast loads. */
@@ -203,7 +203,6 @@
     position: static;
   }
 }
-
 
 /* Collection product grid contract:
  * 2-up until the results container is wide enough for 3-up. Uses container
@@ -304,8 +303,6 @@
   }
 }
 
-
-
 .dark {
   --background: oklch(0.13 0 0);
   --foreground: oklch(0.957 0.008 80);
@@ -332,12 +329,15 @@
     font-weight: 400;
     letter-spacing: var(--tracking-display);
   }
-  h2, h3 {
+  h2,
+  h3 {
     font-family: var(--font-display);
     font-weight: 400;
     letter-spacing: var(--tracking-title);
   }
-  h4, h5, h6 {
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-display);
     font-weight: 400;
     letter-spacing: var(--tracking-label);
@@ -368,7 +368,9 @@ html {
 body {
   -webkit-tap-highlight-color: transparent;
 }
-button, a, [role="button"] {
+button,
+a,
+[role="button"] {
   touch-action: manipulation;
 }
 
@@ -410,18 +412,32 @@ button, a, [role="button"] {
 }
 
 @keyframes scroll-down {
-  0% { transform: translateY(-100%); opacity: 0; }
-  30% { opacity: 1; }
-  70% { opacity: 1; }
-  100% { transform: translateY(100%); opacity: 0; }
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
 }
 .animate-scroll-down {
   animation: scroll-down 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 @keyframes collection-fadein {
-  from { opacity: 0 }
-  to   { opacity: 1 }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .collection-overview-grid-shell {
@@ -445,8 +461,6 @@ button, a, [role="button"] {
     height: calc(100dvh - var(--nav-h));
     min-height: calc(100dvh - var(--nav-h));
   }
-
-
 
   .collection-overview-plate {
     width: 100%;
@@ -478,39 +492,56 @@ button, a, [role="button"] {
   }
 }
 
-
-
 @keyframes tile-shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* Gallery filmstrip — slow ken-burns on active card. */
 @keyframes gallery-card-kenburns {
-  0%   { transform: scale(1) translate3d(0, 0, 0); }
-  100% { transform: scale(1.06) translate3d(-1.5%, -1%, 0); }
+  0% {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  100% {
+    transform: scale(1.06) translate3d(-1.5%, -1%, 0);
+  }
 }
 .gallery-card-active img.gallery-card-img {
   animation: gallery-card-kenburns 14s ease-out forwards;
 }
 @media (prefers-reduced-motion: reduce) {
-  .gallery-card-active img.gallery-card-img { animation: none; }
+  .gallery-card-active img.gallery-card-img {
+    animation: none;
+  }
 }
 
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 
 /* ------------------------------------------------------------------ */
 /* Gallery map — editorial Mapbox styling                              */
 /* ------------------------------------------------------------------ */
-.eh-map .mapboxgl-canvas { outline: none; }
+.eh-map .mapboxgl-canvas {
+  outline: none;
+}
 .eh-map .mapboxgl-ctrl-attrib {
   background: rgba(250, 250, 247, 0.55);
   color: rgba(26, 26, 26, 0.65);
   font-size: 10px;
   letter-spacing: 0.05em;
 }
-.eh-map .mapboxgl-ctrl-attrib a { color: rgba(26, 26, 26, 0.8); }
+.eh-map .mapboxgl-ctrl-attrib a {
+  color: rgba(26, 26, 26, 0.8);
+}
 .eh-map .mapboxgl-ctrl-group {
   background: rgba(250, 250, 247, 0.7);
   border: 1px solid rgba(26, 26, 26, 0.15);
@@ -525,7 +556,9 @@ button, a, [role="button"] {
 .eh-map .mapboxgl-ctrl-group button .mapboxgl-ctrl-icon {
   filter: brightness(0.6) opacity(0.85);
 }
-.eh-map .mapboxgl-ctrl-group button:hover .mapboxgl-ctrl-icon { opacity: 1; }
+.eh-map .mapboxgl-ctrl-group button:hover .mapboxgl-ctrl-icon {
+  opacity: 1;
+}
 
 /* Pins */
 .eh-map-pin {
@@ -548,7 +581,10 @@ button, a, [role="button"] {
   box-shadow:
     0 0 0 2px rgba(250, 250, 247, 0.95),
     0 0 0 6px rgba(26, 26, 26, 0.12);
-  transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease;
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    background 220ms ease;
 }
 .eh-map-pin__label {
   margin-top: 8px;
@@ -565,7 +601,9 @@ button, a, [role="button"] {
   white-space: nowrap;
   opacity: 0;
   transform: translateY(-4px);
-  transition: opacity 200ms ease, transform 200ms ease;
+  transition:
+    opacity 200ms ease,
+    transform 200ms ease;
   pointer-events: none;
 }
 .eh-map-pin__num {
@@ -594,7 +632,9 @@ button, a, [role="button"] {
   opacity: 1;
   transform: translateY(0);
 }
-.eh-map-pin:focus-visible { outline: none; }
+.eh-map-pin:focus-visible {
+  outline: none;
+}
 .eh-map-pin:focus-visible .eh-map-pin__dot {
   box-shadow:
     0 0 0 2px rgba(250, 250, 247, 1),
@@ -614,7 +654,6 @@ header nav button:focus-visible,
   outline-offset: 4px;
   border-radius: 2px;
 }
-
 
 /* ----------------------------------------------------------------------------
    View Transitions — additive layer over framer-motion. Activates only on
@@ -657,8 +696,16 @@ header nav button:focus-visible,
   animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-@keyframes vt-fade-out { to { opacity: 0; } }
-@keyframes vt-fade-in { from { opacity: 0; } }
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*),
@@ -669,21 +716,36 @@ header nav button:focus-visible,
 }
 
 /* Hide scrollbars (used by carousels where a custom indicator replaces them). */
-.scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
-.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
 
 /* Slim, always-visible horizontal scrollbar — for editorial filmstrips
    (gallery, lightbox rail) where invisible-scroll left users wondering if
    the strip moved. Track is barely there at rest; thumb is a quiet cream
    bar against the charcoal page chrome. */
-.scrollbar-slim { scrollbar-width: thin; scrollbar-color: rgba(245,242,237,0.35) transparent; }
-.scrollbar-slim::-webkit-scrollbar { height: 6px; width: 6px; }
-.scrollbar-slim::-webkit-scrollbar-track { background: transparent; }
+.scrollbar-slim {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(245, 242, 237, 0.35) transparent;
+}
+.scrollbar-slim::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+.scrollbar-slim::-webkit-scrollbar-track {
+  background: transparent;
+}
 .scrollbar-slim::-webkit-scrollbar-thumb {
-  background-color: rgba(245,242,237,0.30);
+  background-color: rgba(245, 242, 237, 0.3);
   border-radius: 999px;
 }
-.scrollbar-slim:hover::-webkit-scrollbar-thumb { background-color: rgba(245,242,237,0.55); }
+.scrollbar-slim:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(245, 242, 237, 0.55);
+}
 
 /* ----------------------------------------------------------------------------
    Page-title scale — shared across Atelier, Gallery, and Contact.
@@ -824,7 +886,14 @@ header nav button:focus-visible,
 /* ----------------------------------------------------------------------------
    Crossfade layer — used by CrossfadeImage so a swapped hero never hard-cuts.
 ---------------------------------------------------------------------------- */
-@keyframes crossfade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes crossfade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 
 /* ----------------------------------------------------------------------------
    Gallery wall → CTA seam.
@@ -849,18 +918,44 @@ header nav button:focus-visible,
 }
 
 @keyframes seam-recede {
-  from { opacity: 1; transform: translate3d(0, 0, 0); }
-  to   { opacity: 0.85; transform: translate3d(0, -12px, 0); }
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    opacity: 0.85;
+    transform: translate3d(0, -12px, 0);
+  }
 }
 @keyframes seam-emerge {
-  from { opacity: 0; transform: translate3d(0, 8px, 0); }
-  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 /* Mobile: opacity only — at phone scroll velocity any translate reads as jank. */
 @media (max-width: 767px) {
-  @keyframes seam-recede { from { opacity: 1; } to { opacity: 0.9; } }
-  @keyframes seam-emerge { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes seam-recede {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0.9;
+    }
+  }
+  @keyframes seam-emerge {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 }
 
 /* ----------------------------------------------------------------------------
@@ -873,9 +968,15 @@ header nav button:focus-visible,
    Desktop + tall viewports only; short screens and reduced-motion keep the
    plain stacked sections they had before.
 ---------------------------------------------------------------------------- */
-.stack-seq { position: relative; }
-.stack-card-pin { position: relative; }
-.stack-card-face { background-color: var(--charcoal, #1a1a1a); }
+.stack-seq {
+  position: relative;
+}
+.stack-card-pin {
+  position: relative;
+}
+.stack-card-face {
+  background-color: var(--charcoal, #1a1a1a);
+}
 
 @supports (animation-timeline: view()) {
   @media (min-width: 1024px) and (min-height: 720px) and (prefers-reduced-motion: no-preference) {
@@ -915,6 +1016,12 @@ header nav button:focus-visible,
 }
 
 @keyframes stack-settle {
-  from { transform: scale(1); opacity: 1; }
-  to   { transform: scale(0.965); opacity: 0.5; }
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.965);
+    opacity: 0.5;
+  }
 }

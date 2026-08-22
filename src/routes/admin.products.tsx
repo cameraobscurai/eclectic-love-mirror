@@ -5,23 +5,15 @@ import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-quer
 import { Plus } from "lucide-react";
 
 import { requireStaffOrRedirect } from "@/lib/admin-guard";
-import {
-  InventoryEditDrawer,
-  useTaxonomyTree,
-} from "@/components/admin/InventoryEditDrawer";
+import { InventoryEditDrawer, useTaxonomyTree } from "@/components/admin/InventoryEditDrawer";
 import { listProducts } from "@/lib/products-admin.functions";
-
-
 
 // AdminShell is provided by the parent /admin layout route — do NOT re-wrap.
 export const Route = createFileRoute("/admin/products")({
   ssr: false,
   beforeLoad: ({ location }) => requireStaffOrRedirect(location.href),
   head: () => ({
-    meta: [
-      { title: "Inventory · Admin" },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
+    meta: [{ title: "Inventory · Admin" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   component: Inner,
   // ONE VOCABULARY: Collection → Category, straight off the declared columns
@@ -41,14 +33,21 @@ export const Route = createFileRoute("/admin/products")({
 });
 
 type Row = {
-  id: string; rms_id: string | null; title: string; slug: string | null;
-  category: string | null; subcategory_slug: string | null;
-  collection_slug: string | null; category_slug: string | null;
+  id: string;
+  rms_id: string | null;
+  title: string;
+  slug: string | null;
+  category: string | null;
+  subcategory_slug: string | null;
+  collection_slug: string | null;
+  category_slug: string | null;
   status: string;
   quantity: number | null;
-  quantity_label: string | null; public_ready: boolean | null;
+  quantity_label: string | null;
+  public_ready: boolean | null;
   images: string[] | null;
-  updated_at: string; editorial_order: number | null;
+  updated_at: string;
+  editorial_order: number | null;
 };
 
 const SORT_LABELS: Record<string, string> = {
@@ -59,7 +58,6 @@ const SORT_LABELS: Record<string, string> = {
 };
 
 const PAGE = 50;
-
 
 function Inner() {
   const search = Route.useSearch();
@@ -143,7 +141,9 @@ function Inner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, offset, count]);
 
-  useEffect(() => { setOffset(0); }, [search.q, search.col, search.cat, search.ready, search.sort]);
+  useEffect(() => {
+    setOffset(0);
+  }, [search.q, search.col, search.cat, search.ready, search.sort]);
 
   // Enter flushes the pending debounce immediately.
   const submitSearch = (e: React.FormEvent) => {
@@ -153,18 +153,16 @@ function Inner() {
 
   const searchPending = searchInput !== search.q;
 
-
   const visibleRows = rows;
-
-
-
 
   return (
     <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal">
       <div className="px-6 lg:px-12 pt-8 pb-24 max-w-[1500px] mx-auto">
         <header className="mb-8 flex items-start justify-between gap-6">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">Admin · Inventory</p>
+            <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
+              Admin · Inventory
+            </p>
             <h1 className="mt-2 font-display text-4xl uppercase tracking-[0.02em]">Inventory</h1>
             <p className="mt-2 text-[11px] uppercase tracking-[0.2em] text-charcoal/55">
               {count.toLocaleString()} record{count === 1 ? "" : "s"} · edits log to activity trail
@@ -176,16 +174,19 @@ function Inner() {
                   {search.col ? (collectionLabels[search.col] ?? search.col) : "All collections"}
                   {search.cat ? ` · ${categoryLabels[search.cat] ?? search.cat}` : ""}
                 </span>
-                <span className="text-charcoal/45 tabular-nums">({count} match{count === 1 ? "" : "es"})</span>
+                <span className="text-charcoal/45 tabular-nums">
+                  ({count} match{count === 1 ? "" : "es"})
+                </span>
                 <button
                   type="button"
                   onClick={() => navigate({ search: (s: any) => ({ ...s, col: "", cat: "" }) })}
                   className="ml-2 text-charcoal/60 hover:text-charcoal"
                   aria-label="Clear taxonomy filter"
-                >×</button>
+                >
+                  ×
+                </button>
               </div>
             )}
-
           </div>
           <Link
             to="/admin/new-product"
@@ -195,10 +196,11 @@ function Inner() {
           </Link>
         </header>
 
-
-
         {/* filter row */}
-        <form onSubmit={submitSearch} className="mb-6 flex flex-wrap items-center gap-3 border-y border-charcoal/10 py-3 text-[11px] uppercase tracking-[0.16em]">
+        <form
+          onSubmit={submitSearch}
+          className="mb-6 flex flex-wrap items-center gap-3 border-y border-charcoal/10 py-3 text-[11px] uppercase tracking-[0.16em]"
+        >
           <div className="relative flex-1 min-w-[260px] flex items-center gap-2">
             <input
               value={searchInput}
@@ -216,7 +218,9 @@ function Inner() {
                 }}
                 aria-label="Clear search"
                 className="text-charcoal/45 hover:text-charcoal text-[13px] leading-none px-1"
-              >×</button>
+              >
+                ×
+              </button>
             )}
             <span className="w-16 text-[9px] tracking-[0.2em] text-charcoal/40 tabular-nums">
               {searchPending || (loading && search.q) ? "…" : ""}
@@ -227,11 +231,17 @@ function Inner() {
           <select
             value={search.col}
             aria-label="Filter by collection"
-            onChange={(e) => navigate({ search: (s: any) => ({ ...s, col: e.target.value, cat: "" }) })}
+            onChange={(e) =>
+              navigate({ search: (s: any) => ({ ...s, col: e.target.value, cat: "" }) })
+            }
             className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
           >
             <option value="">All collections</option>
-            {collections.map((c) => <option key={c.slug} value={c.slug}>{c.label}</option>)}
+            {collections.map((c) => (
+              <option key={c.slug} value={c.slug}>
+                {c.label}
+              </option>
+            ))}
           </select>
           <select
             value={search.cat}
@@ -240,13 +250,21 @@ function Inner() {
             className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
           >
             <option value="">All categories</option>
-            {categoryOptions.map((c) => <option key={c.slug} value={c.slug}>{c.label}</option>)}
+            {categoryOptions.map((c) => (
+              <option key={c.slug} value={c.slug}>
+                {c.label}
+              </option>
+            ))}
           </select>
 
           <select
             value={search.ready}
             aria-label="Filter by visibility"
-            onChange={(e) => navigate({ search: (s: any) => ({ ...s, ready: e.target.value as "yes"|"no"|"all" }) })}
+            onChange={(e) =>
+              navigate({
+                search: (s: any) => ({ ...s, ready: e.target.value as "yes" | "no" | "all" }),
+              })
+            }
             className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
           >
             <option value="all">All statuses</option>
@@ -261,12 +279,17 @@ function Inner() {
               onChange={(e) => navigate({ search: (s: any) => ({ ...s, sort: e.target.value }) })}
               className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
             >
-              {Object.entries(SORT_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+              {Object.entries(SORT_LABELS).map(([v, l]) => (
+                <option key={v} value={v}>
+                  {l}
+                </option>
+              ))}
             </select>
           </label>
           {/* Results narrow as you type; this is just a keyboard-friendly flush. */}
-          <button type="submit" className="sr-only">Search</button>
-
+          <button type="submit" className="sr-only">
+            Search
+          </button>
         </form>
 
         {/* table */}
@@ -286,23 +309,46 @@ function Inner() {
               </tr>
             </thead>
             <tbody>
-              {loading && visibleRows.length === 0 &&
+              {loading &&
+                visibleRows.length === 0 &&
                 Array.from({ length: 12 }).map((_, i) => (
                   <tr key={`sk-${i}`} className="border-b border-charcoal/5">
-                    <td className="px-3 py-2"><div className="w-10 h-10 bg-charcoal/5 animate-pulse" /></td>
-                    <td className="px-3 py-2"><div className="h-3 w-56 bg-charcoal/5 animate-pulse" /></td>
-                    <td className="px-3 py-2"><div className="h-3 w-24 bg-charcoal/5 animate-pulse" /></td>
-                    <td className="px-3 py-2"><div className="h-3 w-24 bg-charcoal/5 animate-pulse" /></td>
-                    <td className="px-3 py-2"><div className="h-3 w-8 bg-charcoal/5 animate-pulse" /></td>
-                    <td className="px-3 py-2"><div className="h-3 w-16 bg-charcoal/5 animate-pulse" /></td>
-                    <td className="px-3 py-2"><div className="h-2 w-2 rounded-full bg-charcoal/5 animate-pulse" /></td>
-                    <td className="px-3 py-2"><div className="h-3 w-10 bg-charcoal/5 animate-pulse" /></td>
+                    <td className="px-3 py-2">
+                      <div className="w-10 h-10 bg-charcoal/5 animate-pulse" />
+                    </td>
+                    <td className="px-3 py-2">
+                      <div className="h-3 w-56 bg-charcoal/5 animate-pulse" />
+                    </td>
+                    <td className="px-3 py-2">
+                      <div className="h-3 w-24 bg-charcoal/5 animate-pulse" />
+                    </td>
+                    <td className="px-3 py-2">
+                      <div className="h-3 w-24 bg-charcoal/5 animate-pulse" />
+                    </td>
+                    <td className="px-3 py-2">
+                      <div className="h-3 w-8 bg-charcoal/5 animate-pulse" />
+                    </td>
+                    <td className="px-3 py-2">
+                      <div className="h-3 w-16 bg-charcoal/5 animate-pulse" />
+                    </td>
+                    <td className="px-3 py-2">
+                      <div className="h-2 w-2 rounded-full bg-charcoal/5 animate-pulse" />
+                    </td>
+                    <td className="px-3 py-2">
+                      <div className="h-3 w-10 bg-charcoal/5 animate-pulse" />
+                    </td>
                   </tr>
                 ))}
               {!loading && visibleRows.length === 0 && (
-                <tr><td colSpan={8} className="px-3 py-10 text-center text-charcoal/40 text-[11px] uppercase tracking-[0.2em]">No products match</td></tr>
+                <tr>
+                  <td
+                    colSpan={8}
+                    className="px-3 py-10 text-center text-charcoal/40 text-[11px] uppercase tracking-[0.2em]"
+                  >
+                    No products match
+                  </td>
+                </tr>
               )}
-
 
               {visibleRows.map((r) => {
                 // Must match the public site exactly: the original photo is the
@@ -317,22 +363,35 @@ function Inner() {
                     className="border-b border-charcoal/5 hover:bg-charcoal/[0.03] cursor-pointer"
                   >
                     <td className="px-3 py-2">
-                      {cover ? <img src={cover} alt="" className="w-10 h-10 object-cover" loading="lazy" /> : <div className="w-10 h-10 bg-charcoal/5" />}
+                      {cover ? (
+                        <img src={cover} alt="" className="w-10 h-10 object-cover" loading="lazy" />
+                      ) : (
+                        <div className="w-10 h-10 bg-charcoal/5" />
+                      )}
                     </td>
                     <td className="px-3 py-2 font-display text-[14px]">{r.title}</td>
                     <td className="px-3 py-2 text-charcoal/70">
-                      {r.collection_slug ? (collectionLabels[r.collection_slug] ?? r.collection_slug) : "— Unassigned"}
+                      {r.collection_slug
+                        ? (collectionLabels[r.collection_slug] ?? r.collection_slug)
+                        : "— Unassigned"}
                     </td>
                     <td className="px-3 py-2 text-charcoal/70">
                       {r.category_slug ? (categoryLabels[r.category_slug] ?? r.category_slug) : "—"}
                     </td>
 
-                    <td className="px-3 py-2 tabular-nums">{r.quantity ?? "—"}{r.quantity_label ? ` ${r.quantity_label}` : ""}</td>
+                    <td className="px-3 py-2 tabular-nums">
+                      {r.quantity ?? "—"}
+                      {r.quantity_label ? ` ${r.quantity_label}` : ""}
+                    </td>
                     <td className="px-3 py-2 text-charcoal/70">{r.status}</td>
                     <td className="px-3 py-2">
-                      <span className={`inline-block w-2 h-2 rounded-full ${r.public_ready ? "bg-green-600" : "bg-charcoal/20"}`} />
+                      <span
+                        className={`inline-block w-2 h-2 rounded-full ${r.public_ready ? "bg-green-600" : "bg-charcoal/20"}`}
+                      />
                     </td>
-                    <td className="px-3 py-2 text-[10px] text-charcoal/45 tabular-nums">{r.rms_id ?? "—"}</td>
+                    <td className="px-3 py-2 text-[10px] text-charcoal/45 tabular-nums">
+                      {r.rms_id ?? "—"}
+                    </td>
                   </tr>
                 );
               })}
@@ -340,20 +399,25 @@ function Inner() {
           </table>
         </div>
 
-
         {/* pagination */}
         <div className="mt-4 flex items-center justify-between text-[11px] uppercase tracking-[0.18em] text-charcoal/60">
           <button
             disabled={offset === 0}
             onClick={() => setOffset(Math.max(0, offset - PAGE))}
             className="border border-charcoal/20 px-3 py-1 disabled:opacity-30"
-          >← Prev</button>
-          <span>{offset + 1}–{Math.min(offset + PAGE, count)} of {count}</span>
+          >
+            ← Prev
+          </button>
+          <span>
+            {offset + 1}–{Math.min(offset + PAGE, count)} of {count}
+          </span>
           <button
             disabled={offset + PAGE >= count}
             onClick={() => setOffset(offset + PAGE)}
             className="border border-charcoal/20 px-3 py-1 disabled:opacity-30"
-          >Next →</button>
+          >
+            Next →
+          </button>
         </div>
       </div>
 
@@ -365,11 +429,8 @@ function Inner() {
             queryClient.invalidateQueries({ queryKey: ["admin", "products"] });
             queryClient.invalidateQueries({ queryKey: ["admin", "product-categories"] });
           }}
-
-
         />
       )}
     </div>
   );
 }
-

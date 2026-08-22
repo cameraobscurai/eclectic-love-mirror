@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect, type Page } from "@playwright/test";
 
 // Screenshot regression for the two detail surfaces that keep drifting:
 // the QuickView modal and the PDP stage. Both render through the shared
@@ -12,14 +12,14 @@ import { test, expect, type Page } from '@playwright/test';
 // Pinned slugs, one wide/floor-anchored item, one tall/compact item, one
 // table — the three shapes the solver treats differently.
 const CASES = [
-  { name: 'seating', slug: 'adelaide-antique-arm-chair-2970' },
-  { name: 'lighting', slug: 'amitola-led-corner-light' },
-  { name: 'tables', slug: 'aaron-matte-black-plank-coffee-table-2861' },
+  { name: "seating", slug: "adelaide-antique-arm-chair-2970" },
+  { name: "lighting", slug: "amitola-led-corner-light" },
+  { name: "tables", slug: "aaron-matte-black-plank-coffee-table-2861" },
 ] as const;
 
 const VIEWPORTS = [
-  { name: 'desktop', width: 1440, height: 900 },
-  { name: 'mobile', width: 390, height: 844 },
+  { name: "desktop", width: 1440, height: 900 },
+  { name: "mobile", width: 390, height: 844 },
 ] as const;
 
 // Freeze anything non-deterministic: animation, video posters, grain, caret.
@@ -45,8 +45,8 @@ async function stabilize(page: Page) {
         img.complete
           ? Promise.resolve()
           : new Promise<void>((r) => {
-              img.addEventListener('load', () => r(), { once: true });
-              img.addEventListener('error', () => r(), { once: true });
+              img.addEventListener("load", () => r(), { once: true });
+              img.addEventListener("error", () => r(), { once: true });
             }),
       ),
     );
@@ -56,8 +56,8 @@ async function stabilize(page: Page) {
 }
 
 const SHOT_OPTS = {
-  animations: 'disabled',
-  caret: 'hide',
+  animations: "disabled",
+  caret: "hide",
   // Small tolerance: image decoding/AA differs slightly across machines,
   // but a real layout or scale drift moves far more than 1.5% of pixels.
   maxDiffPixelRatio: 0.015,
@@ -72,25 +72,22 @@ for (const vp of VIEWPORTS) {
       test(`QuickView layout — ${c.name}`, async ({ page }) => {
         test.setTimeout(90_000);
         await page.goto(`/collection?view=${encodeURIComponent(c.slug)}`, {
-          waitUntil: 'domcontentloaded',
+          waitUntil: "domcontentloaded",
         });
 
-        const dialog = page.getByRole('dialog');
-        await dialog.waitFor({ state: 'visible', timeout: 20_000 });
+        const dialog = page.getByRole("dialog");
+        await dialog.waitFor({ state: "visible", timeout: 20_000 });
         await stabilize(page);
 
-        await expect(dialog).toHaveScreenshot(
-          `quickview-${c.name}-${vp.name}.png`,
-          SHOT_OPTS,
-        );
+        await expect(dialog).toHaveScreenshot(`quickview-${c.name}-${vp.name}.png`, SHOT_OPTS);
       });
 
       test(`PDP layout — ${c.name}`, async ({ page }) => {
         test.setTimeout(90_000);
-        await page.goto(`/collection/${c.slug}`, { waitUntil: 'domcontentloaded' });
+        await page.goto(`/collection/${c.slug}`, { waitUntil: "domcontentloaded" });
 
-        await page.getByRole('heading', { level: 1 }).waitFor({
-          state: 'visible',
+        await page.getByRole("heading", { level: 1 }).waitFor({
+          state: "visible",
           timeout: 20_000,
         });
         await stabilize(page);

@@ -18,25 +18,25 @@ type Key = { f: number; pos: Vec3; look: Vec3 };
 // 60s shot, broken into 7 movements. Camera never stops.
 const KEYS: Key[] = [
   // 00:00 — start in deep space, looking at back wall
-  { f: 0,    pos: [0, 0, 14],     look: [0, 0, -28] },
+  { f: 0, pos: [0, 0, 14], look: [0, 0, -28] },
   // 00:06 — drift forward toward back wall, video reel filling frame
-  { f: 180,  pos: [0, 0, 4],      look: [0, 0, -28] },
+  { f: 180, pos: [0, 0, 4], look: [0, 0, -28] },
   // 00:14 — arc LEFT, field of 84 tiles wraps around
-  { f: 420,  pos: [-9, 0.5, 2],   look: [0, 0, -8] },
+  { f: 420, pos: [-9, 0.5, 2], look: [0, 0, -8] },
   // 00:22 — settle in front of field, tonal sort window
-  { f: 660,  pos: [0, 0, 6],      look: [0, 0, -8] },
+  { f: 660, pos: [0, 0, 6], look: [0, 0, -8] },
   // 00:32 — DOLLY IN to match-cut chair (slightly left of center)
-  { f: 960,  pos: [-1.6, 0.0, -3.2],  look: [-1.6, 0.0, -8] },
+  { f: 960, pos: [-1.6, 0.0, -3.2], look: [-1.6, 0.0, -8] },
   // 00:38 — pull back + track RIGHT toward atelier triptych panels
-  { f: 1140, pos: [6, 0.4, 0],    look: [10, 0, -3] },
+  { f: 1140, pos: [6, 0.4, 0], look: [10, 0, -3] },
   // 00:44 — camera passes through swatch (fly forward through Z=+4 plane)
-  { f: 1320, pos: [0, 0, 6],      look: [0, 0, -2] },
+  { f: 1320, pos: [0, 0, 6], look: [0, 0, -2] },
   // 00:50 — brief HUD plane sweeps past
-  { f: 1500, pos: [0, 0, 10],     look: [0, 0, 0] },
+  { f: 1500, pos: [0, 0, 10], look: [0, 0, 0] },
   // 00:56 — pull back to reveal wordmark in deep space
-  { f: 1680, pos: [0, 1.2, 22],   look: [0, 0, -50] },
+  { f: 1680, pos: [0, 1.2, 22], look: [0, 0, -50] },
   // 01:00 — final frame
-  { f: 1800, pos: [0, 1.4, 26],   look: [0, 0, -50] },
+  { f: 1800, pos: [0, 1.4, 26], look: [0, 0, -50] },
 ];
 
 const easeMap = (frame: number, a: Key, b: Key): number => {
@@ -52,7 +52,8 @@ const lerpVec = (a: Vec3, b: Vec3, t: number): Vec3 => [
 
 export function cameraAt(frame: number): { pos: Vec3; look: Vec3 } {
   // Find segment
-  let a = KEYS[0], b = KEYS[1];
+  let a = KEYS[0],
+    b = KEYS[1];
   for (let i = 0; i < KEYS.length - 1; i++) {
     if (frame >= KEYS[i].f && frame <= KEYS[i + 1].f) {
       a = KEYS[i];
@@ -92,6 +93,9 @@ export const PHASE = {
 };
 
 export function easeIn(frame: number, range: [number, number]): number {
-  const t = interpolate(frame, range, [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const t = interpolate(frame, range, [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
   return Easing.bezier(0.45, 0, 0.2, 1)(t);
 }

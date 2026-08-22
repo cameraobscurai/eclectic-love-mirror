@@ -48,7 +48,7 @@ export interface UseScrollSpyResult {
 
 interface SectionBounds {
   id: string;
-  top: number;    // document-relative top of first tile
+  top: number; // document-relative top of first tile
   bottom: number; // document-relative bottom of last tile
   firstEl: HTMLElement;
 }
@@ -59,9 +59,7 @@ export function useScrollSpy({
   watch,
 }: UseScrollSpyOptions = {}): UseScrollSpyResult {
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [progressById, setProgressById] = useState<Map<string, number>>(
-    () => new Map(),
-  );
+  const [progressById, setProgressById] = useState<Map<string, number>>(() => new Map());
   const [overallProgress, setOverallProgress] = useState(0);
 
   const sectionsRef = useRef<SectionBounds[]>([]);
@@ -73,9 +71,7 @@ export function useScrollSpy({
     const root: ParentNode = scope ?? document;
 
     const recompute = () => {
-      const nodes = Array.from(
-        root.querySelectorAll<HTMLElement>("[data-spy-section]"),
-      );
+      const nodes = Array.from(root.querySelectorAll<HTMLElement>("[data-spy-section]"));
 
       // Group by section id and compute the bounding span (top of first tile,
       // bottom of last tile in document order — assumes DOM order matches
@@ -115,8 +111,7 @@ export function useScrollSpy({
         return;
       }
 
-      const line =
-        window.scrollY + (topOffset ?? window.innerHeight * 0.33);
+      const line = window.scrollY + (topOffset ?? window.innerHeight * 0.33);
 
       const next = new Map<string, number>();
       let active: string | null = sections[0].id;
@@ -180,9 +175,7 @@ export function useScrollSpy({
     const s = sectionsRef.current.find((x) => x.id === id);
     if (!s) return;
     const navOffset =
-      parseInt(
-        getComputedStyle(document.documentElement).getPropertyValue("--nav-h"),
-      ) || 64;
+      parseInt(getComputedStyle(document.documentElement).getPropertyValue("--nav-h")) || 64;
     const utilityOffset = 80;
     window.scrollTo({
       top: s.top - navOffset - utilityOffset,

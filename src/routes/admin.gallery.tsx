@@ -16,10 +16,7 @@ import { GalleryOrderEditor } from "@/components/admin/GalleryOrderEditor";
 export const Route = createFileRoute("/admin/gallery")({
   beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
   head: () => ({
-    meta: [
-      { title: "Gallery · Admin" },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
+    meta: [{ title: "Gallery · Admin" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   component: AdminGalleryPage,
 });
@@ -31,10 +28,7 @@ function AdminGalleryPage() {
   const [openSlug, setOpenSlug] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
 
-  const visibleProjects = useMemo(
-    () => galleryProjects.filter((p) => !p.pending),
-    [],
-  );
+  const visibleProjects = useMemo(() => galleryProjects.filter((p) => !p.pending), []);
 
   useEffect(() => {
     let alive = true;
@@ -60,7 +54,7 @@ function AdminGalleryPage() {
   }, []);
 
   const openProject = openSlug
-    ? visibleProjects.find((p) => gallerySlug(p) === openSlug) ?? null
+    ? (visibleProjects.find((p) => gallerySlug(p) === openSlug) ?? null)
     : null;
 
   if (openProject) {
@@ -100,9 +94,7 @@ function AdminGalleryPage() {
     <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal">
       <div className="px-6 lg:px-12 pt-10 pb-24 max-w-[1500px] mx-auto">
         <header className="border-b pb-8 mb-10" style={{ borderColor: "var(--archive-rule)" }}>
-          <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
-            Admin · Gallery
-          </p>
+          <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">Admin · Gallery</p>
           <h1 className="mt-3 font-display text-[clamp(2.25rem,4.5vw,3.5rem)] leading-[0.95] uppercase tracking-[0.02em]">
             Reorder
           </h1>
@@ -112,9 +104,7 @@ function AdminGalleryPage() {
         </header>
 
         {!loaded ? (
-          <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45">
-            Loading…
-          </p>
+          <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45">Loading…</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {visibleProjects.map((p) => {

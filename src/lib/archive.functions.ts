@@ -95,10 +95,7 @@ export const toggleItemVisibility = createServerFn({ method: "POST" })
     if (readErr || !current) throw new Error("NOT_FOUND: item missing");
 
     // 2. Concurrency check.
-    if (
-      data.expectedUpdatedAt &&
-      current.updated_at !== data.expectedUpdatedAt
-    ) {
+    if (data.expectedUpdatedAt && current.updated_at !== data.expectedUpdatedAt) {
       throw staleError(STALE_MESSAGE);
     }
 
@@ -107,10 +104,7 @@ export const toggleItemVisibility = createServerFn({ method: "POST" })
       public_ready: data.publicReady,
     };
     if (data.hiddenNote !== undefined) patch.hidden_note = data.hiddenNote;
-    const { error } = await supabaseAdmin
-      .from("inventory_items")
-      .update(patch)
-      .eq("id", data.id);
+    const { error } = await supabaseAdmin.from("inventory_items").update(patch).eq("id", data.id);
     if (error) throw new Error(error.message);
 
     // 4. Audit. Race-window note: a concurrent writer could have landed

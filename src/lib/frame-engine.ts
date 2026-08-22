@@ -40,7 +40,6 @@ export const OUTPUT_SIZES = [
  */
 export const VERIFY_SIZES = [{ w: CANVAS_W, h: CANVAS_H }, ...OUTPUT_SIZES] as const;
 
-
 /** V6 byte ceiling per derivative. */
 export const MAX_DERIVATIVE_BYTES = 400_000;
 
@@ -82,14 +81,7 @@ export type FrameRecipe = {
 };
 
 /** Fixed key order for canonicalization. Never reorder — it changes hashes. */
-const RECIPE_KEY_ORDER = [
-  "crop",
-  "rotate",
-  "bg",
-  "shadow",
-  "normalize",
-  "placement",
-] as const;
+const RECIPE_KEY_ORDER = ["crop", "rotate", "bg", "shadow", "normalize", "placement"] as const;
 
 const round4 = (n: number) => Math.round(n * 1e4) / 1e4;
 
@@ -346,7 +338,6 @@ export function measureSilhouette(raw: RawImage): Measurement {
   return measurementFrom(box, stats, "color", coverage > 0.995 ? 0.4 : 0.8);
 }
 
-
 // ─────────────────────────────────────────────────────────────────────────────
 // Frame-space projection
 // ─────────────────────────────────────────────────────────────────────────────
@@ -464,7 +455,6 @@ const R_SEATING: FrameRule = {
  * Tables were fitted in the same pass and HELD at 0.5: slope −0.089 ± 0.090
  * over n = 84 cannot be told from zero. No evidence is not a new constant.
  */
-
 
 const R_TABLES: FrameRule = {
   primary: "width",
@@ -882,7 +872,6 @@ export function verify(
       `${rule.primary} coverage ${actual.toFixed(3)} needs a further ${resolved.scale.toFixed(3)}x (${(scaleDelta * 100).toFixed(1)}% off)`,
     );
   }
-
 
   // V2 — anchor edge, keyed to the rule's anchor.
   if (rule.anchor === "bottom") {

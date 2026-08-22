@@ -2,14 +2,14 @@
 
 2026-08-15T20:59:54.621Z · rule fs2-2026-08-12 · APPLIED
 
-| Outcome | Count |
-| --- | --- |
-| tiles | 56 |
-| framed (verify PASS) | 56 |
-| unchanged (hash match) | 0 |
-| queued (verify FAIL) | 0 |
-| skipped | 0 |
-| uploads deduped (R1 409) | 0 |
+| Outcome                  | Count |
+| ------------------------ | ----- |
+| tiles                    | 56    |
+| framed (verify PASS)     | 56    |
+| unchanged (hash match)   | 0     |
+| queued (verify FAIL)     | 0     |
+| skipped                  | 0     |
+| uploads deduped (R1 409) | 0     |
 
 ## Advisories
 

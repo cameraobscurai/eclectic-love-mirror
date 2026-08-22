@@ -6,7 +6,7 @@ const CATEGORY_ALIASES: Record<string, string> = {
   "chairs-stools1": "seating",
   "benches-ottomans1": "seating",
 
-  "tables1": "tables",
+  tables1: "tables",
   "lounge-tables": "tables",
   dining: "tables",
 
@@ -26,13 +26,7 @@ export function canonicalCategorySlug(categorySlug: string | null | undefined): 
 // Lighting is deliberately absent: hung fixtures have no floor to sit on, and
 // bottom-aligning short pendants leaves huge dead space above them.
 // See mem://features/lighting-not-true-scaled.md — do NOT re-add lighting here.
-const FLOOR_ANCHORED_CATEGORIES = new Set([
-  "seating",
-  "tables",
-  "bars",
-  "large-decor",
-  "storage",
-]);
+const FLOOR_ANCHORED_CATEGORIES = new Set(["seating", "tables", "bars", "large-decor", "storage"]);
 
 export function isFloorAnchoredCategory(categorySlug: string | null | undefined): boolean {
   const canonical = canonicalCategorySlug(categorySlug);

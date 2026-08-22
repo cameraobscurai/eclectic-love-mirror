@@ -55,8 +55,8 @@ and `select confidence, count(*)` matches 588/33/14 plus any cross-check demotio
 ## Task D — Archive
 
 `docs/archive/squarespace-products-2026-08-11.csv` + README: source, date, 1,453 / 1,116 / 37
-counts, and the scope line verbatim — *"Colorado only — UT rows retained for record, never
-classified."*
+counts, and the scope line verbatim — _"Colorado only — UT rows retained for record, never
+classified."_
 
 ## Task E — Taxonomy Studio at `/admin/taxonomy`
 
@@ -77,7 +77,7 @@ Load-bearing, keep as shown in the prototype:
 Prototype → production changes:
 
 - Seeds all 635 lead rows (family tiles once; variants inherit on write) from the reseeded columns
-  + `taxonomy_review`, not an embedded array.
+  - `taxonomy_review`, not an embedded array.
 - Every dropdown change writes immediately through a staff/admin-gated, audited server function
   (same middleware pattern as `updateItemImages`), setting slugs + `taxonomy_review` per Task B.
   No export-as-save, no session-only state — EXPORT RULINGS is replaced by the writes themselves.

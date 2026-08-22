@@ -9,15 +9,15 @@ This is verification, not remediation. No cover bytes were touched.
 
 ## Timeline
 
-| Time (UTC) | Step | Evidence |
-| --- | --- | --- |
-| 22:03:45 | Live page captured BEFORE — no Notes block | `receipts/round-trip-1-before.png` |
-| 22:05:09 | Edit typed in the admin drawer, **SAVE 1 CHANGE** clicked, drawer reported SAVED | `receipts/round-trip-0-admin-drawer.png` |
-| 22:05:34 | **Publish to live site** clicked in /admin/photos → snapshot `catalog/overlay-2026-08-11T22-05-34-011Z.json`, 879 rows | manifest `publishedAt: 2026-08-11T22:05:34.011Z` |
-| 22:12:15 | Live page captured AFTER — Notes shows the new text | `receipts/round-trip-2-after-live.png` |
-| 22:12:35 | Original text restored in the drawer | — |
-| 22:12:46 | Publish clicked again — **no code deploy** | — |
-| 22:13:13 | Live page shows the original text again, **27 seconds** after Publish | `receipts/round-trip-3-restored.png` |
+| Time (UTC) | Step                                                                                                                   | Evidence                                         |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| 22:03:45   | Live page captured BEFORE — no Notes block                                                                             | `receipts/round-trip-1-before.png`               |
+| 22:05:09   | Edit typed in the admin drawer, **SAVE 1 CHANGE** clicked, drawer reported SAVED                                       | `receipts/round-trip-0-admin-drawer.png`         |
+| 22:05:34   | **Publish to live site** clicked in /admin/photos → snapshot `catalog/overlay-2026-08-11T22-05-34-011Z.json`, 879 rows | manifest `publishedAt: 2026-08-11T22:05:34.011Z` |
+| 22:12:15   | Live page captured AFTER — Notes shows the new text                                                                    | `receipts/round-trip-2-after-live.png`           |
+| 22:12:35   | Original text restored in the drawer                                                                                   | —                                                |
+| 22:12:46   | Publish clicked again — **no code deploy**                                                                             | —                                                |
+| 22:13:13   | Live page shows the original text again, **27 seconds** after Publish                                                  | `receipts/round-trip-3-restored.png`             |
 
 The return leg is the important one: 22:12:46 → 22:13:13 is a content edit reaching the public
 site in under half a minute with nobody from engineering involved.

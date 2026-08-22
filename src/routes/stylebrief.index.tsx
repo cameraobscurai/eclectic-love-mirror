@@ -77,7 +77,6 @@ function StudioPage() {
   const [downloading, setDownloading] = useState(false);
   const briefRef = useRef<HTMLElement | null>(null);
 
-
   // Form fields — hydrated from sessionStorage so a re-render, accidental
   // reload, or browser Back doesn't blank them out.
   const STORAGE_KEY = "stylebrief:contact";
@@ -121,16 +120,22 @@ function StudioPage() {
       for (const p of products) m.set(String(p.id), p);
       setCatalog(m);
     });
-    return () => { alive = false; };
+    return () => {
+      alive = false;
+    };
   }, []);
 
   // Cleanup object URLs only on unmount. Using a ref + empty-deps effect
   // avoids the React 19 StrictMode double-mount issue where a deps-based
   // cleanup would revoke URLs immediately after creation, breaking previews.
   const inspoRef = useRef<InspoLocal[]>([]);
-  useEffect(() => { inspoRef.current = inspo; }, [inspo]);
   useEffect(() => {
-    return () => { inspoRef.current.forEach((i) => URL.revokeObjectURL(i.url)); };
+    inspoRef.current = inspo;
+  }, [inspo]);
+  useEffect(() => {
+    return () => {
+      inspoRef.current.forEach((i) => URL.revokeObjectURL(i.url));
+    };
   }, []);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -243,7 +248,8 @@ function StudioPage() {
       // 1. Upload each inspo file via signed URL.
       const inspoPaths: string[] = [];
       for (const i of inspo) {
-        const ext = (i.file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+        const ext =
+          (i.file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
         const { uploadUrl, storage_path } = await signPublicInspoUpload({
           data: { ext, mime: i.file.type || "application/octet-stream", size: i.file.size },
         });
@@ -309,7 +315,11 @@ function StudioPage() {
       }).catch((err) => console.warn("notify-inquiry failed", err));
 
       clearInquiry();
-      try { window.sessionStorage.removeItem(STORAGE_KEY); } catch { /* noop */ }
+      try {
+        window.sessionStorage.removeItem(STORAGE_KEY);
+      } catch {
+        /* noop */
+      }
       navigate({ to: "/stylebrief/thanks", search: { inquiry: inquiryId } });
     } catch (e) {
       setSubmitError((e as Error).message);
@@ -323,7 +333,11 @@ function StudioPage() {
     setSubmitError(null);
     try {
       const stamp = new Date().toISOString().slice(0, 10);
-      const slug = (name.trim() || "brief").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "brief";
+      const slug =
+        (name.trim() || "brief")
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, "") || "brief";
       await downloadDeckPDF(briefRef.current, `eclectic-hive-${slug}-${stamp}.pdf`);
     } catch (err) {
       console.warn("brief download failed", err);
@@ -333,7 +347,8 @@ function StudioPage() {
     }
   }
 
-  const canDownload = !!analysis || pinnedIds.length > 0 || inspo.length > 0 || name.trim().length > 0;
+  const canDownload =
+    !!analysis || pinnedIds.length > 0 || inspo.length > 0 || name.trim().length > 0;
 
   return (
     <div className="min-h-screen bg-cream text-charcoal">
@@ -389,7 +404,6 @@ function StudioPage() {
         </Link>
       </div>
       <form onSubmit={submit} className="fluid-canvas pb-32">
-
         {/* STEP 1 — INSPO */}
         <Step n={1} title="Drop Your Inspo Images">
           <input
@@ -398,12 +412,20 @@ function StudioPage() {
             accept="image/jpeg,image/png,image/webp,image/avif"
             multiple
             className="hidden"
-            onChange={(e) => { if (e.target.files) { addFiles(e.target.files); e.target.value = ""; } }}
+            onChange={(e) => {
+              if (e.target.files) {
+                addFiles(e.target.files);
+                e.target.value = "";
+              }
+            }}
           />
           <div
             onClick={() => inspo.length < MAX_INSPO && fileInputRef.current?.click()}
             onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => { e.preventDefault(); addFiles(e.dataTransfer.files); }}
+            onDrop={(e) => {
+              e.preventDefault();
+              addFiles(e.dataTransfer.files);
+            }}
             className={`border border-dashed border-charcoal/25 min-h-[200px] lg:min-h-[280px] grid place-items-center cursor-pointer transition-colors hover:border-charcoal/50 hover:bg-charcoal/[0.02] ${inspo.length >= MAX_INSPO ? "opacity-50 cursor-not-allowed" : ""}`}
           >
             <div className="flex flex-col items-center gap-3 py-10 lg:py-16">
@@ -420,7 +442,10 @@ function StudioPage() {
           {inspo.length > 0 && (
             <div className="mt-5 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 lg:gap-3">
               {inspo.map((i) => (
-                <div key={i.id} className="relative aspect-square bg-charcoal/5 overflow-hidden group">
+                <div
+                  key={i.id}
+                  className="relative aspect-square bg-charcoal/5 overflow-hidden group"
+                >
                   <img src={i.url} alt="" className="w-full h-full object-cover" />
                   <button
                     type="button"
@@ -434,13 +459,13 @@ function StudioPage() {
               ))}
             </div>
           )}
-
         </Step>
 
         {/* STEP 2 — BROWSE INVENTORY */}
         <Step n={2} title="Browse Our Collection">
           <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55 mb-5 max-w-xl">
-            Pin pieces that fit your vision. Search by name, browse our collection, or match by image.
+            Pin pieces that fit your vision. Search by name, browse our collection, or match by
+            image.
           </p>
           <CollectionPicker />
         </Step>
@@ -451,10 +476,10 @@ function StudioPage() {
             {pinnedIds.length > 0 && inspo.length > 0
               ? `Pulling colors from ${inspo.length} inspiration ${inspo.length === 1 ? "image" : "images"} + ${pinnedIds.length} pinned ${pinnedIds.length === 1 ? "piece" : "pieces"}.`
               : pinnedIds.length > 0
-              ? `Pulling colors from your ${pinnedIds.length} pinned ${pinnedIds.length === 1 ? "piece" : "pieces"}.`
-              : inspo.length > 0
-              ? `Pulling colors from your ${inspo.length} inspiration ${inspo.length === 1 ? "image" : "images"}.`
-              : "Pin pieces above or drop your inspo images to generate a palette."}
+                ? `Pulling colors from your ${pinnedIds.length} pinned ${pinnedIds.length === 1 ? "piece" : "pieces"}.`
+                : inspo.length > 0
+                  ? `Pulling colors from your ${inspo.length} inspiration ${inspo.length === 1 ? "image" : "images"}.`
+                  : "Pin pieces above or drop your inspo images to generate a palette."}
           </p>
           <button
             type="button"
@@ -462,11 +487,17 @@ function StudioPage() {
             disabled={(!inspo.length && !pinnedIds.length) || analyzing}
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-charcoal text-cream text-[11px] uppercase tracking-[0.22em] disabled:opacity-40 hover:bg-charcoal/85 transition-colors"
           >
-            {analyzing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
+            {analyzing ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Sparkles className="h-3.5 w-3.5" />
+            )}
             {analyzing ? "Reading…" : analysis ? "Re-generate Palette" : "Generate Palette"}
           </button>
           {analyzeError && (
-            <p className="mt-2 text-[11px] uppercase tracking-[0.18em] text-red-700/80">{analyzeError}</p>
+            <p className="mt-2 text-[11px] uppercase tracking-[0.18em] text-red-700/80">
+              {analyzeError}
+            </p>
           )}
 
           {analysis && (
@@ -479,7 +510,11 @@ function StudioPage() {
                 <div className="flex gap-0.5 lg:gap-1">
                   {analysis.palette.slice(0, 8).map((c, i) => (
                     <div key={i} className="flex-1">
-                      <div className="h-20 lg:h-40 lg:h-40 w-full" style={{ background: c.hex }} aria-label={c.hex} />
+                      <div
+                        className="h-20 lg:h-40 lg:h-40 w-full"
+                        style={{ background: c.hex }}
+                        aria-label={c.hex}
+                      />
                       <p className="mt-2 text-[9px] uppercase tracking-[0.18em] text-charcoal/50 tabular-nums text-center">
                         {c.hex}
                       </p>
@@ -503,14 +538,22 @@ function StudioPage() {
                       return (
                         <div key={pi.id} className="flex items-center gap-3">
                           {thumb ? (
-                            <img src={thumb} alt="" className="w-14 h-14 object-cover bg-charcoal/5 flex-shrink-0" />
+                            <img
+                              src={thumb}
+                              alt=""
+                              className="w-14 h-14 object-cover bg-charcoal/5 flex-shrink-0"
+                            />
                           ) : (
                             <span className="w-14 h-14 bg-charcoal/5 flex-shrink-0" />
                           )}
                           <div className="flex gap-1 flex-1">
                             {pi.colors.slice(0, 5).map((c, i) => (
                               <div key={i} className="flex-1">
-                                <div className="h-10 w-full" style={{ background: c.hex }} aria-label={c.hex} />
+                                <div
+                                  className="h-10 w-full"
+                                  style={{ background: c.hex }}
+                                  aria-label={c.hex}
+                                />
                                 <p className="mt-1 text-[9px] uppercase tracking-[0.18em] text-charcoal/50 tabular-nums text-center">
                                   {c.hex}
                                 </p>
@@ -531,13 +574,28 @@ function StudioPage() {
         <Step n={4} title="Your Details">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8 max-w-2xl">
             <Field label="Name *">
-              <input value={name} onChange={(e) => setName(e.target.value)} required className={inputCls} />
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className={inputCls}
+              />
             </Field>
             <Field label="Email *">
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className={inputCls} />
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className={inputCls}
+              />
             </Field>
             <Field label="Phone">
-              <input value={phone} onChange={(e) => setPhone(e.target.value)} className={inputCls} />
+              <input
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className={inputCls}
+              />
             </Field>
             <Field label="Event date">
               <input
@@ -551,13 +609,25 @@ function StudioPage() {
             <Field label="Scope">
               <select value={scope} onChange={(e) => setScope(e.target.value)} className={inputCls}>
                 <option value="">—</option>
-                {SCOPE_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
+                {SCOPE_OPTIONS.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
               </select>
             </Field>
             <Field label="Budget">
-              <select value={budget} onChange={(e) => setBudget(e.target.value)} className={inputCls}>
+              <select
+                value={budget}
+                onChange={(e) => setBudget(e.target.value)}
+                className={inputCls}
+              >
                 <option value="">—</option>
-                {BUDGET_RANGES.map((b) => <option key={b} value={b}>{b}</option>)}
+                {BUDGET_RANGES.map((b) => (
+                  <option key={b} value={b}>
+                    {b}
+                  </option>
+                ))}
               </select>
             </Field>
           </div>
@@ -584,9 +654,16 @@ function StudioPage() {
                 {pinnedIds.map((id) => {
                   const p = catalog.get(id);
                   return (
-                    <div key={id} className="flex items-center gap-2 border border-charcoal/15 pl-1 pr-2 py-1">
+                    <div
+                      key={id}
+                      className="flex items-center gap-2 border border-charcoal/15 pl-1 pr-2 py-1"
+                    >
                       {p?.primaryImage?.url ? (
-                        <img src={p.primaryImage.url} alt="" className="w-8 h-8 object-cover bg-charcoal/5" />
+                        <img
+                          src={p.primaryImage.url}
+                          alt=""
+                          className="w-8 h-8 object-cover bg-charcoal/5"
+                        />
                       ) : (
                         <span className="w-8 h-8 bg-charcoal/5" />
                       )}
@@ -598,7 +675,9 @@ function StudioPage() {
                         onClick={() => unpin(id)}
                         className="text-charcoal/40 hover:text-charcoal text-xs ml-1"
                         aria-label="Unpin"
-                      >×</button>
+                      >
+                        ×
+                      </button>
                     </div>
                   );
                 })}
@@ -620,36 +699,80 @@ function StudioPage() {
           {/* BRIEF PREVIEW — editorial proposal sheet */}
           {(() => {
             const stamp = new Intl.DateTimeFormat("en-US", {
-              month: "2-digit", day: "2-digit", year: "2-digit",
-            }).format(new Date()).replace(/\//g, ".");
+              month: "2-digit",
+              day: "2-digit",
+              year: "2-digit",
+            })
+              .format(new Date())
+              .replace(/\//g, ".");
             const palette = analysis?.palette.slice(0, 8) ?? [];
             const inspoThumbs = inspo.slice(0, 6);
-            const pinnedThumbs = pinnedIds.slice(0, 6).map((id) => catalog.get(id)).filter(Boolean) as CollectionProduct[];
+            const pinnedThumbs = pinnedIds
+              .slice(0, 6)
+              .map((id) => catalog.get(id))
+              .filter(Boolean) as CollectionProduct[];
             const Ghost = () => (
-              <span className="text-charcoal/30 border-b border-dashed border-charcoal/25 pb-0.5">— REQUIRED —</span>
+              <span className="text-charcoal/30 border-b border-dashed border-charcoal/25 pb-0.5">
+                — REQUIRED —
+              </span>
             );
             const rows: Array<{ label: string; node: React.ReactNode; alignTop?: boolean }> = [
-              { label: "For", node: name.trim() ? <span className="text-charcoal">{name.trim()}</span> : <Ghost /> },
-              { label: "Email", node: email.trim()
-                ? <span className="text-charcoal normal-case tracking-normal">{email.trim()}</span>
-                : <Ghost /> },
+              {
+                label: "For",
+                node: name.trim() ? (
+                  <span className="text-charcoal">{name.trim()}</span>
+                ) : (
+                  <Ghost />
+                ),
+              },
+              {
+                label: "Email",
+                node: email.trim() ? (
+                  <span className="text-charcoal normal-case tracking-normal">{email.trim()}</span>
+                ) : (
+                  <Ghost />
+                ),
+              },
             ];
-            if (phone.trim()) rows.push({ label: "Phone", node: <span className="text-charcoal tabular-nums tracking-normal normal-case">{phone.trim()}</span> });
-            if (eventDate.trim()) rows.push({ label: "Event Date", node: <span className="text-charcoal tabular-nums">{eventDate.trim()}</span> });
-            if (scope) rows.push({ label: "Scope", node: <span className="text-charcoal">{scope}</span> });
-            if (budget) rows.push({ label: "Budget", node: <span className="text-charcoal">{budget}</span> });
+            if (phone.trim())
+              rows.push({
+                label: "Phone",
+                node: (
+                  <span className="text-charcoal tabular-nums tracking-normal normal-case">
+                    {phone.trim()}
+                  </span>
+                ),
+              });
+            if (eventDate.trim())
+              rows.push({
+                label: "Event Date",
+                node: <span className="text-charcoal tabular-nums">{eventDate.trim()}</span>,
+              });
+            if (scope)
+              rows.push({ label: "Scope", node: <span className="text-charcoal">{scope}</span> });
+            if (budget)
+              rows.push({ label: "Budget", node: <span className="text-charcoal">{budget}</span> });
             rows.push({
               label: "Your Inspo Images",
               node: (
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-charcoal tabular-nums">{String(inspo.length).padStart(2, "0")}</span>
+                  <span className="text-charcoal tabular-nums">
+                    {String(inspo.length).padStart(2, "0")}
+                  </span>
                   {inspoThumbs.length > 0 && (
                     <div className="flex gap-1">
                       {inspoThumbs.map((i) => (
-                        <img key={i.id} src={i.url} alt="" className="w-7 h-7 object-cover bg-charcoal/5 border border-charcoal/10" />
+                        <img
+                          key={i.id}
+                          src={i.url}
+                          alt=""
+                          className="w-7 h-7 object-cover bg-charcoal/5 border border-charcoal/10"
+                        />
                       ))}
                       {inspo.length > 6 && (
-                        <span className="text-[9px] tracking-[0.18em] text-charcoal/45 self-center pl-1 tabular-nums">+{inspo.length - 6}</span>
+                        <span className="text-[9px] tracking-[0.18em] text-charcoal/45 self-center pl-1 tabular-nums">
+                          +{inspo.length - 6}
+                        </span>
                       )}
                     </div>
                   )}
@@ -660,16 +783,30 @@ function StudioPage() {
               label: "Pinned",
               node: (
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-charcoal tabular-nums">{String(pinnedIds.length).padStart(2, "0")}</span>
+                  <span className="text-charcoal tabular-nums">
+                    {String(pinnedIds.length).padStart(2, "0")}
+                  </span>
                   {pinnedThumbs.length > 0 && (
                     <div className="flex gap-1">
-                      {pinnedThumbs.map((p) => (
-                        p.primaryImage?.url
-                          ? <img key={p.id} src={p.primaryImage.url} alt="" className="w-7 h-7 object-cover bg-charcoal/5 border border-charcoal/10" />
-                          : <span key={p.id} className="w-7 h-7 bg-charcoal/5 border border-charcoal/10" />
-                      ))}
+                      {pinnedThumbs.map((p) =>
+                        p.primaryImage?.url ? (
+                          <img
+                            key={p.id}
+                            src={p.primaryImage.url}
+                            alt=""
+                            className="w-7 h-7 object-cover bg-charcoal/5 border border-charcoal/10"
+                          />
+                        ) : (
+                          <span
+                            key={p.id}
+                            className="w-7 h-7 bg-charcoal/5 border border-charcoal/10"
+                          />
+                        ),
+                      )}
                       {pinnedIds.length > 6 && (
-                        <span className="text-[9px] tracking-[0.18em] text-charcoal/45 self-center pl-1 tabular-nums">+{pinnedIds.length - 6}</span>
+                        <span className="text-[9px] tracking-[0.18em] text-charcoal/45 self-center pl-1 tabular-nums">
+                          +{pinnedIds.length - 6}
+                        </span>
                       )}
                     </div>
                   )}
@@ -684,16 +821,27 @@ function StudioPage() {
                   <div className="flex">
                     {palette.length > 0
                       ? palette.map((c, i) => (
-                          <span key={i} className="w-10 h-10 inline-block" style={{ background: c.hex }} title={c.hex} />
+                          <span
+                            key={i}
+                            className="w-10 h-10 inline-block"
+                            style={{ background: c.hex }}
+                            title={c.hex}
+                          />
                         ))
                       : Array.from({ length: 8 }).map((_, i) => (
-                          <span key={i} className="w-10 h-10 inline-block border border-charcoal/10 -ml-px first:ml-0" />
+                          <span
+                            key={i}
+                            className="w-10 h-10 inline-block border border-charcoal/10 -ml-px first:ml-0"
+                          />
                         ))}
                   </div>
                   {palette.length > 0 && (
                     <div className="flex mt-1.5">
                       {palette.map((c, i) => (
-                        <span key={i} className="w-10 text-center text-[9px] tracking-[0.06em] tabular-nums text-charcoal/45 normal-case">
+                        <span
+                          key={i}
+                          className="w-10 text-center text-[9px] tracking-[0.06em] tabular-nums text-charcoal/45 normal-case"
+                        >
                           {c.hex.replace("#", "").toUpperCase()}
                         </span>
                       ))}
@@ -736,8 +884,12 @@ function StudioPage() {
                     const border = i === 0 ? "" : "border-t border-charcoal/10 pt-3 mt-3";
                     return (
                       <Fragment key={row.label}>
-                        <dt className={`text-charcoal/45 ${border} ${row.alignTop ? "self-start" : ""}`}>
-                          <span className="tabular-nums tracking-normal text-charcoal/30 mr-2">{n}</span>
+                        <dt
+                          className={`text-charcoal/45 ${border} ${row.alignTop ? "self-start" : ""}`}
+                        >
+                          <span className="tabular-nums tracking-normal text-charcoal/30 mr-2">
+                            {n}
+                          </span>
                           {row.label}
                         </dt>
                         <dd className={border}>{row.node}</dd>
@@ -756,7 +908,11 @@ function StudioPage() {
                 disabled={!canSubmit}
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-charcoal text-cream text-[11px] uppercase tracking-[0.24em] disabled:opacity-40 hover:bg-charcoal/85 transition-colors"
               >
-                {submitting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ArrowRight className="h-3.5 w-3.5" />}
+                {submitting ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <ArrowRight className="h-3.5 w-3.5" />
+                )}
                 {submitting ? "Sending…" : "Submit Brief"}
               </button>
               <button
@@ -765,23 +921,32 @@ function StudioPage() {
                 disabled={!canDownload || downloading}
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 border border-charcoal/30 text-charcoal text-[11px] uppercase tracking-[0.24em] disabled:opacity-40 hover:bg-charcoal/[0.04] transition-colors"
               >
-                {downloading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Download className="h-3.5 w-3.5" />}
+                {downloading ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Download className="h-3.5 w-3.5" />
+                )}
                 {downloading ? "Building PDF…" : "Download Brief"}
               </button>
             </div>
             <p className="mt-5">
-              <Link to="/contact" className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55 hover:text-charcoal underline-offset-4 hover:underline">
+              <Link
+                to="/contact"
+                className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55 hover:text-charcoal underline-offset-4 hover:underline"
+              >
                 Or use the standard contact form
               </Link>
             </p>
           </div>
           {submitError && (
-            <p className="mt-3 text-[11px] uppercase tracking-[0.18em] text-red-700/80">{submitError}</p>
+            <p className="mt-3 text-[11px] uppercase tracking-[0.18em] text-red-700/80">
+              {submitError}
+            </p>
           )}
         </Step>
       </form>
     </div>
-  )
+  );
 }
 
 // ── presentational ──────────────────────────────────────────────────────
@@ -811,6 +976,3 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
     </label>
   );
 }
-
-
-

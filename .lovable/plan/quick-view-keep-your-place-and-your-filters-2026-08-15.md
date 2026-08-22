@@ -24,5 +24,6 @@ Opening a tile and stepping through PREV/NEXT should never move the page behind 
 ## Verification
 
 Playwright, headless, on `/collection` with a category filter and a sort applied:
+
 - Scroll mid-grid, open a tile, step next three times, close — assert URL search still has the filter/sort params and `window.scrollY` matches the pre-open value within 2px.
 - Assert one back press after three steps leaves the modal closed and stays on `/collection` with filters intact.

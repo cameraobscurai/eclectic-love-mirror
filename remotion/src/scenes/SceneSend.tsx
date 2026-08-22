@@ -1,4 +1,11 @@
-import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring, Easing } from "remotion";
+import {
+  AbsoluteFill,
+  useCurrentFrame,
+  useVideoConfig,
+  interpolate,
+  spring,
+  Easing,
+} from "remotion";
 import { COLORS, REAL_PALETTE } from "../theme";
 import { DISPLAY, BODY } from "../fonts";
 import { IndexCard } from "../components/IndexCard";
@@ -23,55 +30,108 @@ export const SceneSend: React.FC = () => {
 
   // Pre-payoff camera: 1.02 → 1.0 over first 60f. Then Ken Burns 1.0 → 1.08
   // from KENBURNS_AT → KENBURNS_AT+80.
-  const preCam = interpolate(frame, [0, 60], [1.02, 1.0], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.4, 0, 0.2, 1) });
-  const kbCam = interpolate(frame, [KENBURNS_AT, KENBURNS_AT + 80], [1.0, 1.08], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.4, 0, 0.2, 1) });
+  const preCam = interpolate(frame, [0, 60], [1.02, 1.0], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.bezier(0.4, 0, 0.2, 1),
+  });
+  const kbCam = interpolate(frame, [KENBURNS_AT, KENBURNS_AT + 80], [1.0, 1.08], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.bezier(0.4, 0, 0.2, 1),
+  });
   const cameraScale = frame < KENBURNS_AT ? preCam : kbCam;
 
   // Chrome fade — STEP row dims as we push in
-  const chromeOp = interpolate(frame, [KENBURNS_AT, KENBURNS_AT + 40], [1, 0.35], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const chromeOp = interpolate(frame, [KENBURNS_AT, KENBURNS_AT + 40], [1, 0.35], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
 
   // Vignette — stops at a composed 0.12, never goes black
-  const vigOp = interpolate(frame, [KENBURNS_AT, KENBURNS_AT + 50], [0, 0.12], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const vigOp = interpolate(frame, [KENBURNS_AT, KENBURNS_AT + 50], [0, 0.12], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
 
   // Button — pressed, then collapses into the checkmark/confirm
   const btnVisible = frame < CONFIRM_AT;
   const btnPressed = frame >= BTN_PRESS && frame < CONFIRM_AT;
-  const btnOp = interpolate(frame, [CONFIRM_AT - 4, CONFIRM_AT], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const btnOp = interpolate(frame, [CONFIRM_AT - 4, CONFIRM_AT], [1, 0], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
 
   // confirm checkmark
-  const confSp = spring({ frame: frame - CONFIRM_AT, fps, config: { damping: 14, stiffness: 180 } });
+  const confSp = spring({
+    frame: frame - CONFIRM_AT,
+    fps,
+    config: { damping: 14, stiffness: 180 },
+  });
   const confScale = interpolate(confSp, [0, 0.5, 1], [0, 1.18, 1]);
   const confOp = interpolate(confSp, [0, 0.4, 1], [0, 1, 1]);
   // confirmation also fades during Ken Burns
-  const confFade = interpolate(frame, [KENBURNS_AT, KENBURNS_AT + 30], [1, 0.25], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const confFade = interpolate(frame, [KENBURNS_AT, KENBURNS_AT + 30], [1, 0.25], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
 
   // "Sent." — blur in + scale settle
-  const sentP = interpolate(frame, [SENT_AT, SENT_AT + 28], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.2, 0.7, 0.2, 1) });
+  const sentP = interpolate(frame, [SENT_AT, SENT_AT + 28], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.bezier(0.2, 0.7, 0.2, 1),
+  });
   const sentOp = sentP;
   const sentBlur = interpolate(sentP, [0, 1], [14, 0]);
   const sentScale = interpolate(sentP, [0, 1], [1.06, 1.0]);
 
   // Tagline rises during Ken Burns
-  const tagP = interpolate(frame, [TAGLINE_AT, TAGLINE_AT + 36], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.4, 0, 0.2, 1) });
+  const tagP = interpolate(frame, [TAGLINE_AT, TAGLINE_AT + 36], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.bezier(0.4, 0, 0.2, 1),
+  });
   const tagOp = tagP * 0.78;
   const tagY = interpolate(tagP, [0, 1], [24, 0]);
 
   // Palette ghost band — appears immediately to receive the lifting brief's palette
-  const ghostOp = interpolate(frame, [0, 30], [0, 0.55], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const ghostOp = interpolate(frame, [0, 30], [0, 0.55], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
   // Closing wordmark + slug rise during the final hold
-  const closeP = interpolate(frame, [KENBURNS_AT + 30, KENBURNS_AT + 70], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.4, 0, 0.2, 1) });
+  const closeP = interpolate(frame, [KENBURNS_AT + 30, KENBURNS_AT + 70], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.bezier(0.4, 0, 0.2, 1),
+  });
 
   // Underline under Sent.
-  const ulP = interpolate(frame, [UNDERLINE_AT, UNDERLINE_AT + 24], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.4, 0, 0.2, 1) });
+  const ulP = interpolate(frame, [UNDERLINE_AT, UNDERLINE_AT + 24], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.bezier(0.4, 0, 0.2, 1),
+  });
 
   // Intro rise — whole composition rises 48px → 0, fades 0 → 1, settles into position
-  const introP = interpolate(frame, [0, INTRO_LEN], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.7, 0, 0.3, 1) });
+  const introP = interpolate(frame, [0, INTRO_LEN], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.bezier(0.7, 0, 0.3, 1),
+  });
   const introY = (1 - introP) * 48;
   const introOp = introP;
   const introScale = interpolate(introP, [0, 1], [0.985, 1]);
 
   return (
-    <AbsoluteFill style={{ transform: `translateY(${introY}px) scale(${introScale})`, transformOrigin: "50% 60%", opacity: introOp }}>
+    <AbsoluteFill
+      style={{
+        transform: `translateY(${introY}px) scale(${introScale})`,
+        transformOrigin: "50% 60%",
+        opacity: introOp,
+      }}
+    >
       <IndexCard
         step={5}
         label="Sent"
@@ -85,10 +145,18 @@ export const SceneSend: React.FC = () => {
         {/* meta row */}
         <div
           style={{
-            position: "absolute", left: 0, right: 0, top: 0,
-            display: "flex", justifyContent: "space-between",
-            color: COLORS.charcoal, opacity: 0.5 * chromeOp,
-            fontFamily: BODY, fontSize: 12, letterSpacing: "0.34em", textTransform: "uppercase",
+            position: "absolute",
+            left: 0,
+            right: 0,
+            top: 0,
+            display: "flex",
+            justifyContent: "space-between",
+            color: COLORS.charcoal,
+            opacity: 0.5 * chromeOp,
+            fontFamily: BODY,
+            fontSize: 12,
+            letterSpacing: "0.34em",
+            textTransform: "uppercase",
           }}
         >
           <span>Confirmation · 09:42 MT</span>
@@ -100,7 +168,8 @@ export const SceneSend: React.FC = () => {
           <div
             style={{
               position: "absolute",
-              left: 0, top: 80,
+              left: 0,
+              top: 80,
               opacity: btnOp,
               background: COLORS.charcoal,
               color: COLORS.cream,
@@ -117,7 +186,14 @@ export const SceneSend: React.FC = () => {
             }}
           >
             Send Style Brief
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={COLORS.cream} strokeWidth="1.5">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke={COLORS.cream}
+              strokeWidth="1.5"
+            >
               <path d="M5 12h14M13 6l6 6-6 6" />
             </svg>
           </div>
@@ -127,7 +203,8 @@ export const SceneSend: React.FC = () => {
         <div
           style={{
             position: "absolute",
-            left: 0, top: 80,
+            left: 0,
+            top: 80,
             opacity: confOp * confFade,
             transform: `scale(${confScale})`,
             transformOrigin: "0 50%",
@@ -144,12 +221,22 @@ export const SceneSend: React.FC = () => {
         >
           <div
             style={{
-              width: 40, height: 40,
+              width: 40,
+              height: 40,
               border: `1.5px solid ${COLORS.charcoal}`,
-              display: "flex", alignItems: "center", justifyContent: "center",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={COLORS.charcoal} strokeWidth="2">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke={COLORS.charcoal}
+              strokeWidth="2"
+            >
               <path d="M4 12l5 5L20 6" />
             </svg>
           </div>
@@ -160,7 +247,9 @@ export const SceneSend: React.FC = () => {
         <div
           style={{
             position: "absolute",
-            left: 0, right: 0, top: 380,
+            left: 0,
+            right: 0,
+            top: 380,
             textAlign: "center",
             color: COLORS.charcoal,
             fontFamily: DISPLAY,
@@ -181,7 +270,8 @@ export const SceneSend: React.FC = () => {
         <div
           style={{
             position: "absolute",
-            left: "50%", top: 720,
+            left: "50%",
+            top: 720,
             transform: "translateX(-50%)",
             width: `${ulP * 320}px`,
             height: 1,
@@ -193,7 +283,9 @@ export const SceneSend: React.FC = () => {
         <div
           style={{
             position: "absolute",
-            left: 0, right: 0, top: 770,
+            left: 0,
+            right: 0,
+            top: 770,
             textAlign: "center",
             color: COLORS.charcoal,
             opacity: tagOp,
@@ -211,17 +303,35 @@ export const SceneSend: React.FC = () => {
         <div
           style={{
             position: "absolute",
-            left: 0, right: 0, bottom: 168,
+            left: 0,
+            right: 0,
+            bottom: 168,
             textAlign: "center",
             color: COLORS.charcoal,
             opacity: closeP * 0.85,
             transform: `translateY(${(1 - closeP) * 12}px)`,
           }}
         >
-          <div style={{ fontFamily: BODY, fontSize: 13, letterSpacing: "0.42em", textTransform: "uppercase" }}>
+          <div
+            style={{
+              fontFamily: BODY,
+              fontSize: 13,
+              letterSpacing: "0.42em",
+              textTransform: "uppercase",
+            }}
+          >
             Eclectic Hive
           </div>
-          <div style={{ marginTop: 14, fontFamily: BODY, fontSize: 10, letterSpacing: "0.42em", textTransform: "uppercase", opacity: 0.5 }}>
+          <div
+            style={{
+              marginTop: 14,
+              fontFamily: BODY,
+              fontSize: 10,
+              letterSpacing: "0.42em",
+              textTransform: "uppercase",
+              opacity: 0.5,
+            }}
+          >
             /stylebrief
           </div>
         </div>
@@ -230,7 +340,9 @@ export const SceneSend: React.FC = () => {
         <div
           style={{
             position: "absolute",
-            left: 0, right: 0, bottom: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
             display: "grid",
             gridTemplateColumns: `repeat(${REAL_PALETTE.length}, 1fr)`,
             height: 120,
@@ -246,7 +358,8 @@ export const SceneSend: React.FC = () => {
       {/* vignette — outside IndexCard so it covers the whole frame */}
       <div
         style={{
-          position: "absolute", inset: 0,
+          position: "absolute",
+          inset: 0,
           background: "radial-gradient(ellipse at center, transparent 60%, rgba(26,26,26,1) 115%)",
           opacity: vigOp,
           pointerEvents: "none",

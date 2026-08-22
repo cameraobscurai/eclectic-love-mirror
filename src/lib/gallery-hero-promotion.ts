@@ -58,8 +58,6 @@ function bucketFor(key: string): string {
   return base.split("__").slice(0, 2).join("__");
 }
 
-
-
 export function promoteHeroes(
   images: readonly GalleryImage[],
   opts: { topK?: number; pin?: readonly string[] } = {},
@@ -73,9 +71,7 @@ export function promoteHeroes(
     const pinned: GalleryImage[] = [];
     const usedIdx = new Set<number>();
     for (const needle of opts.pin) {
-      const idx = images.findIndex(
-        (img, i) => !usedIdx.has(i) && keyFor(img.src).includes(needle),
-      );
+      const idx = images.findIndex((img, i) => !usedIdx.has(i) && keyFor(img.src).includes(needle));
       if (idx >= 0) {
         pinned.push(images[idx]);
         usedIdx.add(idx);
@@ -145,10 +141,7 @@ export function promoteHeroes(
     }
   }
 
-
   const promotedIdx = new Set(candidates.map((c) => c.idx));
   const rest = scored.filter((s) => !promotedIdx.has(s.idx)).map((s) => s.img);
   return [...candidates.map((c) => c.img), ...rest];
 }
-
-

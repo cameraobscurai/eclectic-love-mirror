@@ -39,19 +39,12 @@ const NAV_LINKS = [
   { href: "/contact", label: "CONTACT", render: "CONTACT" },
 ] as const;
 
-
 // Pages with a light hero where the nav must invert to charcoal text.
 // Collection is intentionally pure white (auction-house archive); cream-hero
 // pages get cream nav, white archive gets white. Gallery is intentionally
 // DARK (cinematic exhibition page) — it stays out of LIGHT_BG_PAGES so the
 // nav renders cream-on-charcoal there.
-const LIGHT_BG_PAGES = [
-  "/",
-  "/atelier",
-  "/collection",
-  "/contact",
-  "/privacy",
-];
+const LIGHT_BG_PAGES = ["/", "/atelier", "/collection", "/contact", "/privacy"];
 
 const WHITE_BG_PAGES = ["/", "/collection"];
 
@@ -106,16 +99,13 @@ export function Navigation() {
     const bare = p.endsWith("/") ? p.slice(0, -1) : p;
     return pathname === bare || pathname.startsWith(bare + "/");
   };
-  const isLightPage =
-    LIGHT_BG_PAGES.includes(pathname) || LIGHT_BG_PREFIXES.some(matchesPrefix);
-  const isWhitePage =
-    WHITE_BG_PAGES.includes(pathname) || WHITE_BG_PREFIXES.some(matchesPrefix);
+  const isLightPage = LIGHT_BG_PAGES.includes(pathname) || LIGHT_BG_PREFIXES.some(matchesPrefix);
+  const isWhitePage = WHITE_BG_PAGES.includes(pathname) || WHITE_BG_PREFIXES.some(matchesPrefix);
 
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY;
-      const docHeight =
-        document.documentElement.scrollHeight - window.innerHeight;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       setProgress(docHeight > 0 ? Math.min(100, (y / docHeight) * 100) : 0);
       setScrolled(y > 40);
       if (y > lastScrollY.current && y > 200) setHidden(true);
@@ -138,7 +128,6 @@ export function Navigation() {
     setIsOpen(false);
     setDropdownOpen(false);
   }, [pathname, location.search]);
-
 
   // Touch / outside-click handler so the desktop dropdown also works on iOS
   // Safari and touch laptops (where :hover never persists on a non-anchor).
@@ -188,14 +177,14 @@ export function Navigation() {
             ? isWhitePage
               ? "bg-white/85 border-charcoal/10"
               : isLightPage
-              ? "bg-cream/85 border-charcoal/10"
-              : "bg-charcoal/70 border-cream/10"
+                ? "bg-cream/85 border-charcoal/10"
+                : "bg-charcoal/70 border-cream/10"
             : isWhitePage
-            ? "bg-white/65 border-charcoal/10"
-            : isLightPage
-            ? "bg-cream/65 border-charcoal/10"
-            : "bg-charcoal/30 border-cream/15",
-          hidden && !isOpen ? "-translate-y-full" : "translate-y-0"
+              ? "bg-white/65 border-charcoal/10"
+              : isLightPage
+                ? "bg-cream/65 border-charcoal/10"
+                : "bg-charcoal/30 border-cream/15",
+          hidden && !isOpen ? "-translate-y-full" : "translate-y-0",
         )}
         style={{
           WebkitBackdropFilter: "blur(14px) saturate(1.5)",
@@ -205,7 +194,7 @@ export function Navigation() {
           aria-label="Primary navigation"
           className={cn(
             "flex items-center justify-between px-6 lg:px-12 transition-all duration-300",
-            scrolled ? "py-3 lg:py-3.5" : "py-4 lg:py-5"
+            scrolled ? "py-3 lg:py-3.5" : "py-4 lg:py-5",
           )}
         >
           <Link to="/" preload="intent" className="relative" aria-label="ECLECTIC HIVE — home">
@@ -217,8 +206,8 @@ export function Navigation() {
                     ? "text-charcoal"
                     : "text-white"
                   : isLightPage
-                  ? "text-charcoal"
-                  : "text-white"
+                    ? "text-charcoal"
+                    : "text-white",
               )}
               /* Saol Display has no 300 upright cut — 400 is the light face. */
               style={{ fontWeight: 400 }}
@@ -273,7 +262,6 @@ export function Navigation() {
                           }
                         : undefined
                     }
-
                     className={cn(
                       "relative group text-[11px] xl:text-[12px] tracking-[0.3em] uppercase font-light transition-colors duration-300",
                       dark
@@ -281,8 +269,8 @@ export function Navigation() {
                           ? "text-white"
                           : "text-white/85 hover:text-white"
                         : active
-                        ? "text-charcoal"
-                        : "text-charcoal/70 hover:text-charcoal"
+                          ? "text-charcoal"
+                          : "text-charcoal/70 hover:text-charcoal",
                     )}
                     style={{ fontWeight: 300 }}
                   >
@@ -291,7 +279,7 @@ export function Navigation() {
                       className={cn(
                         "absolute -bottom-1 left-0 w-full h-px origin-left transition-transform duration-300",
                         dark ? "bg-cream/50" : "bg-charcoal/50",
-                        active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                        active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
                       )}
                     />
                   </Link>
@@ -300,7 +288,7 @@ export function Navigation() {
                       className={cn(
                         "absolute left-1/2 -translate-x-1/2 top-full pt-4 transition-opacity duration-200 z-50",
                         "focus-within:opacity-100 focus-within:visible",
-                        dropdownOpen ? "opacity-100 visible" : "opacity-0 invisible"
+                        dropdownOpen ? "opacity-100 visible" : "opacity-0 invisible",
                       )}
                     >
                       <ul
@@ -311,7 +299,14 @@ export function Navigation() {
                           <li key={pid} role="none">
                             <Link
                               to="/collection"
-                              search={{ group: pid, subcategory: "all", q: "", sort: "type", layout: "grid", view: "" }}
+                              search={{
+                                group: pid,
+                                subcategory: "all",
+                                q: "",
+                                sort: "type",
+                                layout: "grid",
+                                view: "",
+                              }}
                               preload="intent"
                               role="menuitem"
                               onClick={(e) => {
@@ -324,7 +319,6 @@ export function Navigation() {
                             >
                               {PARENT_LABELS[pid]}
                             </Link>
-
                           </li>
                         ))}
                       </ul>
@@ -346,14 +340,14 @@ export function Navigation() {
               className={cn(
                 "w-6 h-px transition-all duration-300",
                 isLightPage ? "bg-charcoal" : "bg-cream",
-                isOpen ? "rotate-45 translate-y-px" : "-translate-y-1"
+                isOpen ? "rotate-45 translate-y-px" : "-translate-y-1",
               )}
             />
             <span
               className={cn(
                 "w-6 h-px transition-all duration-300",
                 isLightPage ? "bg-charcoal" : "bg-cream",
-                isOpen ? "-rotate-45" : "translate-y-1"
+                isOpen ? "-rotate-45" : "translate-y-1",
               )}
             />
           </button>
@@ -362,14 +356,11 @@ export function Navigation() {
         <div
           className={cn(
             "absolute bottom-0 left-0 right-0 h-px",
-            scrolled || !isLightPage ? "bg-cream/5" : "bg-charcoal/10"
+            scrolled || !isLightPage ? "bg-cream/5" : "bg-charcoal/10",
           )}
           aria-hidden
         >
-          <div
-            className="h-full bg-sand"
-            style={{ width: `${progress}%` }}
-          />
+          <div className="h-full bg-sand" style={{ width: `${progress}%` }} />
         </div>
       </header>
 
@@ -387,7 +378,7 @@ export function Navigation() {
         }}
         className={cn(
           "fixed inset-0 z-40 bg-charcoal transition-all duration-700 ease-out",
-          isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none",
         )}
         style={{ overscrollBehavior: "contain" }}
       >
@@ -420,9 +411,7 @@ export function Navigation() {
                 <span
                   className={cn(
                     "font-display text-[5.5vw] sm:text-3xl md:text-4xl tracking-[0.03em] uppercase font-normal transition-colors",
-                    pathname === link.href
-                      ? "text-cream"
-                      : "text-cream/70 hover:text-cream"
+                    pathname === link.href ? "text-cream" : "text-cream/70 hover:text-cream",
                   )}
                 >
                   {link.render}

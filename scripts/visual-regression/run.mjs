@@ -18,12 +18,7 @@ import { PNG } from "pngjs";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import {
-  ROUTES,
-  VIEWPORTS,
-  DIFF_OPTIONS,
-  DEFAULT_BASE_URL,
-} from "./config.mjs";
+import { ROUTES, VIEWPORTS, DIFF_OPTIONS, DEFAULT_BASE_URL } from "./config.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "../..");
@@ -70,9 +65,7 @@ async function captureOne(page, route, viewport) {
   await page.addStyleTag({ content: FREEZE_CSS });
 
   if (route.waitFor) {
-    await page
-      .waitForSelector(route.waitFor, { timeout: 10_000 })
-      .catch(() => null);
+    await page.waitForSelector(route.waitFor, { timeout: 10_000 }).catch(() => null);
   }
   // Settle: fonts + lazy images.
   await page.evaluate(() => document.fonts?.ready);
@@ -111,14 +104,9 @@ function diffImages(baselineFile, currentFile, diffFile) {
     };
   }
   const diff = new PNG({ width: a.width, height: a.height });
-  const changed = pixelmatch(
-    a.data,
-    b.data,
-    diff.data,
-    a.width,
-    a.height,
-    { threshold: DIFF_OPTIONS.threshold },
-  );
+  const changed = pixelmatch(a.data, b.data, diff.data, a.width, a.height, {
+    threshold: DIFF_OPTIONS.threshold,
+  });
   const ratio = changed / (a.width * a.height);
   if (ratio > DIFF_OPTIONS.failPixelRatio) {
     fs.writeFileSync(diffFile, PNG.sync.write(diff));
@@ -180,9 +168,7 @@ async function main() {
   await browser.close();
 
   const failed = results.filter((r) => !r.ok);
-  console.log(
-    `\n[vr] ${results.length - failed.length}/${results.length} passed`,
-  );
+  console.log(`\n[vr] ${results.length - failed.length}/${results.length} passed`);
   if (failed.length) process.exit(1);
 }
 

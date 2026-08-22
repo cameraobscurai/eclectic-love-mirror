@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  getCollectionCatalog,
-  type CollectionProduct,
-} from "@/lib/phase3-catalog";
+import { getCollectionCatalog, type CollectionProduct } from "@/lib/phase3-catalog";
 
 // ---------------------------------------------------------------------------
 // /admin/image-health — verifies that every product card image URL still
@@ -51,10 +48,7 @@ interface Job {
   position: number;
 }
 
-function buildJobs(
-  products: CollectionProduct[],
-  scope: "primary" | "all",
-): Job[] {
+function buildJobs(products: CollectionProduct[], scope: "primary" | "all"): Job[] {
   const jobs: Job[] = [];
   for (const p of products) {
     const imgs = p.images ?? [];
@@ -100,8 +94,12 @@ function ImageHealthPage() {
   const [products, setProducts] = useState<CollectionProduct[]>([]);
   useEffect(() => {
     let alive = true;
-    getCollectionCatalog().then((c) => { if (alive) setProducts(c.products); });
-    return () => { alive = false; };
+    getCollectionCatalog().then((c) => {
+      if (alive) setProducts(c.products);
+    });
+    return () => {
+      alive = false;
+    };
   }, []);
   const [scope, setScope] = useState<"primary" | "all">("primary");
   const [running, setRunning] = useState(false);
@@ -110,10 +108,7 @@ function ImageHealthPage() {
   const [results, setResults] = useState<CheckResult[]>([]);
   const cancelRef = useRef(false);
 
-  const failures = useMemo(
-    () => results.filter((r) => r.status !== "ok"),
-    [results],
-  );
+  const failures = useMemo(() => results.filter((r) => r.status !== "ok"), [results]);
   const okCount = results.length - failures.length;
 
   const run = useCallback(async () => {
@@ -142,9 +137,7 @@ function ImageHealthPage() {
       }
     };
 
-    await Promise.all(
-      Array.from({ length: CONCURRENCY }, () => worker()),
-    );
+    await Promise.all(Array.from({ length: CONCURRENCY }, () => worker()));
     setResults([...collected]);
     setDone(collected.length);
     setRunning(false);
@@ -172,9 +165,7 @@ function ImageHealthPage() {
     const blob = new Blob([csv], { type: "text/csv" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `image-health-failures-${new Date()
-      .toISOString()
-      .replace(/[:.]/g, "-")}.csv`;
+    a.download = `image-health-failures-${new Date().toISOString().replace(/[:.]/g, "-")}.csv`;
     a.click();
     URL.revokeObjectURL(a.href);
   }, [failures]);
@@ -185,10 +176,7 @@ function ImageHealthPage() {
     <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal">
       <div className="px-6 lg:px-12 pt-10 pb-24 max-w-[1500px] mx-auto">
         {/* Header */}
-        <header
-          className="border-b pb-8 mb-10"
-          style={{ borderColor: "var(--archive-rule)" }}
-        >
+        <header className="border-b pb-8 mb-10" style={{ borderColor: "var(--archive-rule)" }}>
           <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
             ADMIN · INTERNAL
           </p>
@@ -216,10 +204,7 @@ function ImageHealthPage() {
                 onClick={() => !running && setScope("all")}
                 disabled={running}
                 label="ALL GALLERY IMAGES"
-                hint={`~${products.reduce(
-                  (a, p) => a + (p.images?.length ?? 0),
-                  0,
-                )} checks`}
+                hint={`~${products.reduce((a, p) => a + (p.images?.length ?? 0), 0)} checks`}
               />
             </div>
 
@@ -274,18 +259,10 @@ function ImageHealthPage() {
           {/* KPI tiles */}
           <div className="lg:col-span-5 grid grid-cols-3 gap-px bg-charcoal/10 border border-charcoal/10 self-start">
             <Kpi label="OK" value={okCount} />
-            <Kpi
-              label="Failed"
-              value={failures.length}
-              accent={failures.length > 0}
-            />
+            <Kpi label="Failed" value={failures.length} accent={failures.length > 0} />
             <Kpi
               label="Pass rate"
-              value={
-                results.length
-                  ? `${((okCount / results.length) * 100).toFixed(1)}%`
-                  : "—"
-              }
+              value={results.length ? `${((okCount / results.length) * 100).toFixed(1)}%` : "—"}
             />
           </div>
         </section>
@@ -297,19 +274,14 @@ function ImageHealthPage() {
               <p className="text-[10px] uppercase tracking-[0.26em] text-charcoal/45">
                 Broken image references
               </p>
-              <h2 className="mt-2 font-display text-2xl uppercase tracking-[0.04em]">
-                Failures
-              </h2>
+              <h2 className="mt-2 font-display text-2xl uppercase tracking-[0.04em]">Failures</h2>
             </div>
             <span className="text-[11px] uppercase tracking-[0.22em] text-charcoal/55 tabular-nums">
               {failures.length} total
             </span>
           </header>
 
-          <div
-            className="border-t border-b"
-            style={{ borderColor: "var(--archive-rule)" }}
-          >
+          <div className="border-t border-b" style={{ borderColor: "var(--archive-rule)" }}>
             {!running && results.length === 0 && (
               <p className="py-10 text-sm text-charcoal/55 text-center">
                 Choose a scope and run the check.
@@ -317,8 +289,7 @@ function ImageHealthPage() {
             )}
             {results.length > 0 && failures.length === 0 && !running && (
               <p className="py-10 text-sm text-charcoal/70 text-center">
-                ✓ All {results.length.toLocaleString()} images loaded
-                successfully.
+                ✓ All {results.length.toLocaleString()} images loaded successfully.
               </p>
             )}
             {failures.length > 0 && (
@@ -344,18 +315,14 @@ function ImageHealthPage() {
                         <td className="py-2.5 pr-4">
                           <StatusBadge status={r.status} />
                         </td>
-                        <td className="py-2.5 pr-4 max-w-[260px] truncate">
-                          {r.title}
-                        </td>
+                        <td className="py-2.5 pr-4 max-w-[260px] truncate">{r.title}</td>
                         <td className="py-2.5 pr-4 text-charcoal/65 text-[11px] uppercase tracking-[0.16em]">
                           {r.category}
                         </td>
                         <td className="py-2.5 pr-4 tabular-nums text-charcoal/55">
                           {r.position === 0 ? "hero" : r.position}
                         </td>
-                        <td className="py-2.5 pr-4 tabular-nums text-charcoal/55">
-                          {r.ms}
-                        </td>
+                        <td className="py-2.5 pr-4 tabular-nums text-charcoal/55">{r.ms}</td>
                         <td className="py-2.5 pr-4">
                           <a
                             href={r.url}
@@ -380,8 +347,7 @@ function ImageHealthPage() {
           className="mt-16 pt-8 border-t text-[10px] uppercase tracking-[0.22em] text-charcoal/40"
           style={{ borderColor: "var(--archive-rule)" }}
         >
-          Internal tool · client-side probes · {CONCURRENCY} parallel ·{" "}
-          {TIMEOUT_MS / 1000}s timeout
+          Internal tool · client-side probes · {CONCURRENCY} parallel · {TIMEOUT_MS / 1000}s timeout
         </footer>
       </div>
     </div>
@@ -434,9 +400,7 @@ function Kpi({
 }) {
   return (
     <div className="bg-cream p-5">
-      <p className="text-[10px] uppercase tracking-[0.26em] text-charcoal/45">
-        {label}
-      </p>
+      <p className="text-[10px] uppercase tracking-[0.26em] text-charcoal/45">{label}</p>
       <p
         className="mt-3 font-display text-[1.75rem] leading-none tabular-nums"
         style={accent ? { color: "var(--sand)" } : undefined}
@@ -448,14 +412,9 @@ function Kpi({
 }
 
 function StatusBadge({ status }: { status: Status }) {
-  const styles =
-    status === "timeout"
-      ? "bg-charcoal/10 text-charcoal"
-      : "bg-charcoal text-cream";
+  const styles = status === "timeout" ? "bg-charcoal/10 text-charcoal" : "bg-charcoal text-cream";
   return (
-    <span
-      className={`inline-block px-2 py-1 text-[9px] uppercase tracking-[0.22em] ${styles}`}
-    >
+    <span className={`inline-block px-2 py-1 text-[9px] uppercase tracking-[0.22em] ${styles}`}>
       {status === "error" ? "404 / err" : status}
     </span>
   );

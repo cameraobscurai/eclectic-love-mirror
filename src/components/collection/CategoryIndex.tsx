@@ -15,12 +15,7 @@ interface CategoryIndexProps {
   variant: "compact" | "expanded";
 }
 
-export function CategoryIndex({
-  facets,
-  activeSlug,
-  onSelect,
-  variant,
-}: CategoryIndexProps) {
+export function CategoryIndex({ facets, activeSlug, onSelect, variant }: CategoryIndexProps) {
   const reduced = useReducedMotion();
 
   if (variant === "compact") {
@@ -34,9 +29,7 @@ export function CategoryIndex({
               onClick={() => onSelect(f.slug)}
               className={cn(
                 "relative whitespace-nowrap text-[11px] uppercase tracking-[0.18em] py-1 transition-colors",
-                active
-                  ? "text-charcoal"
-                  : "text-charcoal/55 hover:text-charcoal",
+                active ? "text-charcoal" : "text-charcoal/55 hover:text-charcoal",
               )}
             >
               {f.display}{" "}
@@ -53,9 +46,7 @@ export function CategoryIndex({
                   layoutId="collection-desktop-nav-active"
                   className="absolute left-0 right-0 -bottom-0.5 h-[1.5px] bg-charcoal"
                   transition={
-                    reduced
-                      ? { duration: 0 }
-                      : { type: "spring", stiffness: 500, damping: 35 }
+                    reduced ? { duration: 0 } : { type: "spring", stiffness: 500, damping: 35 }
                   }
                 />
               )}
@@ -89,12 +80,8 @@ export function CategoryIndex({
               className="group flex w-full items-center justify-between py-3 text-left transition-colors hover:text-charcoal"
             >
               <span className="flex items-baseline gap-2 min-w-0">
-                <span className="text-sm text-charcoal truncate">
-                  {f.display}
-                </span>
-                <span className="text-[11px] tabular-nums text-charcoal/40">
-                  {f.count}
-                </span>
+                <span className="text-sm text-charcoal truncate">{f.display}</span>
+                <span className="text-[11px] tabular-nums text-charcoal/40">{f.count}</span>
               </span>
               <span
                 aria-hidden

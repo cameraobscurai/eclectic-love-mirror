@@ -24,10 +24,10 @@ function walk(dir, out = []) {
   return out;
 }
 
-const files = [
-  ...walk(path.join(ROOT, "scripts")),
-  ...walk(path.join(ROOT, "src")),
-].map((f) => ({ file: path.relative(ROOT, f), text: fs.readFileSync(f, "utf8") }));
+const files = [...walk(path.join(ROOT, "scripts")), ...walk(path.join(ROOT, "src"))].map((f) => ({
+  file: path.relative(ROOT, f),
+  text: fs.readFileSync(f, "utf8"),
+}));
 
 // ---------------------------------------------------------------------------
 // R1 — no new bytes at a published image URL
@@ -49,16 +49,12 @@ const R1_ALLOWLIST = new Map([
     "scripts/backup/download-squarespace.mjs",
     "one-time archival mirror of the legacy CDN into cold storage; not a live cover path",
   ],
-  [
-    "scripts/backup/mirror-catalog-extras.mjs",
-    "one-time archival mirror; not a live cover path",
-  ],
+  ["scripts/backup/mirror-catalog-extras.mjs", "one-time archival mirror; not a live cover path"],
 ]);
 
 // An upload whose contentType is an image, or whose payload is clearly image
 // bytes, is the thing R1 governs.
-const IMAGE_UPSERT =
-  /upsert:\s*true/;
+const IMAGE_UPSERT = /upsert:\s*true/;
 const r1Retired = new Set();
 const IMAGE_HINT = /image\/(png|jpe?g|webp|avif)|\.png|\.jpg|\.jpeg|\.webp|\.avif/i;
 
@@ -115,9 +111,7 @@ const isPublicSurface = (f) =>
 
 const r2Current = files
   .filter(({ file }) => isPublicSurface(file))
-  .filter(({ text }) =>
-    R2_MODULES.some((m) => new RegExp(`from\\s+["'][^"']*${m}["']`).test(text)),
-  )
+  .filter(({ text }) => R2_MODULES.some((m) => new RegExp(`from\\s+["'][^"']*${m}["']`).test(text)))
   .map(({ file }) => file)
   .sort();
 
@@ -189,15 +183,23 @@ for (const { file, text } of files) {
 // ---------------------------------------------------------------------------
 console.log("=== rules-check (docs/DECISIONS.md) ===\n");
 for (const v of violations) {
-  console.error(`  ${v.rule}  ${v.file}${v.line ? `:${v.line}` : ""}\n      ${v.msg}\n      see docs/DECISIONS.md#${v.rule.toLowerCase()}\n`);
+  console.error(
+    `  ${v.rule}  ${v.file}${v.line ? `:${v.line}` : ""}\n      ${v.msg}\n      see docs/DECISIONS.md#${v.rule.toLowerCase()}\n`,
+  );
 }
-console.log(`R1 image-byte overwrites: ${violations.filter((v) => v.rule === "R1").length} violation(s)`);
+console.log(
+  `R1 image-byte overwrites: ${violations.filter((v) => v.rule === "R1").length} violation(s)`,
+);
 if (r1Retired.size) {
   console.log(`R1 retired scripts (guarded by ALLOW_R1_OVERWRITE, ${r1Retired.size}):`);
   for (const f of [...r1Retired].sort()) console.log(`  \u00b7 ${f}`);
 }
-console.log(`R2 public pixel measurement: ${r2Current.length} importer(s), baseline ${fs.existsSync(baselinePath) ? "locked" : "not set"}`);
-console.log(`R9 retired upscaler column writes: ${violations.filter((v) => v.rule === "R9").length} violation(s)`);
+console.log(
+  `R2 public pixel measurement: ${r2Current.length} importer(s), baseline ${fs.existsSync(baselinePath) ? "locked" : "not set"}`,
+);
+console.log(
+  `R9 retired upscaler column writes: ${violations.filter((v) => v.rule === "R9").length} violation(s)`,
+);
 if (r7.length) {
   console.log(`\nR7 advisory — writing scripts with no dry-run flag (${r7.length}):`);
   for (const f of r7) console.log(`  · ${f}`);

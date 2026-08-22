@@ -44,7 +44,12 @@ async function requireAdminFromRequest(request: Request) {
 }
 
 function safeFilename(input: string) {
-  return input.replace(/[^a-z0-9._-]+/gi, "-").replace(/-+/g, "-").replace(/^-|-$/g, "") || "render.png";
+  return (
+    input
+      .replace(/[^a-z0-9._-]+/gi, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "") || "render.png"
+  );
 }
 
 export const Route = createFileRoute("/api/admin-render")({
@@ -67,9 +72,12 @@ export const Route = createFileRoute("/api/admin-render")({
         const { data: file, error: dlErr } = await admin.supabaseAdmin.storage
           .from("studio-renders")
           .download(row.storage_path);
-        if (dlErr || !file) return new Response(dlErr?.message || "Download failed", { status: 500 });
+        if (dlErr || !file)
+          return new Response(dlErr?.message || "Download failed", { status: 500 });
 
-        const filename = safeFilename(`${row.rms_id ?? "render"}-${row.preset}-${row.id.slice(0, 8)}.png`);
+        const filename = safeFilename(
+          `${row.rms_id ?? "render"}-${row.preset}-${row.id.slice(0, 8)}.png`,
+        );
         return new Response(file, {
           headers: {
             "Content-Type": "image/png",
@@ -167,7 +175,8 @@ export const Route = createFileRoute("/api/admin-render")({
               .select("id, storage_path")
               .single();
 
-            if (insErr || !row) return new Response(insErr?.message || "Save failed", { status: 500 });
+            if (insErr || !row)
+              return new Response(insErr?.message || "Save failed", { status: 500 });
             return Response.json({ id: row.id, storagePath: row.storage_path });
           } catch (error) {
             const message = error instanceof Error ? error.message : String(error);
@@ -222,7 +231,8 @@ export const Route = createFileRoute("/api/admin-render")({
               .select("id, storage_path")
               .single();
 
-            if (insErr || !row) return new Response(insErr?.message || "Save failed", { status: 500 });
+            if (insErr || !row)
+              return new Response(insErr?.message || "Save failed", { status: 500 });
             return Response.json({ id: row.id, storagePath: row.storage_path });
           } catch (error) {
             const message = error instanceof Error ? error.message : String(error);
@@ -242,9 +252,12 @@ export const Route = createFileRoute("/api/admin-render")({
           const { data: file, error: dlErr } = await admin.supabaseAdmin.storage
             .from("studio-renders")
             .download(row.storage_path);
-          if (dlErr || !file) return new Response(dlErr?.message || "Download failed", { status: 500 });
+          if (dlErr || !file)
+            return new Response(dlErr?.message || "Download failed", { status: 500 });
 
-          const filename = safeFilename(`${row.rms_id ?? "render"}-${row.preset}-${row.id.slice(0, 8)}.png`);
+          const filename = safeFilename(
+            `${row.rms_id ?? "render"}-${row.preset}-${row.id.slice(0, 8)}.png`,
+          );
           return new Response(file, {
             headers: {
               "Content-Type": "image/png",
@@ -257,11 +270,14 @@ export const Route = createFileRoute("/api/admin-render")({
         if (!body.refImageUrl) return new Response("Missing refImageUrl", { status: 400 });
 
         const presetText = PRESET_PROMPTS[body.preset ?? "white_room"] ?? PRESET_PROMPTS.white_room;
-        const extra = body.extraPrompt?.trim() ? `\n\nAdditional direction: ${body.extraPrompt.trim()}` : "";
+        const extra = body.extraPrompt?.trim()
+          ? `\n\nAdditional direction: ${body.extraPrompt.trim()}`
+          : "";
         const titleLine = body.productTitle?.trim()
           ? `Reference product: "${body.productTitle.trim()}".`
           : "";
-        const prompt = `${titleLine}\n${presetText}${extra}\n\nUse the attached photo as the visual reference for the product itself.`.trim();
+        const prompt =
+          `${titleLine}\n${presetText}${extra}\n\nUse the attached photo as the visual reference for the product itself.`.trim();
 
         const apiKey = process.env.LOVABLE_API_KEY;
         if (!apiKey) return new Response("Missing LOVABLE_API_KEY", { status: 500 });
@@ -289,7 +305,9 @@ export const Route = createFileRoute("/api/admin-render")({
         });
         if (!upstream.ok || !upstream.body) {
           const errText = await upstream.text().catch(() => "");
-          return new Response(errText || `Upstream ${upstream.status}`, { status: upstream.status });
+          return new Response(errText || `Upstream ${upstream.status}`, {
+            status: upstream.status,
+          });
         }
         return new Response(upstream.body, {
           headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache" },

@@ -80,15 +80,17 @@ export const getStudioWorkspace = createServerFn({ method: "GET" })
 export const signInspoUploadUrl = createServerFn({ method: "POST" })
   .middleware([requireAdmin])
   .inputValidator((d) =>
-    z.object({
-      inquiryId: z.string().uuid(),
-      ext: z.string().regex(/^[a-z0-9]{1,8}$/i),
-    }).parse(d),
+    z
+      .object({
+        inquiryId: z.string().uuid(),
+        ext: z.string().regex(/^[a-z0-9]{1,8}$/i),
+      })
+      .parse(d),
   )
   .handler(async ({ data }) => {
     const path = `${data.inquiryId}/${crypto.randomUUID()}.${data.ext.toLowerCase()}`;
-    const { data: signed, error } = await supabaseAdmin
-      .storage.from("studio-inspo")
+    const { data: signed, error } = await supabaseAdmin.storage
+      .from("studio-inspo")
       .createSignedUploadUrl(path);
     if (error) throw error;
     return { uploadUrl: signed.signedUrl, token: signed.token, storage_path: path };
@@ -100,8 +102,8 @@ export const getInspoSignedUrls = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const out: Record<string, string> = {};
     if (!data.paths.length) return out;
-    const { data: signed, error } = await supabaseAdmin
-      .storage.from("studio-inspo")
+    const { data: signed, error } = await supabaseAdmin.storage
+      .from("studio-inspo")
       .createSignedUrls(data.paths, 60 * 60);
     if (error) throw error;
     for (const s of signed ?? []) {
@@ -123,11 +125,13 @@ const saveBoardSchema = z.object({
   inquiryId: z.string().uuid(),
   boardId: z.string().uuid().nullable(),
   status: z.enum(["draft", "ready", "sent"]),
-  inspo: z.array(z.object({
-    id: z.string(),
-    name: z.string(),
-    storage_path: z.string(),
-  })),
+  inspo: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      storage_path: z.string(),
+    }),
+  ),
   pinned: z.array(z.string()),
   pinNotes: z.record(z.string(), z.string()).default({}),
   palette: z.array(z.any()),
@@ -173,7 +177,9 @@ export const saveStyleBoard = createServerFn({ method: "POST" })
 // Derive a human display name from auth user. Prefers user_metadata.full_name,
 // then user_metadata.name, then the email local part titlecased. Never returns
 // an empty string — falls back to "The Studio".
-function deriveSenderName(user: { email?: string | null; user_metadata?: Record<string, unknown> | null } | null): string {
+function deriveSenderName(
+  user: { email?: string | null; user_metadata?: Record<string, unknown> | null } | null,
+): string {
   const meta = (user?.user_metadata ?? {}) as Record<string, unknown>;
   const full = typeof meta.full_name === "string" ? meta.full_name.trim() : "";
   if (full) return full;
@@ -281,7 +287,11 @@ Return JSON matching the schema.`;
     });
 
     if (!output) return null;
-    const title = output.project_title.trim().replace(/^["'""]+|["'""]+$/g, "").replace(/\.$/, "").trim();
+    const title = output.project_title
+      .trim()
+      .replace(/^["'""]+|["'""]+$/g, "")
+      .replace(/\.$/, "")
+      .trim();
     const word = output.section_word.trim().replace(/[^A-Za-z]/g, "");
     if (!title || title.split(/\s+/).length > 8) return null;
     if (!word) return null;
@@ -341,7 +351,9 @@ export const markBoardSent = createServerFn({ method: "POST" })
     // regenerates instead (see regenerateShareToken).
     const { data: existing, error: exErr } = await supabaseAdmin
       .from("style_boards")
-      .select("id,share_token_hash,share_token_expires_at,share_token_revoked_at,status,project_title,section_word,production_notes,prepared_by_name,palette,tones,curator_notes,inquiry_id,pinned_rms_ids")
+      .select(
+        "id,share_token_hash,share_token_expires_at,share_token_revoked_at,status,project_title,section_word,production_notes,prepared_by_name,palette,tones,curator_notes,inquiry_id,pinned_rms_ids",
+      )
       .eq("id", data.boardId)
       .single();
     if (exErr) throw exErr;
@@ -376,7 +388,6 @@ export const markBoardSent = createServerFn({ method: "POST" })
       // Clear any prior revoke (shouldn't happen on first send, but idempotent).
       update.share_token_revoked_at = null;
 
-
       // Capture sender from authenticated admin.
       try {
         const { data: userData } = await supabaseAdmin.auth.admin.getUserById(context.userId);
@@ -390,7 +401,8 @@ export const markBoardSent = createServerFn({ method: "POST" })
       }
 
       // AI-derive editorial copy if not already set.
-      const existingTitle = (existing as unknown as { project_title?: string | null }).project_title;
+      const existingTitle = (existing as unknown as { project_title?: string | null })
+        .project_title;
       if (!existingTitle) {
         const { data: inq } = await supabaseAdmin
           .from("inquiries")
@@ -461,7 +473,6 @@ export const markBoardSent = createServerFn({ method: "POST" })
 
     // share_token is the one-time raw value, not a stored column.
     return { ...(row as unknown as StyleBoardRow), share_token: token };
-
   });
 
 // Revoke a board's share link. Idempotent — safe to call on already-revoked
@@ -477,7 +488,10 @@ export const revokeShareToken = createServerFn({ method: "POST" })
       .select("id,share_token_revoked_at")
       .single();
     if (error) throw error;
-    return { boardId: row.id, revokedAt: (row as unknown as { share_token_revoked_at: string }).share_token_revoked_at };
+    return {
+      boardId: row.id,
+      revokedAt: (row as unknown as { share_token_revoked_at: string }).share_token_revoked_at,
+    };
   });
 
 // Regenerate a board's share link. The previous link stops working the
@@ -502,7 +516,6 @@ export const regenerateShareToken = createServerFn({ method: "POST" })
     return { boardId: data.boardId, shareToken: token };
   });
 
-
 // ---- Client email on first send ------------------------------------------
 // Renders the `style-board-ready` React Email template and enqueues it on
 // the `transactional_emails` pgmq queue. Mirrors the pattern used by
@@ -512,7 +525,9 @@ export const regenerateShareToken = createServerFn({ method: "POST" })
 function generateUnsubToken(): string {
   const bytes = new Uint8Array(32);
   crypto.getRandomValues(bytes);
-  return Array.from(bytes).map((b) => b.toString(16).padStart(2, "0")).join("");
+  return Array.from(bytes)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 async function enqueueStyleBoardEmail(input: {
@@ -566,7 +581,8 @@ async function enqueueStyleBoardEmail(input: {
   }
 
   // Pinned preview — first 4 items with title/category/image.
-  const pinnedPreview: Array<{ title: string; category: string | null; image_url: string | null }> = [];
+  const pinnedPreview: Array<{ title: string; category: string | null; image_url: string | null }> =
+    [];
   if (input.pinnedRmsIds.length) {
     const { data: rows } = await supabaseAdmin
       .from("inventory_items")
@@ -579,7 +595,7 @@ async function enqueueStyleBoardEmail(input: {
       if (!r) continue;
       const imgs = (r.images ?? []) as Array<{ url?: string } | string>;
       const first = imgs[0];
-      const url = typeof first === "string" ? first : first?.url ?? null;
+      const url = typeof first === "string" ? first : (first?.url ?? null);
       pinnedPreview.push({
         title: r.title ?? "",
         category: r.category ?? null,
@@ -693,21 +709,25 @@ export const listStudioBoards = createServerFn({ method: "GET" })
   .handler(async () => {
     const { data, error } = await supabaseAdmin
       .from("style_boards")
-      .select("id,inquiry_id,status,updated_at,share_token_hash,share_token_revoked_at,pinned_rms_ids,inspo_images,inquiries!inner(name,subject)")
+      .select(
+        "id,inquiry_id,status,updated_at,share_token_hash,share_token_revoked_at,pinned_rms_ids,inspo_images,inquiries!inner(name,subject)",
+      )
       .order("updated_at", { ascending: false })
       .limit(50);
     if (error) throw error;
-    return ((data ?? []) as unknown as Array<{
-      id: string;
-      inquiry_id: string;
-      status: "draft" | "ready" | "sent";
-      updated_at: string;
-      share_token_hash: string | null;
-      share_token_revoked_at: string | null;
-      pinned_rms_ids: string[];
-      inspo_images: unknown[];
-      inquiries: { name: string; subject: string | null };
-    }>).map((r) => ({
+    return (
+      (data ?? []) as unknown as Array<{
+        id: string;
+        inquiry_id: string;
+        status: "draft" | "ready" | "sent";
+        updated_at: string;
+        share_token_hash: string | null;
+        share_token_revoked_at: string | null;
+        pinned_rms_ids: string[];
+        inspo_images: unknown[];
+        inquiries: { name: string; subject: string | null };
+      }>
+    ).map((r) => ({
       id: r.id,
       inquiry_id: r.inquiry_id,
       status: r.status,
@@ -769,15 +789,15 @@ export const getStyleBoardByToken = createServerFn({ method: "POST" })
     if (error) throw error;
     if (!board) throw new Response("Not found", { status: 404 });
 
-
     // Reject revoked or expired links.
-    const revokedAt = (board as unknown as { share_token_revoked_at: string | null }).share_token_revoked_at;
-    const expiresAt = (board as unknown as { share_token_expires_at: string | null }).share_token_expires_at;
+    const revokedAt = (board as unknown as { share_token_revoked_at: string | null })
+      .share_token_revoked_at;
+    const expiresAt = (board as unknown as { share_token_expires_at: string | null })
+      .share_token_expires_at;
     if (revokedAt) throw new Response("Not found", { status: 404 });
     if (expiresAt && new Date(expiresAt).getTime() < Date.now()) {
       throw new Response("Not found", { status: 404 });
     }
-
 
     const { data: inq } = await supabaseAdmin
       .from("inquiries")
@@ -786,15 +806,15 @@ export const getStyleBoardByToken = createServerFn({ method: "POST" })
       .maybeSingle();
 
     // Sign inspo URLs.
-    const inspoRecords = ((board.inspo_images ?? []) as unknown) as InspoImageRecord[];
+    const inspoRecords = (board.inspo_images ?? []) as unknown as InspoImageRecord[];
     const paths = inspoRecords.map((i) => i.storage_path);
-    let signedMap: Record<string, string> = {};
+    const signedMap: Record<string, string> = {};
     if (paths.length) {
       // Signed URLs are re-minted on every share-page load (this loader runs
       // per view). 7-day TTL is a safety margin for link previews and async
       // opens; the actual freshness comes from re-signing per request.
-      const { data: signed } = await supabaseAdmin
-        .storage.from("studio-inspo")
+      const { data: signed } = await supabaseAdmin.storage
+        .from("studio-inspo")
         .createSignedUrls(paths, 60 * 60 * 24 * 7);
       for (const s of signed ?? []) {
         if (s.path && s.signedUrl) signedMap[s.path] = s.signedUrl;
@@ -820,7 +840,9 @@ export const getStyleBoardByToken = createServerFn({ method: "POST" })
         const image_url =
           typeof first === "string"
             ? first
-            : first && typeof first === "object" && "url" in first &&
+            : first &&
+                typeof first === "object" &&
+                "url" in first &&
                 typeof (first as { url: unknown }).url === "string"
               ? (first as { url: string }).url
               : null;
@@ -835,16 +857,19 @@ export const getStyleBoardByToken = createServerFn({ method: "POST" })
       }
     }
 
-
     // Increment view count (non-fatal).
     void supabaseAdmin
       .from("style_boards")
       .update({
-        client_view_count: ((board as unknown as { client_view_count?: number }).client_view_count ?? 0) + 1,
+        client_view_count:
+          ((board as unknown as { client_view_count?: number }).client_view_count ?? 0) + 1,
         last_viewed_at: new Date().toISOString(),
       })
       .eq("id", board.id)
-      .then(() => undefined, () => undefined);
+      .then(
+        () => undefined,
+        () => undefined,
+      );
 
     return {
       id: board.id,
@@ -854,17 +879,21 @@ export const getStyleBoardByToken = createServerFn({ method: "POST" })
       palette: (board.palette ?? []) as {}[],
       tones: (board.tones ?? {}) as Record<string, {}>,
       insights: (board.insights ?? []) as {}[],
-      inspo: inspoRecords.map((i) => ({
-        id: i.id,
-        name: i.name,
-        url: signedMap[i.storage_path] ?? "",
-      })).filter((i) => i.url),
+      inspo: inspoRecords
+        .map((i) => ({
+          id: i.id,
+          name: i.name,
+          url: signedMap[i.storage_path] ?? "",
+        }))
+        .filter((i) => i.url),
       pinned: items,
       client_name: inq?.name ?? "",
       cover_pinned_rms_id: board.cover_pinned_rms_id ?? null,
       project_title: (board as unknown as { project_title?: string | null }).project_title ?? null,
-      prepared_by_name: (board as unknown as { prepared_by_name?: string | null }).prepared_by_name ?? null,
+      prepared_by_name:
+        (board as unknown as { prepared_by_name?: string | null }).prepared_by_name ?? null,
       section_word: (board as unknown as { section_word?: string | null }).section_word ?? null,
-      production_notes: ((board as unknown as { production_notes?: Record<string, string> }).production_notes ?? {}),
+      production_notes:
+        (board as unknown as { production_notes?: Record<string, string> }).production_notes ?? {},
     } satisfies PublicStyleBoard;
   });

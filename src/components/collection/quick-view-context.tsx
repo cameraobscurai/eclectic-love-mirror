@@ -49,9 +49,7 @@ export function QuickViewCatalogProvider({ children }: { children: ReactNode }) 
   );
 
   return (
-    <QuickViewCatalogContext.Provider value={value}>
-      {children}
-    </QuickViewCatalogContext.Provider>
+    <QuickViewCatalogContext.Provider value={value}>{children}</QuickViewCatalogContext.Provider>
   );
 }
 

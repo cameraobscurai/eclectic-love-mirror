@@ -98,14 +98,18 @@ export interface BohTool {
 }
 
 export const TOOL_RAIL: BohTool[] = [
-  { label: "INBOX", route: "/admin/insights", desc: "Inquiry pipeline · new → quoted → booked", countKey: "openInquiries" },
+  {
+    label: "INBOX",
+    route: "/admin/insights",
+    desc: "Inquiry pipeline · new → quoted → booked",
+    countKey: "openInquiries",
+  },
   { label: "PRODUCTS", route: "/admin/products", desc: "Catalog records", countKey: "totalItems" },
   { label: "PHOTOS", route: "/admin/photos", desc: "Image binder" },
   { label: "TEAM", route: "/admin/team", desc: "Roles & invites" },
   // Hidden, routes still live: /admin/colors (AI color tags),
   // /admin/image-health (diagnostics). Diagnostic surfaces, not daily tools.
 ];
-
 
 // ————————————————————————————————————————————— per-page tools (zoom rail)
 export interface PageTool {
@@ -116,14 +120,30 @@ export interface PageTool {
 
 export const PAGE_TOOLS: Record<string, PageTool[]> = {
   home: [
-    { title: "HERO CLIPS", sub: "Swap or reorder the seasonal videos.", route: "/admin/upload-hero" },
+    {
+      title: "HERO CLIPS",
+      sub: "Swap or reorder the seasonal videos.",
+      route: "/admin/upload-hero",
+    },
   ],
   collection: [
-    { title: "EDITORIAL ORDER", sub: "Reorder the archive (editorial sort is the default view).", route: "/admin/products" },
-    { title: "PHOTO COVERAGE", sub: "Products missing images.", route: "/admin/photos?filter=missing" }, // needs PATCHES.md §1
+    {
+      title: "EDITORIAL ORDER",
+      sub: "Reorder the archive (editorial sort is the default view).",
+      route: "/admin/products",
+    },
+    {
+      title: "PHOTO COVERAGE",
+      sub: "Products missing images.",
+      route: "/admin/photos?filter=missing",
+    }, // needs PATCHES.md §1
   ],
   atelier: [
-    { title: "PROCESS IMAGES", sub: "Swap fabrication photography.", route: "/admin/photos?page=atelier" }, // needs PATCHES.md §1
+    {
+      title: "PROCESS IMAGES",
+      sub: "Swap fabrication photography.",
+      route: "/admin/photos?page=atelier",
+    }, // needs PATCHES.md §1
   ],
   gallery: [
     { title: "EVENT SETS", sub: "Add or reorder gallery sets.", route: "/admin/gallery" },

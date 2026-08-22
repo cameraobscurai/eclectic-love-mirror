@@ -28,18 +28,18 @@ lines: one attribute on the public component, one registry entry.
 
 ## Current keys
 
-| key | surface | destination |
-|---|---|---|
-| `home.hero` | seasonal hero | `/admin/home-hero` |
-| `home.strip` | seasonal filmstrip | `/admin/home-hero#strip` |
-| `collection.title` | page headline | `/admin/pages/collection` |
-| `atelier.copy` | headline + evolution text | `/admin/pages/atelier` |
-| `atelier.images` | fabrication photography | `/admin/photos?page=atelier` |
-| `gallery.sets` | event set grid | `/admin/gallery` |
-| `stylebrief.form` | intake form | `/admin/stylebrief` |
-| `contact.form` | inquiry form | `/admin/insights` |
-| `product:{id}` | any product card | `/admin/products?id={id}` |
-| `photo:{id}` | any product image | `/admin/photos?product={id}` |
+| key                | surface                   | destination                  |
+| ------------------ | ------------------------- | ---------------------------- |
+| `home.hero`        | seasonal hero             | `/admin/home-hero`           |
+| `home.strip`       | seasonal filmstrip        | `/admin/home-hero#strip`     |
+| `collection.title` | page headline             | `/admin/pages/collection`    |
+| `atelier.copy`     | headline + evolution text | `/admin/pages/atelier`       |
+| `atelier.images`   | fabrication photography   | `/admin/photos?page=atelier` |
+| `gallery.sets`     | event set grid            | `/admin/gallery`             |
+| `stylebrief.form`  | intake form               | `/admin/stylebrief`          |
+| `contact.form`     | inquiry form              | `/admin/insights`            |
+| `product:{id}`     | any product card          | `/admin/products?id={id}`    |
+| `photo:{id}`       | any product image         | `/admin/photos?product={id}` |
 
 ## Constraints
 

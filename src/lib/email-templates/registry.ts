@@ -1,22 +1,22 @@
-import type { ComponentType } from 'react'
-import { template as inquiryNotification } from './inquiry-notification'
-import { template as inquiryConfirmation } from './inquiry-confirmation'
-import { template as styleBoardReady } from './style-board-ready'
+import type { ComponentType } from "react";
+import { template as inquiryNotification } from "./inquiry-notification";
+import { template as inquiryConfirmation } from "./inquiry-confirmation";
+import { template as styleBoardReady } from "./style-board-ready";
 
 export interface TemplateEntry {
-  component: ComponentType<any>
-  subject: string | ((data: Record<string, any>) => string)
-  displayName?: string
-  previewData?: Record<string, any>
+  component: ComponentType<any>;
+  subject: string | ((data: Record<string, any>) => string);
+  displayName?: string;
+  previewData?: Record<string, any>;
   /** Fixed recipient — overrides caller-provided recipientEmail when set. */
-  to?: string
+  to?: string;
 }
 
 /**
  * Template registry — maps template names to their React Email components.
  */
 export const TEMPLATES: Record<string, TemplateEntry> = {
-  'inquiry-notification': inquiryNotification,
-  'inquiry-confirmation': inquiryConfirmation,
-  'style-board-ready': styleBoardReady,
-}
+  "inquiry-notification": inquiryNotification,
+  "inquiry-confirmation": inquiryConfirmation,
+  "style-board-ready": styleBoardReady,
+};

@@ -24,5 +24,4 @@ export function isStaleError(e: unknown): boolean {
   return typeof msg === "string" && msg.startsWith("STALE");
 }
 
-export const STALE_MESSAGE =
-  "someone else edited this item. Refresh and try again.";
+export const STALE_MESSAGE = "someone else edited this item. Refresh and try again.";

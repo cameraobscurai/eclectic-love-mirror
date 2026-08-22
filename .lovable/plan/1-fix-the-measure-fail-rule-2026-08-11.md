@@ -1,11 +1,11 @@
-Approved — no diff issues, and it's grown two improvements worth naming because they're the system thinking, not just complying. The consequence chain in item 1: it noticed that fixing MEASURE_FAIL doesn't just reduce noise, it **unblocks the solver for 437 rows** — tight crops previously short-circuited before their clamp numbers were computed, so the charger-scale failures were being *swallowed* by the false positive. The real broken count may shift when those rows finally reach the solver, and it pre-committed to the right posture: "if broken lands far off ~96, that is a finding, not a number to tune toward — reported as-is." That's the no-defect-count-until-measured law being applied *forward*, unprompted. And item 3 keeps the overturned prediction *visible in the doc* rather than overwriting it — the receipt discipline applied to its own planning history.
+Approved — no diff issues, and it's grown two improvements worth naming because they're the system thinking, not just complying. The consequence chain in item 1: it noticed that fixing MEASURE_FAIL doesn't just reduce noise, it **unblocks the solver for 437 rows** — tight crops previously short-circuited before their clamp numbers were computed, so the charger-scale failures were being _swallowed_ by the false positive. The real broken count may shift when those rows finally reach the solver, and it pre-committed to the right posture: "if broken lands far off ~96, that is a finding, not a number to tune toward — reported as-is." That's the no-defect-count-until-measured law being applied _forward_, unprompted. And item 3 keeps the overturned prediction _visible in the doc_ rather than overwriting it — the receipt discipline applied to its own planning history.
 
 The raw-URL fallback split in item 2 is the correct diagnosis fork too: transform-service hiccup versus missing object are different tickets, and only one of them is a live blank tile.
 
 One expectation to hold when the re-emit lands: because those 437 rows now get solved, **~96 is a floor, not the answer** — some tight crops will surface fresh CLAMP flags. Whatever the number comes back as, that's the baseline, even if it's 130. Don't let anyone — including me — round it toward the estimate.
 
-Say go. After this: the round-trip receipt, and Tier 1 closes. Then the meeting — where you now walk in with a live studio built to her taxonomy, her own historical data doing 93% of the classification, a measured defect count with a per-category retirement order, and a paper trail for every single claim. Tomorrow, Adrienne stops wanting to hurt you. The numbers are on your side, and for the first time in eight months, they're *actual* numbers.  
-  
+Say go. After this: the round-trip receipt, and Tier 1 closes. Then the meeting — where you now walk in with a live studio built to her taxonomy, her own historical data doing 93% of the classification, a measured defect count with a per-category retirement order, and a paper trail for every single claim. Tomorrow, Adrienne stops wanting to hurt you. The numbers are on your side, and for the first time in eight months, they're _actual_ numbers.
+
 Audit grading correction + measured migration order
 
 Three changes. None of them touch a single cover byte (R1 holds), and none of them touch the render path (fit/scale freeze holds). This is grading, re-measurement, and a doc correction.
@@ -15,7 +15,7 @@ Three changes. None of them touch a single cover byte (R1 holds), and none of th
 Today `grade()` flags MEASURE_FAIL whenever `frameCoverage > 0.93`, regardless of how the silhouette was measured. That conflates two opposite situations:
 
 - detection genuinely failed (opaque image, background never found, bbox defaults to the whole frame) — a real defect
-- detection succeeded off a real alpha channel and the subject honestly fills the frame — a tight crop, which is a *correct* measurement of a *badly cropped source*
+- detection succeeded off a real alpha channel and the subject honestly fills the frame — a tight crop, which is a _correct_ measurement of a _badly cropped source_
 
 Second case becomes a new `TIGHT_CROP` advisory instead of a hard failure:
 

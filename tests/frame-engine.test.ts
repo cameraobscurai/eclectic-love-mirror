@@ -25,12 +25,7 @@ import {
   type FrameRecipe,
 } from "../src/lib/frame-engine";
 import { framedCoverPath, framedHash16 } from "../src/lib/frame-hash";
-import {
-  alphaImage,
-  composeToCanvas,
-  dirtyBgImage,
-  whiteBgImage,
-} from "./fixtures/synthetic";
+import { alphaImage, composeToCanvas, dirtyBgImage, whiteBgImage } from "./fixtures/synthetic";
 
 // ─── measureSilhouette ──────────────────────────────────────────────────────
 
@@ -124,7 +119,6 @@ describe("anchor signs", () => {
     ).toContain("V2");
   });
 
-
   it("keys anchors off category, never collection", () => {
     expect(resolveRule("chandeliers", "lighting").anchor).toBe("top");
     expect(resolveRule("floor-lamps", "lighting").anchor).toBe("bottom");
@@ -214,9 +208,9 @@ describe("canonicalizeRecipe / framedHash16", () => {
   it("omits absent Phase 3.5 keys instead of nulling them", () => {
     expect(canonicalizeRecipe(withAbsentKeys)).toBe(canonicalizeRecipe(base));
     // Defensive nulls cannot move a hash either.
-    expect(
-      canonicalizeRecipe({ ...base, crop: null as never, rotate: null as never }),
-    ).toBe(canonicalizeRecipe(base));
+    expect(canonicalizeRecipe({ ...base, crop: null as never, rotate: null as never })).toBe(
+      canonicalizeRecipe(base),
+    );
   });
 
   it("hashes a placement-only recipe identically with and without absent keys", async () => {

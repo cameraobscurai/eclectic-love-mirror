@@ -55,7 +55,6 @@ export function ProductStage({ product, className, onOpenLightbox, activeImageUr
     setActiveIdx(forcedIdx ?? 0);
   }, [product.id, forcedIdx]);
 
-
   // Same solver as the browse grid, detail context: the PDP hero keeps the
   // cross-product size relationship a shopper just saw in the archive instead
   // of letting every product fill the mat edge to edge.
@@ -69,10 +68,7 @@ export function ProductStage({ product, className, onOpenLightbox, activeImageUr
 
   return (
     <div className={cn("flex flex-col items-center", className)}>
-      <div
-        className="w-full flex flex-col gap-4 md:gap-6"
-        style={{ maxWidth: MAX_STAGE_W }}
-      >
+      <div className="w-full flex flex-col gap-4 md:gap-6" style={{ maxWidth: MAX_STAGE_W }}>
         {/* HERO — 4:3 landscape mat fits wide furniture cutouts.
             Background lives on the inner mat, NOT the button, so the button
             itself doesn't outrank the img as the LCP candidate before the
@@ -81,9 +77,7 @@ export function ProductStage({ product, className, onOpenLightbox, activeImageUr
           type="button"
           onClick={() => onOpenLightbox?.(activeIdx)}
           disabled={!active || !onOpenLightbox}
-          aria-label={
-            active ? `Open ${product.title} in fullscreen` : undefined
-          }
+          aria-label={active ? `Open ${product.title} in fullscreen` : undefined}
           className={cn(
             "group/hero relative w-full aspect-[4/3]",
             "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
@@ -113,9 +107,7 @@ export function ProductStage({ product, className, onOpenLightbox, activeImageUr
                 style={activeIdx === 0 ? { viewTransitionName: heroName } : undefined}
                 loading="eager"
                 decoding="async"
-                {...(activeIdx === 0
-                  ? ({ fetchPriority: "high" } as Record<string, string>)
-                  : {})}
+                {...(activeIdx === 0 ? ({ fetchPriority: "high" } as Record<string, string>) : {})}
               />
             </div>
           ) : (
@@ -152,11 +144,7 @@ export function ProductStage({ product, className, onOpenLightbox, activeImageUr
                       ? "after:ring-1 after:ring-inset after:ring-charcoal/60 after:[--tw:_] after:shadow-none"
                       : "opacity-70 hover:opacity-100",
                   )}
-                  style={
-                    isActive
-                      ? { boxShadow: "inset 0 0 0 1px rgba(26,26,26,0.6)" }
-                      : undefined
-                  }
+                  style={isActive ? { boxShadow: "inset 0 0 0 1px rgba(26,26,26,0.6)" } : undefined}
                 >
                   <img
                     src={withCdnWidth(im.url, 600)}

@@ -10,9 +10,15 @@ import path from "node:path";
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../..");
 const truth = JSON.parse(fs.readFileSync(path.join(ROOT, "scripts/audit/live-truth.json"), "utf8"));
-const catalog = JSON.parse(fs.readFileSync(path.join(ROOT, "src/data/inventory/current_catalog.json"), "utf8")).products;
-const pillowAliases = JSON.parse(fs.readFileSync(path.join(ROOT, "scripts/audit/pillow-aliases.json"), "utf8")).aliases ?? {};
-const ownerMapping = JSON.parse(fs.readFileSync(path.join(ROOT, "scripts/audit/owner-confirmed-mapping.json"), "utf8")).entries ?? [];
+const catalog = JSON.parse(
+  fs.readFileSync(path.join(ROOT, "src/data/inventory/current_catalog.json"), "utf8"),
+).products;
+const pillowAliases =
+  JSON.parse(fs.readFileSync(path.join(ROOT, "scripts/audit/pillow-aliases.json"), "utf8"))
+    .aliases ?? {};
+const ownerMapping =
+  JSON.parse(fs.readFileSync(path.join(ROOT, "scripts/audit/owner-confirmed-mapping.json"), "utf8"))
+    .entries ?? [];
 
 // Index owner mapping by live_site_name
 const ownerByName = new Map();
@@ -20,7 +26,8 @@ for (const e of ownerMapping) ownerByName.set(e.live_site_name, e);
 
 // Normalization
 const norm = (s) =>
-  s.toLowerCase()
+  s
+    .toLowerCase()
     .replace(/[\u2018\u2019\u02BC]/g, "'") // smart quotes/apostrophes
     .replace(/[\u201C\u201D]/g, '"')
     .replace(/['"]/g, "")
@@ -29,8 +36,7 @@ const norm = (s) =>
     .replace(/\s+/g, " ")
     .trim();
 
-const looseTokens = (s) =>
-  norm(s).split(" ").filter(Boolean);
+const looseTokens = (s) => norm(s).split(" ").filter(Boolean);
 
 const exactByTitle = new Map();
 const looseByKey = new Map();
@@ -44,14 +50,27 @@ for (const p of catalog) {
 }
 
 const buckets = { confirmed: [], owner_slug_divergent: [], variant_no_page: [], unresolved: [] };
-const counters = { exact: 0, alias: 0, slug_alias: 0, family_token: 0, variant_no_page: 0, owner_confirmed: 0, normalized: 0, unresolved: 0 };
+const counters = {
+  exact: 0,
+  alias: 0,
+  slug_alias: 0,
+  family_token: 0,
+  variant_no_page: 0,
+  owner_confirmed: 0,
+  normalized: 0,
+  unresolved: 0,
+};
 const liveTitles = Object.keys(truth);
 
 for (const title of liveTitles) {
   // 1. Exact
   if (exactByTitle.has(norm(title))) {
     counters.exact++;
-    buckets.confirmed.push({ live: title, match_type: "exact", rms: exactByTitle.get(norm(title)).title });
+    buckets.confirmed.push({
+      live: title,
+      match_type: "exact",
+      rms: exactByTitle.get(norm(title)).title,
+    });
     continue;
   }
   // 2. Title alias (pillow aliases)
@@ -65,17 +84,36 @@ for (const title of liveTitles) {
   if (owner) {
     if (owner.match_type === "variant_no_page") {
       counters.variant_no_page++;
-      buckets.variant_no_page.push({ live: title, rms: owner.rms_catalog_match, sku_count: owner.rms_sku_count, notes: owner.notes });
+      buckets.variant_no_page.push({
+        live: title,
+        rms: owner.rms_catalog_match,
+        sku_count: owner.rms_sku_count,
+        notes: owner.notes,
+      });
       continue;
     }
     if (owner.match_type === "owner_confirmed" && owner.rms_catalog_match) {
       counters.owner_confirmed++;
-      buckets.owner_slug_divergent.push({ live: title, match_type: "owner_confirmed", rms: owner.rms_catalog_match, sku_count: owner.rms_sku_count, slug: owner.live_site_slug, notes: owner.notes });
+      buckets.owner_slug_divergent.push({
+        live: title,
+        match_type: "owner_confirmed",
+        rms: owner.rms_catalog_match,
+        sku_count: owner.rms_sku_count,
+        slug: owner.live_site_slug,
+        notes: owner.notes,
+      });
       continue;
     }
     if (owner.match_type === "slug_alias" && owner.rms_catalog_match) {
       counters.slug_alias++;
-      buckets.owner_slug_divergent.push({ live: title, match_type: "slug_alias", rms: owner.rms_catalog_match, sku_count: owner.rms_sku_count, slug: owner.live_site_slug, notes: owner.notes });
+      buckets.owner_slug_divergent.push({
+        live: title,
+        match_type: "slug_alias",
+        rms: owner.rms_catalog_match,
+        sku_count: owner.rms_sku_count,
+        slug: owner.live_site_slug,
+        notes: owner.notes,
+      });
       continue;
     }
     // family_token from owner mapping → handled by step 5 below; let it fall through but use the rms_target hint
@@ -84,7 +122,11 @@ for (const title of liveTitles) {
   const looseKey = looseTokens(title).slice().sort().join(" ");
   if (looseByKey.has(looseKey)) {
     counters.normalized++;
-    buckets.confirmed.push({ live: title, match_type: "normalized", rms: looseByKey.get(looseKey)[0].title });
+    buckets.confirmed.push({
+      live: title,
+      match_type: "normalized",
+      rms: looseByKey.get(looseKey)[0].title,
+    });
     continue;
   }
   // 5. Family-token match: live first non-trivial token has any RMS row beginning with same token
@@ -140,7 +182,9 @@ console.log(`Bucket C — Variant exists, no page:  ${sumC}`);
 console.log("");
 console.log(`Bucket D — Still unresolved:         ${sumD}`);
 console.log("=".repeat(64));
-console.log(`Recovered total:  ${sumA + sumB + sumC} of ${total} (${((sumA+sumB+sumC)/total*100).toFixed(1)}%)`);
+console.log(
+  `Recovered total:  ${sumA + sumB + sumC} of ${total} (${(((sumA + sumB + sumC) / total) * 100).toFixed(1)}%)`,
+);
 console.log("");
 
 if (process.argv.includes("--unresolved")) {
@@ -150,6 +194,6 @@ if (process.argv.includes("--unresolved")) {
 
 fs.writeFileSync(
   path.join(ROOT, "scripts/audit/reconcile-report.json"),
-  JSON.stringify({ summary: counters, buckets }, null, 2)
+  JSON.stringify({ summary: counters, buckets }, null, 2),
 );
 console.log(`\nWrote scripts/audit/reconcile-report.json`);

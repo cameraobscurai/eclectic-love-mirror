@@ -1,4 +1,12 @@
-import { AbsoluteFill, useCurrentFrame, interpolate, spring, useVideoConfig, Img, staticFile } from "remotion";
+import {
+  AbsoluteFill,
+  useCurrentFrame,
+  interpolate,
+  spring,
+  useVideoConfig,
+  Img,
+  staticFile,
+} from "remotion";
 import { MainVideo } from "./MainVideo";
 import { COLORS, INSPO, PRODUCTS, REAL_PALETTE, SCENE_ACCENT } from "./theme";
 import { DISPLAY, BODY } from "./fonts";
@@ -20,17 +28,17 @@ type Scene = {
 // Rail flips lag StepStack so each chapter holds before the next lands.
 // Scene 5 flips at 876 — midpoint of Brief's lift, so rail moves with the gesture.
 const SCENES: Scene[] = [
-  { from: 0,   n: 1, verb: "IMAGINED", ledger: "inspo"    },
-  { from: 171, n: 2, verb: "SOURCED",  ledger: "products" },
-  { from: 357, n: 3, verb: "COMPOSED", ledger: "palette"  },
-  { from: 567, n: 4, verb: "DESIGNED", ledger: "brief"    },
-  { from: 876, n: 5, verb: "REALIZED", ledger: "final"    },
+  { from: 0, n: 1, verb: "IMAGINED", ledger: "inspo" },
+  { from: 171, n: 2, verb: "SOURCED", ledger: "products" },
+  { from: 357, n: 3, verb: "COMPOSED", ledger: "palette" },
+  { from: 567, n: 4, verb: "DESIGNED", ledger: "brief" },
+  { from: 876, n: 5, verb: "REALIZED", ledger: "final" },
 ];
 
 const PAGE_H = 1080;
-const PAGE_SCALE = PAGE_H / 1920;       // 0.5625
-const PAGE_W = 1080 * PAGE_SCALE;       // 607.5
-const SIDE_W = (1920 - PAGE_W) / 2;     // 656.25
+const PAGE_SCALE = PAGE_H / 1920; // 0.5625
+const PAGE_W = 1080 * PAGE_SCALE; // 607.5
+const SIDE_W = (1920 - PAGE_W) / 2; // 656.25
 const TOTAL = 1110;
 
 export const WideVideo: React.FC = () => {
@@ -49,21 +57,25 @@ export const WideVideo: React.FC = () => {
   const accent = SCENE_ACCENT[activeIdx];
 
   // Numeral: spring with subtle drift
-  const numSpring = spring({ frame: sinceSwap, fps, config: { damping: 22, stiffness: 110, mass: 0.9 } });
+  const numSpring = spring({
+    frame: sinceSwap,
+    fps,
+    config: { damping: 22, stiffness: 110, mass: 0.9 },
+  });
   const numOp = interpolate(numSpring, [0, 1], [0, 1]);
-  const numY  = interpolate(numSpring, [0, 1], [22, 0]);
-  const numX  = interpolate(numSpring, [0, 1], [-6, 0]);
+  const numY = interpolate(numSpring, [0, 1], [22, 0]);
+  const numX = interpolate(numSpring, [0, 1], [-6, 0]);
 
   // Verb: masked reveal
   const verbReveal = interpolate(sinceSwap, [0, 28], [0, 100], { extrapolateRight: "clamp" });
-  const verbY      = interpolate(sinceSwap, [0, 28], [10, 0],  { extrapolateRight: "clamp" });
+  const verbY = interpolate(sinceSwap, [0, 28], [10, 0], { extrapolateRight: "clamp" });
 
   // Accent rule sweeps in palette-tinted under the verb
-  const ruleSweep  = interpolate(sinceSwap, [4, 36], [0, 100], { extrapolateRight: "clamp" });
+  const ruleSweep = interpolate(sinceSwap, [4, 36], [0, 100], { extrapolateRight: "clamp" });
 
   // Ledger reveal — staggered
   const ledgerOp = interpolate(sinceSwap, [14, 38], [0, 1], { extrapolateRight: "clamp" });
-  const ledgerY  = interpolate(sinceSwap, [14, 38], [8, 0], { extrapolateRight: "clamp" });
+  const ledgerY = interpolate(sinceSwap, [14, 38], [8, 0], { extrapolateRight: "clamp" });
 
   // Ambient breath
   const breath = Math.sin((frame / fps) * 0.6) * 1.2;
@@ -71,14 +83,34 @@ export const WideVideo: React.FC = () => {
   return (
     <AbsoluteFill style={{ backgroundColor: COLORS.paper }}>
       {/* hairlines defining the centered page */}
-      <div style={{ position: "absolute", left: SIDE_W - 1, top: 80, bottom: 80, width: 1, background: COLORS.rule }} />
-      <div style={{ position: "absolute", right: SIDE_W - 1, top: 80, bottom: 80, width: 1, background: COLORS.rule }} />
+      <div
+        style={{
+          position: "absolute",
+          left: SIDE_W - 1,
+          top: 80,
+          bottom: 80,
+          width: 1,
+          background: COLORS.rule,
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          right: SIDE_W - 1,
+          top: 80,
+          bottom: 80,
+          width: 1,
+          background: COLORS.rule,
+        }}
+      />
 
       {/* LEFT RAIL — wordmark · oversized numeral · slug */}
       <div
         style={{
           position: "absolute",
-          left: 0, top: 0, bottom: 0,
+          left: 0,
+          top: 0,
+          bottom: 0,
           width: SIDE_W,
           padding: "120px 96px",
           display: "flex",
@@ -88,7 +120,15 @@ export const WideVideo: React.FC = () => {
           transform: `translateY(${breath}px)`,
         }}
       >
-        <div style={{ fontFamily: BODY, fontSize: 11, letterSpacing: "0.42em", textTransform: "uppercase", opacity: 0.5 }}>
+        <div
+          style={{
+            fontFamily: BODY,
+            fontSize: 11,
+            letterSpacing: "0.42em",
+            textTransform: "uppercase",
+            opacity: 0.5,
+          }}
+        >
           Eclectic Hive
         </div>
 
@@ -122,7 +162,15 @@ export const WideVideo: React.FC = () => {
           </div>
         </div>
 
-        <div style={{ fontFamily: BODY, fontSize: 11, letterSpacing: "0.36em", textTransform: "uppercase", opacity: 0.5 }}>
+        <div
+          style={{
+            fontFamily: BODY,
+            fontSize: 11,
+            letterSpacing: "0.36em",
+            textTransform: "uppercase",
+            opacity: 0.5,
+          }}
+        >
           /stylebrief
         </div>
       </div>
@@ -141,8 +189,10 @@ export const WideVideo: React.FC = () => {
         <div
           style={{
             position: "absolute",
-            left: 0, top: 0,
-            width: 1080, height: 1920,
+            left: 0,
+            top: 0,
+            width: 1080,
+            height: 1920,
             transform: `scale(${PAGE_SCALE})`,
             transformOrigin: "0 0",
           }}
@@ -155,7 +205,9 @@ export const WideVideo: React.FC = () => {
       <div
         style={{
           position: "absolute",
-          right: 0, top: 0, bottom: 0,
+          right: 0,
+          top: 0,
+          bottom: 0,
           width: SIDE_W,
           padding: "120px 96px",
           display: "flex",
@@ -167,7 +219,15 @@ export const WideVideo: React.FC = () => {
           transform: `translateY(${-breath}px)`,
         }}
       >
-        <div style={{ fontFamily: BODY, fontSize: 11, letterSpacing: "0.42em", textTransform: "uppercase", opacity: 0.5 }}>
+        <div
+          style={{
+            fontFamily: BODY,
+            fontSize: 11,
+            letterSpacing: "0.42em",
+            textTransform: "uppercase",
+            opacity: 0.5,
+          }}
+        >
           An act in five
         </div>
 
@@ -222,7 +282,9 @@ export const WideVideo: React.FC = () => {
             const baseW = isActive ? 44 : isPast ? 22 : 12;
             return (
               <div key={s.n} style={{ position: "relative", width: baseW, height: 1 }}>
-                <div style={{ position: "absolute", inset: 0, background: COLORS.rule, opacity: 0.6 }} />
+                <div
+                  style={{ position: "absolute", inset: 0, background: COLORS.rule, opacity: 0.6 }}
+                />
                 <div
                   style={{
                     position: "absolute",
@@ -252,8 +314,19 @@ const Ledger: React.FC<{ kind: LedgerKind }> = ({ kind }) => {
     return (
       <div style={{ display: "flex", gap: 8 }}>
         {INSPO.map((src, i) => (
-          <div key={i} style={{ width: THUMB, height: THUMB * 1.25, overflow: "hidden", background: "rgba(26,26,26,0.05)" }}>
-            <Img src={staticFile(src)} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+          <div
+            key={i}
+            style={{
+              width: THUMB,
+              height: THUMB * 1.25,
+              overflow: "hidden",
+              background: "rgba(26,26,26,0.05)",
+            }}
+          >
+            <Img
+              src={staticFile(src)}
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            />
           </div>
         ))}
       </div>
@@ -261,10 +334,29 @@ const Ledger: React.FC<{ kind: LedgerKind }> = ({ kind }) => {
   }
   if (kind === "products") {
     return (
-      <div style={{ display: "grid", gridTemplateColumns: `repeat(4, ${DOT * 1.4}px)`, gap: 8, justifyContent: "end" }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: `repeat(4, ${DOT * 1.4}px)`,
+          gap: 8,
+          justifyContent: "end",
+        }}
+      >
         {PRODUCTS.map((p, i) => (
-          <div key={i} style={{ width: DOT * 1.4, height: DOT * 1.4, border: `1px solid ${COLORS.rule}`, background: COLORS.paper, padding: 4 }}>
-            <Img src={staticFile(p.src)} style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} />
+          <div
+            key={i}
+            style={{
+              width: DOT * 1.4,
+              height: DOT * 1.4,
+              border: `1px solid ${COLORS.rule}`,
+              background: COLORS.paper,
+              padding: 4,
+            }}
+          >
+            <Img
+              src={staticFile(p.src)}
+              style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
+            />
           </div>
         ))}
       </div>
@@ -289,8 +381,20 @@ const Ledger: React.FC<{ kind: LedgerKind }> = ({ kind }) => {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: `repeat(8, ${DOT}px)`, gap: 6 }}>
           {PRODUCTS.map((p, i) => (
-            <div key={i} style={{ width: DOT, height: DOT, border: `1px solid ${COLORS.rule}`, background: COLORS.paper, padding: 3 }}>
-              <Img src={staticFile(p.src)} style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} />
+            <div
+              key={i}
+              style={{
+                width: DOT,
+                height: DOT,
+                border: `1px solid ${COLORS.rule}`,
+                background: COLORS.paper,
+                padding: 3,
+              }}
+            >
+              <Img
+                src={staticFile(p.src)}
+                style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
+              />
             </div>
           ))}
         </div>

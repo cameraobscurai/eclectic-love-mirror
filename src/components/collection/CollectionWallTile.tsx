@@ -6,7 +6,6 @@ import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 import { NormalizedProductImage } from "./NormalizedProductImage";
 import { resolveProductFit } from "./productFit";
 
-
 interface Props {
   product: CollectionProduct;
   cellAspect: number;
@@ -18,11 +17,17 @@ interface Props {
 
 const WALL_WIDTHS = [600, 900, 1200];
 
-function CollectionWallTileImpl({ product, cellAspect, isHovered, isAnyHovered, onHover, onOpen }: Props) {
+function CollectionWallTileImpl({
+  product,
+  cellAspect,
+  isHovered,
+  isAnyHovered,
+  onHover,
+  onOpen,
+}: Props) {
   const url = product.primaryImage?.url ?? null;
   const dim = isAnyHovered && !isHovered;
   const scaledFit = resolveProductFit(product);
-
 
   // Fallback chain: CDN-transformed → raw original URL. Some Supabase render
   // transforms 400 transiently or reject certain source formats; falling back
@@ -86,4 +91,3 @@ export const CollectionWallTile = memo(
     prev.product.dimensions === next.product.dimensions &&
     prev.cellAspect === next.cellAspect,
 );
-

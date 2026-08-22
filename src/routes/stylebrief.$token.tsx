@@ -8,7 +8,11 @@ export const Route = createFileRoute("/stylebrief/$token")({
     const name = loaderData?.client_name?.trim();
     return {
       meta: [
-        { title: name ? `Style Brief for ${name} · Eclectic Hive` : "Your Style Brief · Eclectic Hive" },
+        {
+          title: name
+            ? `Style Brief for ${name} · Eclectic Hive`
+            : "Your Style Brief · Eclectic Hive",
+        },
         { name: "robots", content: "noindex, nofollow" },
         { name: "referrer", content: "no-referrer" },
       ],
@@ -44,7 +48,6 @@ function PublicBoardPage() {
   const board = Route.useLoaderData();
   // Show download button when ?download=1 in URL (admin/preview only).
   const preview =
-    typeof window !== "undefined" &&
-    new URLSearchParams(window.location.search).has("download");
+    typeof window !== "undefined" && new URLSearchParams(window.location.search).has("download");
   return <BoardDeck board={board} preview={preview} />;
 }

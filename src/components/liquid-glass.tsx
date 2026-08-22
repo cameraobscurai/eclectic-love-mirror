@@ -7,8 +7,7 @@ function injectGlassFilter() {
   filterInjected = true;
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-  svg.style.cssText =
-    "position:absolute;width:0;height:0;overflow:hidden;pointer-events:none";
+  svg.style.cssText = "position:absolute;width:0;height:0;overflow:hidden;pointer-events:none";
   svg.setAttribute("aria-hidden", "true");
   svg.innerHTML = `
     <defs>
@@ -76,12 +75,8 @@ export function LiquidGlass({
           WebkitBackdropFilter: hovered
             ? "blur(20px) saturate(1.2) brightness(1.15)"
             : "blur(12px) saturate(1.1) brightness(1.1)",
-          filter: hovered
-            ? "url(#liquid-glass-refract-hover)"
-            : "url(#liquid-glass-refract)",
-          background: hovered
-            ? "rgba(255,255,255,0.04)"
-            : "rgba(255,255,255,0.015)",
+          filter: hovered ? "url(#liquid-glass-refract-hover)" : "url(#liquid-glass-refract)",
+          background: hovered ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.015)",
           transition: "backdrop-filter 0.4s ease, background 0.4s ease",
           zIndex: 0,
         }}

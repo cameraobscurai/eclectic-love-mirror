@@ -37,42 +37,10 @@
       "2150",
       "3009"
     ],
-    "cocktail-tables": [
-      "810",
-      "2992",
-      "1940",
-      "362",
-      "3107",
-      "2764",
-      "3188",
-      "4097"
-    ],
-    "community-tables": [
-      "1857",
-      "3508",
-      "360",
-      "376"
-    ],
-    "stools": [
-      "4052",
-      "161",
-      "2747",
-      "3012",
-      "1973"
-    ],
-    "storage": [
-      "3983",
-      "3562",
-      "1928",
-      "3497",
-      "4139",
-      "2919",
-      "148",
-      "709",
-      "1929",
-      "762",
-      "2731"
-    ]
+    "cocktail-tables": ["810", "2992", "1940", "362", "3107", "2764", "3188", "4097"],
+    "community-tables": ["1857", "3508", "360", "376"],
+    "stools": ["4052", "161", "2747", "3012", "1973"],
+    "storage": ["3983", "3562", "1928", "3497", "4139", "2919", "148", "709", "1929", "762", "2731"]
   },
   "rationale": {
     "bars": "Opens with the ARCUS 12' family hero (Calvin smooth/neutral) followed by tambour variants light→dark (Ryann white → Tavion natural → Bevin gold → Levar black), then INOLA family (12' black hero + gold variant) and IRAJA convertible to complete the mega-wide modular block; next come extra-wide double/tasting bars (BOYCE, LOCKWOOD, BARCLAY); mid-width natural-wood bars flow light to medium (Canyon pine → Hampton oak → Beauregard tambour → Sinatra walnut) then the concrete-and-birch/split-wood tier (Wadsworth, Norwood, Boone, Woodsley) and the 72\" concrete cousins (Walden, Elwood, Pickford, Durango); darker character bars close the standard block (Sidecar dark wood → Amisa midnight → Jepperd black tambour → Monroe black slat → Malvina oval outlier); the two tall trunk bars (Excursion champagne → Voyage black) follow as a narrow-silhouette pair; bar carts land last, glam-light to dark (Lucille gold → Marceline gold → Malcolm neutral → Evangeline silver).",

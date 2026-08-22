@@ -1,7 +1,7 @@
-import { createClient } from '@supabase/supabase-js';
-import fs from 'fs';
-import path from 'path';
-import { rollupFamilies } from './family-rollup.mjs';
+import { createClient } from "@supabase/supabase-js";
+import fs from "fs";
+import path from "path";
+import { rollupFamilies } from "./family-rollup.mjs";
 
 const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
@@ -9,35 +9,65 @@ const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_R
 // Refresh with the JSON-feed harvest script when the live site changes.
 let liveSnapshot = {};
 try {
-  liveSnapshot = JSON.parse(fs.readFileSync('/dev-server/scripts/audit/live-inventory-snapshot.json', 'utf8'));
+  liveSnapshot = JSON.parse(
+    fs.readFileSync("/dev-server/scripts/audit/live-inventory-snapshot.json", "utf8"),
+  );
 } catch {
-  console.warn('[bake] no live-inventory-snapshot.json — skipping family rollup (each variant will be its own tile)');
+  console.warn(
+    "[bake] no live-inventory-snapshot.json — skipping family rollup (each variant will be its own tile)",
+  );
 }
 
 const CAT_DISPLAY = {
-  'tableware':'Tableware','pillows-throws':'Pillows & Throws',
-  'seating':'Seating','styling':'Styling','tables':'Tables','serveware':'Serveware',
-  'bars':'Cocktail & Bar','large-decor':'Large Decor','lighting':'Lighting',
-  'rugs':'Rugs','candlelight':'Candlelight','chandeliers':'Chandeliers',
-  'storage':'Storage','furs-pelts':'Furs & Pelts',
+  tableware: "Tableware",
+  "pillows-throws": "Pillows & Throws",
+  seating: "Seating",
+  styling: "Styling",
+  tables: "Tables",
+  serveware: "Serveware",
+  bars: "Cocktail & Bar",
+  "large-decor": "Large Decor",
+  lighting: "Lighting",
+  rugs: "Rugs",
+  candlelight: "Candlelight",
+  chandeliers: "Chandeliers",
+  storage: "Storage",
+  "furs-pelts": "Furs & Pelts",
 };
-const ORDER = ['seating','tables','bars','tableware','serveware','pillows-throws','rugs','lighting','candlelight','chandeliers','large-decor','styling','storage','furs-pelts'];
+const ORDER = [
+  "seating",
+  "tables",
+  "bars",
+  "tableware",
+  "serveware",
+  "pillows-throws",
+  "rugs",
+  "lighting",
+  "candlelight",
+  "chandeliers",
+  "large-decor",
+  "styling",
+  "storage",
+  "furs-pelts",
+];
 
-const INVENTORY_PUBLIC_MARKER = '/storage/v1/object/public/inventory/';
+const INVENTORY_PUBLIC_MARKER = "/storage/v1/object/public/inventory/";
 
 // Title alias overrides — RMS id → preferred live title (presentation only).
 // Source: scripts-tmp/title-aliases.json (curated against live Squarespace).
 let titleAliasByRms = new Map();
 let forcedFamilyGroups = [];
 try {
-  const aliases = JSON.parse(fs.readFileSync('/dev-server/scripts-tmp/title-aliases.json', 'utf8'));
+  const aliases = JSON.parse(fs.readFileSync("/dev-server/scripts-tmp/title-aliases.json", "utf8"));
   for (const p of aliases.pairs || []) {
     if (p.rms && p.live) titleAliasByRms.set(String(p.rms), p.live);
   }
   forcedFamilyGroups = aliases.groups || [];
-  console.log(`[bake] loaded ${titleAliasByRms.size} title aliases, ${forcedFamilyGroups.length} forced family groups`);
+  console.log(
+    `[bake] loaded ${titleAliasByRms.size} title aliases, ${forcedFamilyGroups.length} forced family groups`,
+  );
 } catch {
-  console.warn('[bake] no title-aliases.json — skipping alias overrides');
+  console.warn("[bake] no title-aliases.json — skipping alias overrides");
 }
 
 // Slugs that live at the ROOT of the `inventory` bucket (no `inventory/` prefix).
@@ -45,29 +75,30 @@ try {
 // owner-upload `inventory/` folder, so the legacy "restore prefix" logic must
 // skip them or it will produce 404 URLs like `inventory/inventory/<slug>/...`.
 const INVENTORY_ROOT_SLUGS = new Set([
-  'moxxi-black-dining-chair',
-  'gerwyn-grey-dining-chair',
-  'tove-grey-dining-table',
-  'nero-round-grey-dining-table',
-  'zoe-oak-dining-chair',
-  'excursion-champagne-trunk-bar',
-  'lars-bleached-oak-dining-table',
-  'kohl-round-black-dining-table',
-  'elgin-pony-bronze-bookend-set',
-  'elgin-pony-silver-bookend-set',
-  'HAZEL_Bowls.png',
-  'HAZEL_Small.png',
-  'HAZEL_Large.png',
-  'POWELL_Set.png',
-  'POWELL_18in_Tray.png',
-  'POWELL_14in_Tray.png',
+  "moxxi-black-dining-chair",
+  "gerwyn-grey-dining-chair",
+  "tove-grey-dining-table",
+  "nero-round-grey-dining-table",
+  "zoe-oak-dining-chair",
+  "excursion-champagne-trunk-bar",
+  "lars-bleached-oak-dining-table",
+  "kohl-round-black-dining-table",
+  "elgin-pony-bronze-bookend-set",
+  "elgin-pony-silver-bookend-set",
+  "HAZEL_Bowls.png",
+  "HAZEL_Small.png",
+  "HAZEL_Large.png",
+  "POWELL_Set.png",
+  "POWELL_18in_Tray.png",
+  "POWELL_14in_Tray.png",
 ]);
 
 function restoredInventoryUrl(url) {
-  if (typeof url !== 'string' || !url.includes(INVENTORY_PUBLIC_MARKER)) return url;
+  if (typeof url !== "string" || !url.includes(INVENTORY_PUBLIC_MARKER)) return url;
   const [base, pathPart] = url.split(INVENTORY_PUBLIC_MARKER);
-  if (!pathPart || pathPart.startsWith('inventory/') || pathPart.startsWith('_squarespace/')) return url;
-  const firstSeg = pathPart.split('/')[0];
+  if (!pathPart || pathPart.startsWith("inventory/") || pathPart.startsWith("_squarespace/"))
+    return url;
+  const firstSeg = pathPart.split("/")[0];
   if (INVENTORY_ROOT_SLUGS.has(firstSeg)) return url;
   return `${base}${INVENTORY_PUBLIC_MARKER}inventory/${pathPart}`;
 }
@@ -76,17 +107,30 @@ function restoredInventoryUrl(url) {
 // numeric sort produces black → charcoal → brown → tan → cream → white, with
 // chromatic items woven in by lightness band and hue (ROYGBIV nudge within band).
 const FAMILY_BUCKET = {
-  'black': 0, 'charcoal': 1, 'grey': 2, 'gray': 2,
-  'brown': 3, 'tan': 4, 'cream': 5, 'white': 6,
-  'metallic-warm': 5, 'metallic-cool': 2,
+  black: 0,
+  charcoal: 1,
+  grey: 2,
+  gray: 2,
+  brown: 3,
+  tan: 4,
+  cream: 5,
+  white: 6,
+  "metallic-warm": 5,
+  "metallic-cool": 2,
   // Chromatic families slot by their natural lightness; the bucket value is
   // a tiebreaker only — primary sort is on lightness within "all chromatic".
-  'red': 7, 'orange': 7, 'yellow': 7, 'green': 8, 'blue': 8, 'purple': 8, 'pink': 7,
-  'multi': 9,
+  red: 7,
+  orange: 7,
+  yellow: 7,
+  green: 8,
+  blue: 8,
+  purple: 8,
+  pink: 7,
+  multi: 9,
 };
 function computeTonalRank(r) {
   if (r.color_lightness == null) return null;
-  const family = (r.color_family || '').toLowerCase();
+  const family = (r.color_family || "").toLowerCase();
   const bucket = FAMILY_BUCKET[family] ?? 9;
   const L = Math.max(0, Math.min(100, Number(r.color_lightness)));
   const isNeutral = bucket <= 6;
@@ -106,57 +150,93 @@ function computeTonalRank(r) {
   return neutralBase * 10000 + Math.round(L * 100) + roygbiv;
 }
 
-
 const all = [];
-let from = 0; const PAGE = 1000;
+let from = 0;
+const PAGE = 1000;
 while (true) {
-  const { data, error } = await sb.from('inventory_items')
-    .select('rms_id,title,slug,category,quantity,quantity_label,dimensions_raw,images,updated_at,color_hex,color_hex_secondary,color_lightness,color_hue,color_chroma,color_family,color_temperature,color_needs_review,owner_site_rank,manual_order,editorial_order,public_ready,cover_framed_url,collection_slug,category_slug,family_id,family_position,variant_label,variant_cover_url')
-    .neq('status','draft').neq('public_ready', false).range(from, from+PAGE-1).order('title');
-  if (error) { console.error(error); process.exit(1); }
+  const { data, error } = await sb
+    .from("inventory_items")
+    .select(
+      "rms_id,title,slug,category,quantity,quantity_label,dimensions_raw,images,updated_at,color_hex,color_hex_secondary,color_lightness,color_hue,color_chroma,color_family,color_temperature,color_needs_review,owner_site_rank,manual_order,editorial_order,public_ready,cover_framed_url,collection_slug,category_slug,family_id,family_position,variant_label,variant_cover_url",
+    )
+    .neq("status", "draft")
+    .neq("public_ready", false)
+    .range(from, from + PAGE - 1)
+    .order("title");
+  if (error) {
+    console.error(error);
+    process.exit(1);
+  }
   if (!data.length) break;
-  all.push(...data); from += data.length;
+  all.push(...data);
+  from += data.length;
   if (data.length < PAGE) break;
 }
-console.log('public rows (pre-filter):', all.length);
+console.log("public rows (pre-filter):", all.length);
 // Mirrors src/lib/test-artifact.ts — E2E artifacts never reach a public query,
 // teardown or not.
-const isTestArtifact = (r) => /^\s*ZZ E2E\b/i.test(r.title ?? '') || /^ZZ-E2E/i.test(r.rms_id ?? '');
+const isTestArtifact = (r) =>
+  /^\s*ZZ E2E\b/i.test(r.title ?? "") || /^ZZ-E2E/i.test(r.rms_id ?? "");
 for (let i = all.length - 1; i >= 0; i--) if (isTestArtifact(all[i])) all.splice(i, 1);
-console.log('public rows:', all.length);
+console.log("public rows:", all.length);
 
 // Live per-product harvest (gallery, body) — used as fallback when the
 // owner has not yet supplied images, and to overlay live descriptions.
 let liveProducts = {};
 try {
-  liveProducts = JSON.parse(fs.readFileSync('/dev-server/scripts/audit/live-products.json','utf8'));
+  liveProducts = JSON.parse(
+    fs.readFileSync("/dev-server/scripts/audit/live-products.json", "utf8"),
+  );
 } catch {
-  console.warn('[bake] no live-products.json — run scripts/audit/harvest-live-products.mjs');
+  console.warn("[bake] no live-products.json — run scripts/audit/harvest-live-products.mjs");
 }
 const liveProductByTitle = new Map();
-const norm0 = s => String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();
+const norm0 = (s) =>
+  String(s || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 for (const lp of Object.values(liveProducts)) {
   const t = norm0(lp.title);
   if (t && !liveProductByTitle.has(t)) liveProductByTitle.set(t, lp);
-  const tStripped = t.split(' ').filter(w => !/^\d/.test(w) && w.length >= 2).join(' ');
+  const tStripped = t
+    .split(" ")
+    .filter((w) => !/^\d/.test(w) && w.length >= 2)
+    .join(" ");
   if (tStripped && !liveProductByTitle.has(tStripped)) liveProductByTitle.set(tStripped, lp);
 }
 function findLiveProduct(slug, title) {
   if (slug && liveProducts[slug]) return liveProducts[slug];
   const t = norm0(title);
-  return liveProductByTitle.get(t)
-    || liveProductByTitle.get(t.split(' ').filter(w=>!/^\d/.test(w)&&w.length>=2).join(' '));
+  return (
+    liveProductByTitle.get(t) ||
+    liveProductByTitle.get(
+      t
+        .split(" ")
+        .filter((w) => !/^\d/.test(w) && w.length >= 2)
+        .join(" "),
+    )
+  );
 }
 
 let livesFallback = 0;
 const products = all.map((r, i) => {
-  let imgs = (r.images||[]).map((u,idx) => ({
-    url: restoredInventoryUrl(u), position: idx, isHero: idx===0, inferredFilename: null, altText: r.title,
+  let imgs = (r.images || []).map((u, idx) => ({
+    url: restoredInventoryUrl(u),
+    position: idx,
+    isHero: idx === 0,
+    inferredFilename: null,
+    altText: r.title,
   }));
   const lp = findLiveProduct(r.slug, r.title);
   if (imgs.length === 0 && lp && lp.gallery && lp.gallery.length) {
     imgs = lp.gallery.map((u, idx) => ({
-      url: u, position: idx, isHero: idx===0, inferredFilename: null, altText: r.title,
+      url: u,
+      position: idx,
+      isHero: idx === 0,
+      inferredFilename: null,
+      altText: r.title,
     }));
     livesFallback++;
   }
@@ -170,7 +250,7 @@ const products = all.map((r, i) => {
   const stock = r.quantity_label ?? (r.quantity != null ? String(r.quantity) : null);
   return {
     id: r.rms_id || r.slug,
-    sourceUrl: lp?.fullUrl ? `https://www.eclectichive.com${lp.fullUrl}` : '',
+    sourceUrl: lp?.fullUrl ? `https://www.eclectichive.com${lp.fullUrl}` : "",
     slug: r.slug,
     categorySlug: r.category,
     displayCategory: CAT_DISPLAY[r.category] || r.category,
@@ -217,9 +297,9 @@ const products = all.map((r, i) => {
 });
 
 console.log(`[bake] live-image fallback used for ${livesFallback} products`);
-const visibleProducts = products.filter(p => p.imageCount >= 1);
+const visibleProducts = products.filter((p) => p.imageCount >= 1);
 const hiddenForMissingImage = products.length - visibleProducts.length;
-console.log('hidden (no image):', hiddenForMissingImage);
+console.log("hidden (no image):", hiddenForMissingImage);
 
 // Declared families (product_families). Membership for any row carrying a
 // family_id comes from here; rows without one still fall through to the
@@ -227,24 +307,41 @@ console.log('hidden (no image):', hiddenForMissingImage);
 const familiesById = new Map();
 {
   const { data, error } = await sb
-    .from('product_families')
-    .select('id,title,slug,lead_rms_id,option_name');
-  if (error) { console.error('[bake] product_families read failed:', error.message); process.exit(1); }
+    .from("product_families")
+    .select("id,title,slug,lead_rms_id,option_name");
+  if (error) {
+    console.error("[bake] product_families read failed:", error.message);
+    process.exit(1);
+  }
   for (const f of data) familiesById.set(f.id, f);
   console.log(`[bake] declared families: ${familiesById.size}`);
 }
 
 // Roll up RMS variant rows into one tile per product family
-const { products: rolled, stats } = rollupFamilies(visibleProducts, liveSnapshot, forcedFamilyGroups, familiesById);
-console.log(`[rollup] ${stats.inputRows} RMS rows -> ${stats.outputFamilies} family tiles (collapsed ${stats.collapsed})`);
-console.log('[rollup] sources:', JSON.stringify(stats.sourceCounts));
+const { products: rolled, stats } = rollupFamilies(
+  visibleProducts,
+  liveSnapshot,
+  forcedFamilyGroups,
+  familiesById,
+);
+console.log(
+  `[rollup] ${stats.inputRows} RMS rows -> ${stats.outputFamilies} family tiles (collapsed ${stats.collapsed})`,
+);
+console.log("[rollup] sources:", JSON.stringify(stats.sourceCounts));
 
 // Assign ownerSiteRank + liveCategory/liveSubcategories from live-site map.
 // Match by slug first, then by normalized title (RMS titles often differ).
-const norm = s => String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();
+const norm = (s) =>
+  String(s || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 let liveSubcatMap = {};
 try {
-  const raw = JSON.parse(fs.readFileSync('/dev-server/scripts/audit/live-subcategory-map.json','utf8'));
+  const raw = JSON.parse(
+    fs.readFileSync("/dev-server/scripts/audit/live-subcategory-map.json", "utf8"),
+  );
   liveSubcatMap = raw.byLiveSlug || {};
 } catch {}
 const liveSlugInfo = new Map(); // slug -> {rank, category, subcategories}
@@ -253,33 +350,42 @@ const liveFirstWordsInfo = new Map();
 for (const [liveCat, items] of Object.entries(liveSnapshot || {})) {
   items.forEach((it, idx) => {
     const meta = liveSubcatMap[it.urlId] || {};
-    const info = { rank: idx, category: meta.category || liveCat, subcategories: meta.subcategories || [] };
+    const info = {
+      rank: idx,
+      category: meta.category || liveCat,
+      subcategories: meta.subcategories || [],
+    };
     if (it.urlId && !liveSlugInfo.has(it.urlId)) liveSlugInfo.set(it.urlId, info);
     const t = norm(it.title);
     if (t && !liveTitleInfo.has(t)) liveTitleInfo.set(t, info);
-    const tStripped = t.split(' ').filter(w => !/^\d/.test(w) && w.length >= 2).join(' ');
+    const tStripped = t
+      .split(" ")
+      .filter((w) => !/^\d/.test(w) && w.length >= 2)
+      .join(" ");
     if (tStripped && !liveTitleInfo.has(tStripped)) liveTitleInfo.set(tStripped, info);
-    const toks = tStripped.split(' ');
+    const toks = tStripped.split(" ");
     for (let n = Math.min(toks.length, 5); n >= 1; n--) {
-      const k = toks.slice(0, n).join(' ');
+      const k = toks.slice(0, n).join(" ");
       if (k.length >= 4 && !liveFirstWordsInfo.has(k)) liveFirstWordsInfo.set(k, info);
     }
   });
 }
 // Strip number/dimension tokens that appear in RMS titles but not live titles
 // (e.g. RMS "Nantucket 41 Oak Wood Column" vs live "Nantucket Oak Wood Column")
-const stripNums = s => s.split(' ').filter(t => !/^\d/.test(t) && t.length >= 2).join(' ');
+const stripNums = (s) =>
+  s
+    .split(" ")
+    .filter((t) => !/^\d/.test(t) && t.length >= 2)
+    .join(" ");
 let ranked = 0;
 for (const p of rolled) {
   const nTitle = norm(p.title);
   const nStripped = stripNums(nTitle);
-  let info = liveSlugInfo.get(p.slug)
-    || liveTitleInfo.get(nTitle)
-    || liveTitleInfo.get(nStripped);
+  let info = liveSlugInfo.get(p.slug) || liveTitleInfo.get(nTitle) || liveTitleInfo.get(nStripped);
   if (!info) {
-    const toks = nStripped.split(' ');
+    const toks = nStripped.split(" ");
     for (let n = Math.min(toks.length, 5); n >= 1 && !info; n--) {
-      const k = toks.slice(0, n).join(' ');
+      const k = toks.slice(0, n).join(" ");
       if (k.length >= 4) info = liveFirstWordsInfo.get(k);
     }
   }
@@ -296,11 +402,11 @@ console.log(`[rank] assigned ownerSiteRank+liveCategory to ${ranked}/${rolled.le
 // Use to slot items the live-snapshot matcher missed.
 const MANUAL_RANK_OVERRIDES = {
   // Giesel Green Fringe Lamp → after Jana Matte Bronze Cabaret (25), before Winona Silver Trophy (27)
-  'giesel-green-fringe-lamp-3535': { ownerSiteRank: 26, liveCategory: 'lighting' },
+  "giesel-green-fringe-lamp-3535": { ownerSiteRank: 26, liveCategory: "lighting" },
   // Merged dinnerware families absent from live snapshot — slot into the
   // tableware dinnerware band (Lavanya Stoneware=10, Evita Charger=11).
-  'marina-plate': { ownerSiteRank: 10.5, liveCategory: 'tableware' },
-  'dover-matte-oyster-plates-bowl': { ownerSiteRank: 10.7, liveCategory: 'tableware' },
+  "marina-plate": { ownerSiteRank: 10.5, liveCategory: "tableware" },
+  "dover-matte-oyster-plates-bowl": { ownerSiteRank: 10.7, liveCategory: "tableware" },
 };
 for (const p of rolled) {
   const ov = MANUAL_RANK_OVERRIDES[p.slug];
@@ -312,16 +418,25 @@ for (const p of rolled) {
 // Overlay live-site description + gallery onto rolled family tiles using
 // the family title (e.g. "Anastasia Antique Silver Flatware") which often
 // only matches at the family level, not at the RMS variant level.
-let descAdded = 0, galleryMerged = 0, heroOverridden = 0;
+let descAdded = 0,
+  galleryMerged = 0,
+  heroOverridden = 0;
 for (const p of rolled) {
   const lp = findLiveProduct(p.slug, p.title);
   if (!lp) continue;
-  if (!p.description && lp.body) { p.description = lp.body; descAdded++; }
+  if (!p.description && lp.body) {
+    p.description = lp.body;
+    descAdded++;
+  }
   if (!p.sourceUrl && lp.fullUrl) p.sourceUrl = `https://www.eclectichive.com${lp.fullUrl}`;
   // If DB had no images, seed from live gallery; otherwise leave owner images alone.
-  if ((p.imageCount === 0) && lp.gallery && lp.gallery.length) {
+  if (p.imageCount === 0 && lp.gallery && lp.gallery.length) {
     const imgs = lp.gallery.map((u, idx) => ({
-      url: u, position: idx, isHero: idx===0, inferredFilename: null, altText: p.title,
+      url: u,
+      position: idx,
+      isHero: idx === 0,
+      inferredFilename: null,
+      altText: p.title,
     }));
     p.images = imgs;
     p.primaryImage = imgs[0];
@@ -335,19 +450,26 @@ for (const p of rolled) {
   // typically a single-utensil shot. The live Squarespace tile shows a
   // stylized group hero; use it as the cover image while keeping owner
   // uploads as the rest of the gallery for the detail view.
-  const isRolled = (p.variants && p.variants.length > 0);
+  const isRolled = p.variants && p.variants.length > 0;
   // Respect owner-uploaded covers: if the current primary image is from the
   // `inventory/` bucket (owner originals), do NOT overwrite it with the live
   // Squarespace hero. Owners explicitly choose these.
-  const currentPrimaryUrl = (p.primaryImage && p.primaryImage.url) || (p.images && p.images[0] && (typeof p.images[0] === 'string' ? p.images[0] : p.images[0].url)) || '';
+  const currentPrimaryUrl =
+    (p.primaryImage && p.primaryImage.url) ||
+    (p.images &&
+      p.images[0] &&
+      (typeof p.images[0] === "string" ? p.images[0] : p.images[0].url)) ||
+    "";
   // Owner-uploaded covers: `inventory/` (originals) OR any dedicated per-product
   // bucket like midas/donavertortoiseflatware/adonisglassware/sageglassware/
   // glassware/tablewear. If the cover came from one of these, the live
   // Squarespace hero + gallery should NOT be re-merged on top — it just
   // re-introduces the legacy variant photos we replaced.
-  const OWNER_BUCKETS = /\/storage\/v1\/object\/public\/(inventory|midas|donavertortoiseflatware|adonisglassware|sageglassware|glassware|tablewear)\//;
-  const ownerCoverWins = OWNER_BUCKETS.test(currentPrimaryUrl)
-    || (p.images || []).some(im => OWNER_BUCKETS.test(typeof im === 'string' ? im : (im.url || '')));
+  const OWNER_BUCKETS =
+    /\/storage\/v1\/object\/public\/(inventory|midas|donavertortoiseflatware|adonisglassware|sageglassware|glassware|tablewear)\//;
+  const ownerCoverWins =
+    OWNER_BUCKETS.test(currentPrimaryUrl) ||
+    (p.images || []).some((im) => OWNER_BUCKETS.test(typeof im === "string" ? im : im.url || ""));
   if (isRolled && !ownerCoverWins && lp.gallery && lp.gallery.length) {
     const liveHero = lp.gallery[0];
     const seen = new Set();
@@ -359,23 +481,32 @@ for (const p of rolled) {
     const keyFor = (url) => {
       try {
         const path = new URL(url).pathname;
-        const base = decodeURIComponent(path.split('/').pop() || '')
-          .replace(/\+/g, ' ')
-          .replace(/[_\s]+/g, ' ')
+        const base = decodeURIComponent(path.split("/").pop() || "")
+          .replace(/\+/g, " ")
+          .replace(/[_\s]+/g, " ")
           .trim()
           .toLowerCase();
         return base || url;
-      } catch { return url; }
+      } catch {
+        return url;
+      }
     };
     const pushUrl = (url) => {
       if (!url) return;
       const k = keyFor(url);
       if (seen.has(url) || seenKeys.has(k)) return;
-      seen.add(url); seenKeys.add(k);
-      merged.push({ url, position: merged.length, isHero: merged.length===0, inferredFilename: null, altText: p.title });
+      seen.add(url);
+      seenKeys.add(k);
+      merged.push({
+        url,
+        position: merged.length,
+        isHero: merged.length === 0,
+        inferredFilename: null,
+        altText: p.title,
+      });
     };
     pushUrl(liveHero);
-    for (const img of (p.images || [])) pushUrl(typeof img === 'string' ? img : img.url);
+    for (const img of p.images || []) pushUrl(typeof img === "string" ? img : img.url);
     for (const u of lp.gallery.slice(1)) pushUrl(u);
     p.images = merged;
     p.primaryImage = merged[0];
@@ -383,58 +514,71 @@ for (const p of rolled) {
     heroOverridden++;
   }
 }
-console.log(`[live-overlay] descriptions added: ${descAdded}, galleries seeded: ${galleryMerged}, hero overrides: ${heroOverridden}`);
+console.log(
+  `[live-overlay] descriptions added: ${descAdded}, galleries seeded: ${galleryMerged}, hero overrides: ${heroOverridden}`,
+);
 
 // Locked family covers approved by the owner. Most are rolled tableware or
 // serveware group shots; Luna is the exact joint two-chair cutout.
 const LOCKED_REFERENCE_COVERS = {
-  'luna-arcing-dining-chairs': /(?:^|\/)LUNA(?:%20|\+|\s)0\.png(?:\?|$)/i,
-  'tabitha-set': /tabitha[_+\s-]*(tray[_+\s-]*)?set|tabathia[_+\s-]*tray[_+\s-]*set/i,
-  'powel-dark-brass-tray': /powell?[_+\s-]*set/i,
-  'shetani-dark-brass-tray': /shetani[_+\s-]*set/i,
-  'hazel-charred-terracotta-bowl': /hazel[_+\s-]*bowls/i,
-  'lavanya-riverstone-medium-bowl': /lavanya\+bowls|lavanya[_+\s-]*bowls/i,
-  'vintage-silver-goblets': /silver[_+\s-]*goblet.*(collection|set)|vintage[_+\s-]*silver[_+\s-]*goblet/i,
+  "luna-arcing-dining-chairs": /(?:^|\/)LUNA(?:%20|\+|\s)0\.png(?:\?|$)/i,
+  "tabitha-set": /tabitha[_+\s-]*(tray[_+\s-]*)?set|tabathia[_+\s-]*tray[_+\s-]*set/i,
+  "powel-dark-brass-tray": /powell?[_+\s-]*set/i,
+  "shetani-dark-brass-tray": /shetani[_+\s-]*set/i,
+  "hazel-charred-terracotta-bowl": /hazel[_+\s-]*bowls/i,
+  "lavanya-riverstone-medium-bowl": /lavanya\+bowls|lavanya[_+\s-]*bowls/i,
+  "vintage-silver-goblets":
+    /silver[_+\s-]*goblet.*(collection|set)|vintage[_+\s-]*silver[_+\s-]*goblet/i,
 };
 let lockedReferenceCovers = 0;
 for (const p of rolled) {
   const pattern = LOCKED_REFERENCE_COVERS[p.slug];
   if (!pattern) continue;
   const lp = findLiveProduct(p.slug, p.title);
-  const currentUrls = (p.images || []).map((img) => typeof img === 'string' ? img : img.url).filter(Boolean);
-  const coverUrl = currentUrls.find((u) => pattern.test(u) && !u.includes('/_family-sets/'))
-    || (lp?.gallery || []).find((u) => pattern.test(u))
-    || currentUrls.find((u) => pattern.test(u));
+  const currentUrls = (p.images || [])
+    .map((img) => (typeof img === "string" ? img : img.url))
+    .filter(Boolean);
+  const coverUrl =
+    currentUrls.find((u) => pattern.test(u) && !u.includes("/_family-sets/")) ||
+    (lp?.gallery || []).find((u) => pattern.test(u)) ||
+    currentUrls.find((u) => pattern.test(u));
   if (!coverUrl) continue;
-  const rest = (p.images || []).filter((img) => (typeof img === 'string' ? img : img.url) !== coverUrl);
-  p.images = [{ url: coverUrl, position: 0, isHero: true, inferredFilename: null, altText: p.title }, ...rest];
+  const rest = (p.images || []).filter(
+    (img) => (typeof img === "string" ? img : img.url) !== coverUrl,
+  );
+  p.images = [
+    { url: coverUrl, position: 0, isHero: true, inferredFilename: null, altText: p.title },
+    ...rest,
+  ];
   p.images.forEach((img, i) => {
-    if (typeof img !== 'string') { img.position = i; img.isHero = i === 0; }
+    if (typeof img !== "string") {
+      img.position = i;
+      img.isHero = i === 0;
+    }
   });
   p.primaryImage = p.images[0];
   p.imageCount = p.images.length;
   lockedReferenceCovers++;
 }
-console.log(`[locked-reference-covers] applied ${lockedReferenceCovers} owner-approved cover overrides`);
-
-
-
-
+console.log(
+  `[locked-reference-covers] applied ${lockedReferenceCovers} owner-approved cover overrides`,
+);
 
 const facetsMap = {};
 for (const p of rolled) {
-  if (!facetsMap[p.categorySlug]) facetsMap[p.categorySlug] = { slug:p.categorySlug, display:p.displayCategory, count:0 };
+  if (!facetsMap[p.categorySlug])
+    facetsMap[p.categorySlug] = { slug: p.categorySlug, display: p.displayCategory, count: 0 };
   facetsMap[p.categorySlug].count++;
 }
-const facets = ORDER.filter(s=>facetsMap[s]).map(s=>facetsMap[s]).concat(
-  Object.values(facetsMap).filter(f=>!ORDER.includes(f.slug))
-);
+const facets = ORDER.filter((s) => facetsMap[s])
+  .map((s) => facetsMap[s])
+  .concat(Object.values(facetsMap).filter((f) => !ORDER.includes(f.slug)));
 
 // Owner directive (Tableware notes 2026-05): every inventory proper name
 // must render ALL CAPS. CSS `text-transform: uppercase` is applied at every
 // render site, but normalize the source data too so contact-form summaries,
 // JSON-LD, alt text, and any future surface stay consistent.
-const upperTitle = (s) => (typeof s === 'string' ? s.toUpperCase() : s);
+const upperTitle = (s) => (typeof s === "string" ? s.toUpperCase() : s);
 for (const p of rolled) {
   if (p.title) p.title = upperTitle(p.title);
   if (Array.isArray(p.variants)) {
@@ -460,16 +604,22 @@ for (const p of rolled) {
 const storagePublicBase = `${process.env.SUPABASE_URL}/storage/v1/object/public`;
 const storageUrl = (bucket, key) => encodeURI(`${storagePublicBase}/${bucket}/${key}`);
 const IMAGE_URL_OVERRIDES = {
-  'anastasia-antique-silver-collection': [
-    ['anastasia+set.png', storageUrl('inventory', 'inventory/TABLEWEAR/ANASTASIA Set.png')],
+  "anastasia-antique-silver-collection": [
+    ["anastasia+set.png", storageUrl("inventory", "inventory/TABLEWEAR/ANASTASIA Set.png")],
   ],
-  'lapis-deep-blue-plates': [
-    ['lapis+set.png', storageUrl('inventory', 'inventory/TABLEWEAR/LAPIS Set.png')],
-    ['lapis+blue+10.5.png', storageUrl('squarespace-mirror', 'squarespace/_extras/893a473043ba-LAPIS_Blue_10.5.png')],
+  "lapis-deep-blue-plates": [
+    ["lapis+set.png", storageUrl("inventory", "inventory/TABLEWEAR/LAPIS Set.png")],
+    [
+      "lapis+blue+10.5.png",
+      storageUrl("squarespace-mirror", "squarespace/_extras/893a473043ba-LAPIS_Blue_10.5.png"),
+    ],
   ],
-  'lavanya-stoneware-collection': [
-    ['lavanya+set.png', storageUrl('inventory', 'inventory/TABLEWEAR/LAVANYA Set.png')],
-    ['lavanya+6+plate.png', storageUrl('squarespace-mirror', 'squarespace/_extras/5d1461f72f25-LAVANYA_6_Plate.png')],
+  "lavanya-stoneware-collection": [
+    ["lavanya+set.png", storageUrl("inventory", "inventory/TABLEWEAR/LAVANYA Set.png")],
+    [
+      "lavanya+6+plate.png",
+      storageUrl("squarespace-mirror", "squarespace/_extras/5d1461f72f25-LAVANYA_6_Plate.png"),
+    ],
   ],
 };
 let storageOverridesApplied = 0;
@@ -477,29 +627,32 @@ for (const p of rolled) {
   const overrides = IMAGE_URL_OVERRIDES[p.slug];
   if (!overrides || !Array.isArray(p.images)) continue;
   for (const img of p.images) {
-    const url = typeof img === 'string' ? img : img.url || '';
+    const url = typeof img === "string" ? img : img.url || "";
     const match = overrides.find(([pat]) => url.toLowerCase().includes(pat));
     if (!match) continue;
-    if (typeof img === 'string') continue;
+    if (typeof img === "string") continue;
     img.url = match[1];
     storageOverridesApplied++;
   }
-  if (p.primaryImage && p.images[0] && typeof p.images[0] !== 'string') p.primaryImage = p.images[0];
+  if (p.primaryImage && p.images[0] && typeof p.images[0] !== "string")
+    p.primaryImage = p.images[0];
 }
-console.log(`[image-storage-overrides] rewired ${storageOverridesApplied} flagged images to storage bucket URLs`);
+console.log(
+  `[image-storage-overrides] rewired ${storageOverridesApplied} flagged images to storage bucket URLs`,
+);
 
 const IMAGE_BLOCKLIST = {
-  'anastasia-antique-silver-collection': [
-    '0c5b546f9f84-anastasia_set.png', // mirror dup of squarespace ANASTASIA+Set.png
+  "anastasia-antique-silver-collection": [
+    "0c5b546f9f84-anastasia_set.png", // mirror dup of squarespace ANASTASIA+Set.png
   ],
-  'lapis-deep-blue-plates': [
-    'lapis+blue+11.png',   // dup of inventory LAPIS 11in.png
-    'lapis+blue+10.png',   // dup of inventory LAPIS 10in.png
-    'lapis+blue+8.25.png', // dup of inventory LAPIS 8.25in.png
+  "lapis-deep-blue-plates": [
+    "lapis+blue+11.png", // dup of inventory LAPIS 11in.png
+    "lapis+blue+10.png", // dup of inventory LAPIS 10in.png
+    "lapis+blue+8.25.png", // dup of inventory LAPIS 8.25in.png
   ],
-  'lavanya-stoneware-collection': [
-    'lavanya+12+charger.png', // dup of inventory LAVANYA 12.png
-    'lavanya+10++plate.png',  // dup of inventory LAVANYA 10.png
+  "lavanya-stoneware-collection": [
+    "lavanya+12+charger.png", // dup of inventory LAVANYA 12.png
+    "lavanya+10++plate.png", // dup of inventory LAVANYA 10.png
   ],
 };
 let blocklistRemoved = 0;
@@ -508,18 +661,24 @@ for (const p of rolled) {
   if (!patterns || !Array.isArray(p.images)) continue;
   const before = p.images.length;
   p.images = p.images.filter((img) => {
-    const url = (typeof img === 'string' ? img : img.url || '').toLowerCase();
+    const url = (typeof img === "string" ? img : img.url || "").toLowerCase();
     return !patterns.some((pat) => url.includes(pat));
   });
   // Reindex positions + isHero flag after removals.
   p.images.forEach((img, i) => {
-    if (typeof img !== 'string') { img.position = i; img.isHero = i === 0; }
+    if (typeof img !== "string") {
+      img.position = i;
+      img.isHero = i === 0;
+    }
   });
-  if (p.images.length > 0) p.primaryImage = typeof p.images[0] === 'string' ? { url: p.images[0] } : p.images[0];
+  if (p.images.length > 0)
+    p.primaryImage = typeof p.images[0] === "string" ? { url: p.images[0] } : p.images[0];
   p.imageCount = p.images.length;
-  blocklistRemoved += (before - p.images.length);
+  blocklistRemoved += before - p.images.length;
 }
-console.log(`[image-blocklist] removed ${blocklistRemoved} duplicate images across ${Object.keys(IMAGE_BLOCKLIST).length} products`);
+console.log(
+  `[image-blocklist] removed ${blocklistRemoved} duplicate images across ${Object.keys(IMAGE_BLOCKLIST).length} products`,
+);
 
 // Tableware duplicate pass — keep only one image per normalized filename when
 // the same asset exists as both old Squarespace CDN and our storage mirror / owner
@@ -528,18 +687,25 @@ console.log(`[image-blocklist] removed ${blocklistRemoved} duplicate images acro
 const imageBaseKey = (url) => {
   try {
     const pathname = new URL(url).pathname;
-    return decodeURIComponent(pathname.split('/').pop() || '')
-      .replace(/\+/g, ' ')
-      .replace(/\.[a-z0-9]+$/i, '')
-      .replace(/^[0-9a-f]{8,}-/i, '')
-      .replace(/[_-]+/g, ' ')
-      .replace(/\s+/g, ' ')
+    return decodeURIComponent(pathname.split("/").pop() || "")
+      .replace(/\+/g, " ")
+      .replace(/\.[a-z0-9]+$/i, "")
+      .replace(/^[0-9a-f]{8,}-/i, "")
+      .replace(/[_-]+/g, " ")
+      .replace(/\s+/g, " ")
       .trim()
       .toLowerCase();
-  } catch { return String(url || '').toLowerCase(); }
+  } catch {
+    return String(url || "").toLowerCase();
+  }
 };
 const storageRank = (url) => {
-  if (/\/storage\/v1\/object\/public\/(midas|adonisglassware|sageglassware|donavertortoiseflatware)\//.test(url)) return 6;
+  if (
+    /\/storage\/v1\/object\/public\/(midas|adonisglassware|sageglassware|donavertortoiseflatware)\//.test(
+      url,
+    )
+  )
+    return 6;
   if (/\/storage\/v1\/object\/public\/glassware\//.test(url)) return 5;
   if (/\/storage\/v1\/object\/public\/tablewear\//.test(url)) return 4;
   if (/\/storage\/v1\/object\/public\/inventory\//.test(url)) return 3;
@@ -549,10 +715,10 @@ const storageRank = (url) => {
 };
 let tablewareExactDupesRemoved = 0;
 for (const p of rolled) {
-  if (p.categorySlug !== 'tableware' || !Array.isArray(p.images) || p.images.length < 2) continue;
+  if (p.categorySlug !== "tableware" || !Array.isArray(p.images) || p.images.length < 2) continue;
   const bestByKey = new Map();
   p.images.forEach((img, i) => {
-    const url = typeof img === 'string' ? img : img.url || '';
+    const url = typeof img === "string" ? img : img.url || "";
     const key = imageBaseKey(url);
     if (!key) return;
     const current = bestByKey.get(key);
@@ -562,9 +728,12 @@ for (const p of rolled) {
   const seenKeys = new Set();
   const deduped = [];
   for (const img of p.images) {
-    const url = typeof img === 'string' ? img : img.url || '';
+    const url = typeof img === "string" ? img : img.url || "";
     const key = imageBaseKey(url);
-    if (!key) { deduped.push(img); continue; }
+    if (!key) {
+      deduped.push(img);
+      continue;
+    }
     const best = bestByKey.get(key);
     if (best?.img === img && !seenKeys.has(key)) {
       seenKeys.add(key);
@@ -574,17 +743,29 @@ for (const p of rolled) {
   if (deduped.length === p.images.length) continue;
   p.images = deduped;
   p.images.forEach((img, i) => {
-    if (typeof img !== 'string') { img.position = i; img.isHero = i === 0; }
+    if (typeof img !== "string") {
+      img.position = i;
+      img.isHero = i === 0;
+    }
   });
-  if (p.images.length > 0) p.primaryImage = typeof p.images[0] === 'string' ? { url: p.images[0] } : p.images[0];
+  if (p.images.length > 0)
+    p.primaryImage = typeof p.images[0] === "string" ? { url: p.images[0] } : p.images[0];
   p.imageCount = p.images.length;
-  tablewareExactDupesRemoved += (seenKeys.size ? 0 : 0) + (bestByKey.size ? 0 : 0) + (deduped.length >= 0 ? 0 : 0);
+  tablewareExactDupesRemoved +=
+    (seenKeys.size ? 0 : 0) + (bestByKey.size ? 0 : 0) + (deduped.length >= 0 ? 0 : 0);
 }
-tablewareExactDupesRemoved = rolled.reduce((sum, p) => sum + (p.categorySlug === 'tableware' && Array.isArray(p.images) ? 0 : 0), tablewareExactDupesRemoved);
-console.log(`[tableware-exact-image-dedupe] removed duplicate storage/CDN image slots where exact basenames matched`);
+tablewareExactDupesRemoved = rolled.reduce(
+  (sum, p) => sum + (p.categorySlug === "tableware" && Array.isArray(p.images) ? 0 : 0),
+  tablewareExactDupesRemoved,
+);
+console.log(
+  `[tableware-exact-image-dedupe] removed duplicate storage/CDN image slots where exact basenames matched`,
+);
 
 const payload = {
-  products: rolled, facets, total: rolled.length,
+  products: rolled,
+  facets,
+  total: rolled.length,
   meta: {
     generatedAt: new Date().toISOString(),
     totalRecords: rolled.length,
@@ -592,17 +773,17 @@ const payload = {
     rolledUpCount: stats.collapsed,
     publicReadyCount: rolled.length,
     excludedCount: hiddenForMissingImage,
-    excludedReason: 'awaiting-image',
-    categoryDisplayOrder: facets.map(f=>f.display),
+    excludedReason: "awaiting-image",
+    categoryDisplayOrder: facets.map((f) => f.display),
     familyRollupSources: stats.sourceCounts,
   },
 };
 
-const outDir = '/dev-server/src/data/inventory';
+const outDir = "/dev-server/src/data/inventory";
 fs.mkdirSync(outDir, { recursive: true });
-fs.writeFileSync(path.join(outDir, 'current_catalog.json'), JSON.stringify(payload));
-console.log('wrote current_catalog.json:', products.length, 'products,', facets.length, 'facets');
-console.log('facets:', facets.map(f=>`${f.slug}(${f.count})`).join(' '));
+fs.writeFileSync(path.join(outDir, "current_catalog.json"), JSON.stringify(payload));
+console.log("wrote current_catalog.json:", products.length, "products,", facets.length, "facets");
+console.log("facets:", facets.map((f) => `${f.slug}(${f.count})`).join(" "));
 
 // Tombstones are self-expiring: this bake read the live database, where the
 // deleted rows are already absent, so the suppress-list has done its job and
@@ -610,13 +791,12 @@ console.log('facets:', facets.map(f=>`${f.slug}(${f.count})`).join(' '));
 {
   const cutoff = payload.meta.generatedAt;
   const { error, count } = await sb
-    .from('deleted_items')
-    .delete({ count: 'exact' })
-    .lte('deleted_at', cutoff);
-  if (error) console.warn('tombstone purge failed (non-fatal):', error.message);
-  else console.log('purged tombstones:', count ?? 0);
+    .from("deleted_items")
+    .delete({ count: "exact" })
+    .lte("deleted_at", cutoff);
+  if (error) console.warn("tombstone purge failed (non-fatal):", error.message);
+  else console.log("purged tombstones:", count ?? 0);
 }
-
 
 // ---------------------------------------------------------------------------
 // Gallery orders snapshot — bake gallery_orders so /gallery serves the
@@ -624,12 +804,12 @@ console.log('facets:', facets.map(f=>`${f.slug}(${f.count})`).join(' '));
 // Supabase on every visit. Same publish semantics as the inventory overlay:
 // admin edits appear on live after the next bake (or Publish snapshot).
 // ---------------------------------------------------------------------------
-const galleryOutDir = '/dev-server/src/data/gallery';
+const galleryOutDir = "/dev-server/src/data/gallery";
 fs.mkdirSync(galleryOutDir, { recursive: true });
 try {
   const { data: gRows, error: gErr } = await sb
-    .from('gallery_orders')
-    .select('gallery_slug, order_keys');
+    .from("gallery_orders")
+    .select("gallery_slug, order_keys");
   if (gErr) throw gErr;
   const orders = {};
   for (const row of gRows ?? []) {
@@ -644,16 +824,13 @@ try {
       count: Object.keys(orders).length,
     },
   };
-  fs.writeFileSync(
-    path.join(galleryOutDir, 'gallery-orders.json'),
-    JSON.stringify(galleryPayload),
-  );
-  console.log('wrote gallery-orders.json:', Object.keys(orders).length, 'gallery overrides');
+  fs.writeFileSync(path.join(galleryOutDir, "gallery-orders.json"), JSON.stringify(galleryPayload));
+  console.log("wrote gallery-orders.json:", Object.keys(orders).length, "gallery overrides");
 } catch (e) {
-  console.warn('[bake] gallery_orders snapshot failed:', e?.message ?? e);
+  console.warn("[bake] gallery_orders snapshot failed:", e?.message ?? e);
   // Write empty snapshot so the client import never breaks.
   fs.writeFileSync(
-    path.join(galleryOutDir, 'gallery-orders.json'),
+    path.join(galleryOutDir, "gallery-orders.json"),
     JSON.stringify({ orders: {}, meta: { generatedAt: new Date().toISOString(), count: 0 } }),
   );
 }

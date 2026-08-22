@@ -24,9 +24,7 @@ export function GalleryCreditsBlock({ credits }: { credits?: Credits }) {
             <dt className="w-[86px] shrink-0 text-[9px] uppercase tracking-[0.28em] text-cream/35">
               {r.label}
             </dt>
-            <dd className="text-[10px] uppercase tracking-[0.22em] text-cream/70">
-              {r.name}
-            </dd>
+            <dd className="text-[10px] uppercase tracking-[0.22em] text-cream/70">{r.name}</dd>
           </div>
         ))}
       </dl>

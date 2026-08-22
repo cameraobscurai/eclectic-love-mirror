@@ -34,12 +34,20 @@ export function useTaxonomyTree() {
 // ---------------------------------------------------------------------------
 
 type ProductRow = Record<string, unknown> & {
-  id: string; title: string; slug?: string | null; rms_id?: string | null;
-  images?: string[] | null; card_background_url?: string | null;
+  id: string;
+  title: string;
+  slug?: string | null;
+  rms_id?: string | null;
+  images?: string[] | null;
+  card_background_url?: string | null;
 };
 
 export function InventoryEditDrawer({
-  id, onClose, onSaved, seed, focus,
+  id,
+  onClose,
+  onSaved,
+  seed,
+  focus,
 }: {
   id: string;
   onClose: () => void;
@@ -69,16 +77,20 @@ export function InventoryEditDrawer({
     get({ data: { id } })
       .then((r) => setRow(r as ProductRow))
       .catch((e) => setLoadError(e instanceof Error ? e.message : "Could not load this product."));
-    auditFn({ data: { entityId: id, limit: 20 } }).then((r) => setAudit(r as unknown[])).catch(() => {});
+    auditFn({ data: { entityId: id, limit: 20 } })
+      .then((r) => setAudit(r as unknown[]))
+      .catch(() => {});
   };
 
   useEffect(() => {
-    setRow(seed ?? null); setAudit([]);
+    setRow(seed ?? null);
+    setAudit([]);
     refetch();
-    roleFn().then((r) => setRole(r.role === "admin" ? "admin" : "staff")).catch(() => {});
+    roleFn()
+      .then((r) => setRole(r.role === "admin" ? "admin" : "staff"))
+      .catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
-
 
   if (!row) {
     return (
@@ -89,8 +101,12 @@ export function InventoryEditDrawer({
             <div className="space-y-4 text-charcoal">
               <p className="text-destructive normal-case tracking-normal">{loadError}</p>
               <div className="flex gap-3">
-                <button onClick={refetch} className="border border-charcoal/30 px-3 py-1">Retry</button>
-                <button onClick={onClose} className="border border-charcoal/20 px-3 py-1">Close</button>
+                <button onClick={refetch} className="border border-charcoal/30 px-3 py-1">
+                  Retry
+                </button>
+                <button onClick={onClose} className="border border-charcoal/20 px-3 py-1">
+                  Close
+                </button>
               </div>
             </div>
           ) : (
@@ -101,10 +117,10 @@ export function InventoryEditDrawer({
     );
   }
 
-
-  const liveUrl = typeof row.slug === "string" && row.slug
-    ? `https://eclectichive.com/collection/${row.slug}`
-    : undefined;
+  const liveUrl =
+    typeof row.slug === "string" && row.slug
+      ? `https://eclectichive.com/collection/${row.slug}`
+      : undefined;
 
   return (
     <>
@@ -134,19 +150,24 @@ export function InventoryEditDrawer({
           onSaved();
           onClose();
         }}
-
         onPhotosSaved={(next: { images: string[]; card_background_url: string | null }) => {
           // Keep the drawer's preview + readiness checklist in step with the
           // photo editor instead of waiting for a close/reopen.
-          setRow((prev) => (prev ? { ...prev, images: next.images, card_background_url: next.card_background_url } : prev));
+          setRow((prev) =>
+            prev
+              ? { ...prev, images: next.images, card_background_url: next.card_background_url }
+              : prev,
+          );
           onSaved();
         }}
-
         onSave={async (patch: Record<string, unknown>) => {
           // Taxonomy is NOT a plain column write. The pair is revalidated
           // against the reference tables and stamps taxonomy_review — that's
           // assignTaxonomy's job, so split it out of the ordinary patch.
-          const { collection_slug, category_slug, ...rest } = patch as Record<string, string | undefined>;
+          const { collection_slug, category_slug, ...rest } = patch as Record<
+            string,
+            string | undefined
+          >;
           if (collection_slug && category_slug) {
             await assign({ data: { ids: [id], collection_slug, category_slug } });
           }
@@ -156,9 +177,10 @@ export function InventoryEditDrawer({
           const fresh = await get({ data: { id } });
           setRow(fresh as ProductRow);
           onSaved();
-          auditFn({ data: { entityId: id, limit: 20 } }).then((r) => setAudit(r as unknown[])).catch(() => {});
+          auditFn({ data: { entityId: id, limit: 20 } })
+            .then((r) => setAudit(r as unknown[]))
+            .catch(() => {});
         }}
-
       />
       {photoEditor && (
         <ImageOrderEditor
@@ -177,7 +199,11 @@ export function InventoryEditDrawer({
           }}
           onClose={() => setPhotoEditor(false)}
           onSaved={(next) => {
-            setRow((prev) => (prev ? { ...prev, images: next.images, card_background_url: next.card_background_url } : prev));
+            setRow((prev) =>
+              prev
+                ? { ...prev, images: next.images, card_background_url: next.card_background_url }
+                : prev,
+            );
             onSaved();
           }}
         />

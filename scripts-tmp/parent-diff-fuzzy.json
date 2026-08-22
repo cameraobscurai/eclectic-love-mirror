@@ -20,12 +20,8 @@
         "score": 0.4
       }
     ],
-    "liveOnly": [
-      "Jesamay Armchair"
-    ],
-    "oursOnly": [
-      "Ingram Black Leather + Wood Sofa [rms4180]"
-    ]
+    "liveOnly": ["Jesamay Armchair"],
+    "oursOnly": ["Ingram Black Leather + Wood Sofa [rms4180]"]
   },
   {
     "parent": "lounge-tables",
@@ -37,11 +33,7 @@
     "realGap_liveOnly": 3,
     "realGap_oursOnly": 2,
     "maybePairs": [],
-    "liveOnly": [
-      "Boulder 36\" Coffee Table",
-      "River 54\" Coffee Table",
-      "Tierre Coffee Table"
-    ],
+    "liveOnly": ["Boulder 36\" Coffee Table", "River 54\" Coffee Table", "Tierre Coffee Table"],
     "oursOnly": [
       "Hacier Mahogany 60\" Dining Table [rms3896]",
       "Tierre Smoked Wood Round Coffee Table [rms3001]"
@@ -191,10 +183,7 @@
         "score": 0.4
       }
     ],
-    "liveOnly": [
-      "Amitola LED Corner Light",
-      "Maor Market Lighting"
-    ],
+    "liveOnly": ["Amitola LED Corner Light", "Maor Market Lighting"],
     "oursOnly": [
       "Gideon Small Bamboo Mesh Pendant [rms2864]",
       "Juno Clear Glass Lamp [rms2754]",

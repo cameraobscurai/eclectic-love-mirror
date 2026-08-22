@@ -64,13 +64,12 @@ export function AdminChatWindow({ threadId, initialMessages }: Props) {
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-1 py-4 space-y-4">
         {messages.length === 0 && (
           <div className="text-sm text-muted-foreground/70 max-w-md">
-            ADMIN is online. Read-only for now — ask about inventory counts, inquiry status, image health, or talk through what to build next.
+            ADMIN is online. Read-only for now — ask about inventory counts, inquiry status, image
+            health, or talk through what to build next.
           </div>
         )}
         {messages.map((m) => {
-          const text = m.parts
-            .map((p) => (p.type === "text" ? p.text : ""))
-            .join("");
+          const text = m.parts.map((p) => (p.type === "text" ? p.text : "")).join("");
           return (
             <div
               key={m.id}
@@ -87,9 +86,7 @@ export function AdminChatWindow({ threadId, initialMessages }: Props) {
         {status === "submitted" && (
           <div className="text-xs text-muted-foreground/60">ADMIN is thinking…</div>
         )}
-        {error && (
-          <div className="text-xs text-destructive">Error: {error.message}</div>
-        )}
+        {error && <div className="text-xs text-destructive">Error: {error.message}</div>}
       </div>
 
       <form onSubmit={onSubmit} className="border-t border-border/60 pt-3">

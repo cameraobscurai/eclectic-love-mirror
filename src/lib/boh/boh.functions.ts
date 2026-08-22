@@ -44,8 +44,7 @@ export const refreshBohSnapshots = createServerFn({ method: "POST" })
   .handler(async ({ context }): Promise<RefreshResult> => {
     const { refreshAllData } = await import("./boh.server");
     const actorId = context.userId as string;
-    const actorEmail =
-      (context.claims as { email?: string } | undefined)?.email;
+    const actorEmail = (context.claims as { email?: string } | undefined)?.email;
     return refreshAllData(actorId, actorEmail);
   });
 

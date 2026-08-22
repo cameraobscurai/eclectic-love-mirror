@@ -48,9 +48,19 @@ export function GalleryProjectCard({
           ].join(" ")}
         >
           <img
-            src={isStorage ? renderUrl(project.heroImage.src, { width: 1200, quality: 72 }) : project.heroImage.src}
-            srcSet={isStorage ? renderSrcSet(project.heroImage.src, [800, 1200, 1600], 72) : undefined}
-            sizes={isStorage ? "(min-width: 1280px) 40vw, (min-width: 1024px) 45vw, (min-width: 768px) 60vw, 85vw" : undefined}
+            src={
+              isStorage
+                ? renderUrl(project.heroImage.src, { width: 1200, quality: 72 })
+                : project.heroImage.src
+            }
+            srcSet={
+              isStorage ? renderSrcSet(project.heroImage.src, [800, 1200, 1600], 72) : undefined
+            }
+            sizes={
+              isStorage
+                ? "(min-width: 1280px) 40vw, (min-width: 1024px) 45vw, (min-width: 768px) 60vw, 85vw"
+                : undefined
+            }
             alt={project.heroImage.alt}
             loading={index < 2 ? "eager" : "lazy"}
             decoding="async"
@@ -58,7 +68,6 @@ export function GalleryProjectCard({
             className="gallery-card-img absolute inset-0 w-full h-full object-cover will-change-transform"
             draggable={false}
           />
-
 
           {pending && (
             <div className="absolute inset-0 flex items-end justify-start p-6 pointer-events-none">

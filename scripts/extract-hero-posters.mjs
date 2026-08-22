@@ -24,8 +24,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = resolve(__dirname, "..");
 const OUT_DIR = join(PROJECT_ROOT, "public", "media", "home");
 
-const SUPABASE_URL =
-  process.env.VITE_SUPABASE_URL ?? "https://wdyfavzfquegrxklcpmq.supabase.co";
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL ?? "https://wdyfavzfquegrxklcpmq.supabase.co";
 const STORAGE_BASE = `${SUPABASE_URL}/storage/v1/object/public/videos`;
 
 // Mirrors src/components/home/clips.ts → HERO_CLIPS
@@ -64,21 +63,25 @@ async function downloadTo(url, dest) {
 async function extractPoster(srcPath, outPath) {
   await run("ffmpeg", [
     "-y",
-    "-loglevel", "error",
-    "-ss", String(SEEK_SECONDS),
-    "-i", srcPath,
-    "-frames:v", "1",
-    "-vf", `scale=${TARGET_W}:${TARGET_H}:force_original_aspect_ratio=increase,crop=${TARGET_W}:${TARGET_H}`,
-    "-q:v", "3",
+    "-loglevel",
+    "error",
+    "-ss",
+    String(SEEK_SECONDS),
+    "-i",
+    srcPath,
+    "-frames:v",
+    "1",
+    "-vf",
+    `scale=${TARGET_W}:${TARGET_H}:force_original_aspect_ratio=increase,crop=${TARGET_W}:${TARGET_H}`,
+    "-q:v",
+    "3",
     outPath,
   ]);
 }
 
 async function main() {
   const wanted = process.argv.slice(2);
-  const targets = wanted.length
-    ? CLIPS.filter((c) => wanted.includes(c.id))
-    : CLIPS;
+  const targets = wanted.length ? CLIPS.filter((c) => wanted.includes(c.id)) : CLIPS;
   if (!targets.length) {
     console.error(`No matching clips for: ${wanted.join(", ")}`);
     process.exit(1);

@@ -19,7 +19,16 @@ export const Chrome: React.FC = () => {
   };
 
   return (
-    <div style={{ position: "absolute", top: 90, left: GUTTER, right: GUTTER, opacity: op, pointerEvents: "none" }}>
+    <div
+      style={{
+        position: "absolute",
+        top: 90,
+        left: GUTTER,
+        right: GUTTER,
+        opacity: op,
+        pointerEvents: "none",
+      }}
+    >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <span style={{ ...labelStyle, opacity: 0.45 }}>STUDIO</span>
         <span style={{ ...labelStyle, opacity: 0.95 }}>ECLECTIC HIVE</span>

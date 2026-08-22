@@ -19,15 +19,34 @@ import path from "node:path";
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../..");
 const truth = JSON.parse(fs.readFileSync(path.join(ROOT, "scripts/audit/live-truth.json"), "utf8"));
-const catalog = JSON.parse(fs.readFileSync(path.join(ROOT, "src/data/inventory/current_catalog.json"), "utf8"));
+const catalog = JSON.parse(
+  fs.readFileSync(path.join(ROOT, "src/data/inventory/current_catalog.json"), "utf8"),
+);
 
 // ── normalization ────────────────────────────────────────────────────────────
 const STOP = new Set(["the", "a", "an", "and", "&", "with", "of", "in", "by", "set"]);
 const STRIP_WORDS = [
   // descriptors that often differ between live site and RMS naming
-  "vintage", "antique", "rustic", "matte", "black", "white", "natural",
-  "leather", "wood", "metal", "marble", "stone", "fabric", "velvet", "linen",
-  "brass", "iron", "wool", "silk", "cotton",
+  "vintage",
+  "antique",
+  "rustic",
+  "matte",
+  "black",
+  "white",
+  "natural",
+  "leather",
+  "wood",
+  "metal",
+  "marble",
+  "stone",
+  "fabric",
+  "velvet",
+  "linen",
+  "brass",
+  "iron",
+  "wool",
+  "silk",
+  "cotton",
 ];
 const STRIP_SET = new Set(STRIP_WORDS);
 
@@ -46,7 +65,8 @@ function coreTokens(s) {
   return tokens(s).filter((w) => !STRIP_SET.has(w) && !/^\d+("|in|inch|ft|cm)?$/.test(w));
 }
 function jaccard(a, b) {
-  const A = new Set(a), B = new Set(b);
+  const A = new Set(a),
+    B = new Set(b);
   let inter = 0;
   for (const x of A) if (B.has(x)) inter++;
   const union = A.size + B.size - inter;
@@ -64,8 +84,10 @@ function dice(a, b) {
     }
     return out;
   };
-  const A = grams(a), B = grams(b);
-  let inter = 0, total = 0;
+  const A = grams(a),
+    B = grams(b);
+  let inter = 0,
+    total = 0;
   for (const [g, n] of A) {
     total += n;
     if (B.has(g)) inter += Math.min(n, B.get(g));
@@ -106,7 +128,8 @@ for (const [liveTitle, info] of Object.entries(truth)) {
 
   // Score every candidate. Cheap pre-filter: share at least one core token
   // OR same first word. Otherwise skip (keeps runtime O(n) practical).
-  let best = null, second = null;
+  let best = null,
+    second = null;
   for (const c of catIndex) {
     if (c.firstWord !== lf && !c.core.some((t) => lc.includes(t))) continue;
     const dn = dice(ln, c.norm);
@@ -120,8 +143,14 @@ for (const [liveTitle, info] of Object.entries(truth)) {
     }
   }
 
-  if (!best || best.score < 0.50) {
-    missing.push({ liveTitle, liveParent: info.parent, liveSub: info.subcategory, bestScore: best?.score ?? 0, bestGuess: best?.title ?? null });
+  if (!best || best.score < 0.5) {
+    missing.push({
+      liveTitle,
+      liveParent: info.parent,
+      liveSub: info.subcategory,
+      bestScore: best?.score ?? 0,
+      bestGuess: best?.title ?? null,
+    });
   } else if (best.score >= 0.78 || (best.jaccard >= 0.7 && best.dice >= 0.6)) {
     confident.push({
       liveTitle,
@@ -184,11 +213,13 @@ console.log("No catalog or DB writes performed.");
 // Print a few samples per bucket for at-a-glance sanity.
 const sample = (arr, n = 5) => arr.slice(0, n);
 console.log("\n— Confident samples —");
-for (const c of sample(confident)) console.log(`  ${c.score}  "${c.liveTitle}"  →  "${c.rmsTitle}"`);
+for (const c of sample(confident))
+  console.log(`  ${c.score}  "${c.liveTitle}"  →  "${c.rmsTitle}"`);
 console.log("\n— Ambiguous samples —");
 for (const a of sample(ambiguous)) {
   console.log(`  "${a.liveTitle}"`);
   for (const cand of a.candidates) console.log(`    ${cand.score}  ${cand.rmsTitle}`);
 }
 console.log("\n— Missing samples —");
-for (const m of sample(missing, 10)) console.log(`  ${m.bestScore.toFixed(2)}  "${m.liveTitle}"  best: ${m.bestGuess ?? "—"}`);
+for (const m of sample(missing, 10))
+  console.log(`  ${m.bestScore.toFixed(2)}  "${m.liveTitle}"  best: ${m.bestGuess ?? "—"}`);

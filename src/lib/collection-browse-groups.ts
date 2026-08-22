@@ -11,11 +11,7 @@
  * `collection-taxonomy.ts`. This file is intentionally trivial.
  */
 
-export type {
-  BrowseGroupId,
-  BrowseTier,
-  BrowseGroupOption,
-} from "./collection-taxonomy";
+export type { BrowseGroupId, BrowseTier, BrowseGroupOption } from "./collection-taxonomy";
 
 export {
   OWNER_BROWSE_ORDER,

@@ -33,4 +33,3 @@ export const PRODUCT_TILE_OVERRIDES: Record<
   // straight elevations beside it at the same solved scale. Trim 8%.
   "4180": { scaleNudge: 0.92 },
 };
-

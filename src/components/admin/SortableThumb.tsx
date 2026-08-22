@@ -21,8 +21,9 @@ export function SortableThumb({
   onDelete,
   onSetBackground,
 }: Props) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: url });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: url,
+  });
 
   // Storage filename, decoded and stripped of the hash prefix uploads add.
   const fileLabel = decodeURIComponent(

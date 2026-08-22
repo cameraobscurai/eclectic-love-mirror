@@ -18,7 +18,7 @@ The Ingram cover is a **391 × 151** photo — very wide, very small. Three sepa
 
 **Tile** — convert focal coordinates through the same letterbox ratio before translating, so one unit of nudge equals one unit of movement.
 
-**Keep the solver on.** A focal point becomes an *anchor override only* — it says "center on this point," it no longer says "abandon scaling." The measured scale that makes Ingram sit the same size as Indiwin and Brooklyn stays applied. This is the change that makes the tool stop being fragile: worst case a bad click shifts the piece slightly, it can never blow up the size.
+**Keep the solver on.** A focal point becomes an _anchor override only_ — it says "center on this point," it no longer says "abandon scaling." The measured scale that makes Ingram sit the same size as Indiwin and Brooklyn stays applied. This is the change that makes the tool stop being fragile: worst case a bad click shifts the piece slightly, it can never blow up the size.
 
 **Live tile preview in the drawer.** Next to the focal stage, a real 5:4 tile rendered through the identical production code path, updating as you click. What you see is what ships — no more save-then-go-look-at-the-site.
 

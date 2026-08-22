@@ -40,10 +40,13 @@ function AdminDashboard() {
   const [stats, setStats] = useState<DashboardInventoryStats | null>(null);
   useEffect(() => {
     let alive = true;
-    getDashboardInventoryStats().then((s) => { if (alive) setStats(s); });
-    return () => { alive = false; };
+    getDashboardInventoryStats().then((s) => {
+      if (alive) setStats(s);
+    });
+    return () => {
+      alive = false;
+    };
   }, []);
-
 
   const [inq, setInq] = useState<InquirySummary | null>(null);
   const [emailHealth, setEmailHealth] = useState<EmailQueueHealth | null>(null);
@@ -51,9 +54,13 @@ function AdminDashboard() {
   useEffect(() => {
     let alive = true;
     getEmailQueueHealth()
-      .then((h) => { if (alive) setEmailHealth(h as EmailQueueHealth); })
+      .then((h) => {
+        if (alive) setEmailHealth(h as EmailQueueHealth);
+      })
       .catch(() => {});
-    return () => { alive = false; };
+    return () => {
+      alive = false;
+    };
   }, []);
   const [inqError, setInqError] = useState<string | null>(null);
 
@@ -88,10 +95,7 @@ function AdminDashboard() {
     <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal">
       <div className="px-6 lg:px-12 pt-10 pb-24 max-w-[1500px] mx-auto">
         {/* Header */}
-        <header
-          className="border-b pb-8 mb-10"
-          style={{ borderColor: "var(--archive-rule)" }}
-        >
+        <header className="border-b pb-8 mb-10" style={{ borderColor: "var(--archive-rule)" }}>
           <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
             ADMIN · INTERNAL
           </p>
@@ -106,7 +110,11 @@ function AdminDashboard() {
         {/* KPI row */}
         <section className="grid grid-cols-2 md:grid-cols-4 gap-px bg-charcoal/10 border border-charcoal/10 mb-12">
           <Kpi label="Catalog" value={stats.total} hint="total records" />
-          <Kpi label="Public-ready" value={stats.publicReady} hint={`${pct(stats.publicReady, stats.total)} of catalog`} />
+          <Kpi
+            label="Public-ready"
+            value={stats.publicReady}
+            hint={`${pct(stats.publicReady, stats.total)} of catalog`}
+          />
           <Kpi
             label="Inquiries"
             value={inq?.total ?? "—"}
@@ -121,8 +129,6 @@ function AdminDashboard() {
 
         {/* Email queue health — flags a stalled cron */}
         <EmailQueueHealthCard health={emailHealth} />
-
-
 
         {/* Two-column body */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
@@ -142,7 +148,10 @@ function AdminDashboard() {
               {inqError ? (
                 <p className="text-sm text-charcoal/60">Couldn't load: {inqError}</p>
               ) : inq && Array.isArray(inq.daily) ? (
-                <Sparkline data={inq.daily.map((d) => d.count)} labels={inq.daily.map((d) => d.date)} />
+                <Sparkline
+                  data={inq.daily.map((d) => d.count)}
+                  labels={inq.daily.map((d) => d.date)}
+                />
               ) : (
                 <SkeletonBlock h={120} />
               )}
@@ -153,10 +162,7 @@ function AdminDashboard() {
                 inq.recent.length === 0 ? (
                   <p className="text-sm text-charcoal/55">No submissions yet.</p>
                 ) : (
-                  <div
-                    className="border-t"
-                    style={{ borderColor: "var(--archive-rule)" }}
-                  >
+                  <div className="border-t" style={{ borderColor: "var(--archive-rule)" }}>
                     {inq.recent.map((r) => (
                       <details
                         key={r.id}
@@ -165,9 +171,7 @@ function AdminDashboard() {
                       >
                         <summary className="cursor-pointer list-none flex items-baseline justify-between gap-4">
                           <div className="min-w-0 flex-1">
-                            <p className="font-display text-lg leading-tight truncate">
-                              {r.name}
-                            </p>
+                            <p className="font-display text-lg leading-tight truncate">{r.name}</p>
                             <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-charcoal/50 truncate">
                               {r.email}
                               {r.subject ? <> · {r.subject}</> : null}
@@ -192,14 +196,19 @@ function AdminDashboard() {
                             Phone · {r.phone}
                           </p>
                         )}
-                        <InlineReply inquiry={r} onSent={() => {
-                          // Refetch the summary so the row flips to "handled".
-                          getInquirySummary().then((d) => {
-                            if (d && Array.isArray((d as InquirySummary).daily)) {
-                              setInq(d as InquirySummary);
-                            }
-                          }).catch(() => {});
-                        }} />
+                        <InlineReply
+                          inquiry={r}
+                          onSent={() => {
+                            // Refetch the summary so the row flips to "handled".
+                            getInquirySummary()
+                              .then((d) => {
+                                if (d && Array.isArray((d as InquirySummary).daily)) {
+                                  setInq(d as InquirySummary);
+                                }
+                              })
+                              .catch(() => {});
+                          }}
+                        />
                       </details>
                     ))}
                   </div>
@@ -216,15 +225,15 @@ function AdminDashboard() {
               <div className="space-y-5">
                 <Bar label="Image coverage" pct={stats.imageCoverage} accent="var(--sand)" />
                 <Bar label="Dimensions on file" pct={stats.dimensionsCoverage} />
-                <Bar
-                  label="Public-ready"
-                  pct={stats.total ? stats.publicReady / stats.total : 0}
-                />
+                <Bar label="Public-ready" pct={stats.total ? stats.publicReady / stats.total : 0} />
               </div>
               <dl className="mt-8 grid grid-cols-3 gap-px bg-charcoal/10 border border-charcoal/10">
                 <Cell k="Custom order" v={stats.customOrder} />
                 <Cell k="Manual review" v={stats.manualReview} />
-                <Cell k="No image" v={stats.imageBuckets.find((b) => b.label === "0")?.count ?? 0} />
+                <Cell
+                  k="No image"
+                  v={stats.imageBuckets.find((b) => b.label === "0")?.count ?? 0}
+                />
               </dl>
             </Panel>
 
@@ -279,9 +288,7 @@ function AdminDashboard() {
                       <p className="text-[10px] uppercase tracking-[0.2em] text-charcoal/55">
                         {b.label}
                       </p>
-                      <p className="text-[11px] tabular-nums text-charcoal/85">
-                        {b.count}
-                      </p>
+                      <p className="text-[11px] tabular-nums text-charcoal/85">{b.count}</p>
                     </div>
                   );
                 })}
@@ -290,7 +297,10 @@ function AdminDashboard() {
           </section>
         </div>
 
-        <footer className="mt-16 pt-8 border-t text-[10px] uppercase tracking-[0.22em] text-charcoal/40" style={{ borderColor: "var(--archive-rule)" }}>
+        <footer
+          className="mt-16 pt-8 border-t text-[10px] uppercase tracking-[0.22em] text-charcoal/40"
+          style={{ borderColor: "var(--archive-rule)" }}
+        >
           Internal tool · not indexed
         </footer>
       </div>
@@ -303,27 +313,15 @@ function AdminDashboard() {
 // surface area without polluting the component library.
 // ---------------------------------------------------------------------------
 
-function Kpi({
-  label,
-  value,
-  hint,
-}: {
-  label: string;
-  value: number | string;
-  hint?: string;
-}) {
+function Kpi({ label, value, hint }: { label: string; value: number | string; hint?: string }) {
   return (
     <div className="bg-cream p-6">
-      <p className="text-[10px] uppercase tracking-[0.26em] text-charcoal/45">
-        {label}
-      </p>
+      <p className="text-[10px] uppercase tracking-[0.26em] text-charcoal/45">{label}</p>
       <p className="mt-3 font-display text-[2rem] leading-none tabular-nums">
         {typeof value === "number" ? value.toLocaleString() : value}
       </p>
       {hint && (
-        <p className="mt-2 text-[11px] uppercase tracking-[0.18em] text-charcoal/45">
-          {hint}
-        </p>
+        <p className="mt-2 text-[11px] uppercase tracking-[0.18em] text-charcoal/45">{hint}</p>
       )}
     </div>
   );
@@ -344,19 +342,12 @@ function Panel({
     <article>
       <header className="flex items-end justify-between gap-4 mb-5">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.26em] text-charcoal/45">
-            {eyebrow}
-          </p>
-          <h2 className="mt-2 font-display text-2xl uppercase tracking-[0.04em]">
-            {title}
-          </h2>
+          <p className="text-[10px] uppercase tracking-[0.26em] text-charcoal/45">{eyebrow}</p>
+          <h2 className="mt-2 font-display text-2xl uppercase tracking-[0.04em]">{title}</h2>
         </div>
         {right}
       </header>
-      <div
-        className="border-t pt-6"
-        style={{ borderColor: "var(--archive-rule)" }}
-      >
+      <div className="border-t pt-6" style={{ borderColor: "var(--archive-rule)" }}>
         {children}
       </div>
     </article>
@@ -392,9 +383,7 @@ function Bar({
 function Cell({ k, v }: { k: string; v: number }) {
   return (
     <div className="bg-cream p-4">
-      <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45">
-        {k}
-      </p>
+      <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45">{k}</p>
       <p className="mt-2 font-display text-xl tabular-nums">{v.toLocaleString()}</p>
     </div>
   );
@@ -412,13 +401,7 @@ function SkeletonBlock({ h }: { h: number }) {
   );
 }
 
-function InlineReply({
-  inquiry,
-  onSent,
-}: {
-  inquiry: InquiryRow;
-  onSent: () => void;
-}) {
+function InlineReply({ inquiry, onSent }: { inquiry: InquiryRow; onSent: () => void }) {
   const defaultSubject = inquiry.subject
     ? `Re: ${inquiry.subject}`
     : "Re: your inquiry — Eclectic Hive";
@@ -482,9 +465,7 @@ function InlineReply({
         >
           {status === "sending" ? "Sending…" : status === "sent" ? "Sent ✓" : "Send reply"}
         </button>
-        {err && (
-          <span className="text-[11px] text-red-700">{err}</span>
-        )}
+        {err && <span className="text-[11px] text-red-700">{err}</span>}
         {status === "sent" && (
           <span className="text-[11px] uppercase tracking-[0.2em] text-charcoal/50">
             Queued · marked handled
@@ -506,18 +487,23 @@ function Sparkline({ data, labels }: { data: number[]; labels: string[] }) {
     const y = h - pad - (v / max) * (h - pad * 2);
     return [x, y] as const;
   });
-  const linePath = pts.map(([x, y], i) => `${i === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)}`).join(" ");
+  const linePath = pts
+    .map(([x, y], i) => `${i === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)}`)
+    .join(" ");
   const areaPath = `${linePath} L ${pts[pts.length - 1]?.[0] ?? 0} ${h - pad} L ${pts[0]?.[0] ?? 0} ${h - pad} Z`;
 
   return (
     <div>
-      <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-32" preserveAspectRatio="none" aria-hidden="true">
+      <svg
+        viewBox={`0 0 ${w} ${h}`}
+        className="w-full h-32"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
         <path d={areaPath} fill="color-mix(in oklab, var(--sand) 35%, transparent)" />
         <path d={linePath} fill="none" stroke="var(--charcoal)" strokeWidth={1.2} />
         {pts.map(([x, y], i) =>
-          data[i] > 0 ? (
-            <circle key={i} cx={x} cy={y} r={1.8} fill="var(--charcoal)" />
-          ) : null,
+          data[i] > 0 ? <circle key={i} cx={x} cy={y} r={1.8} fill="var(--charcoal)" /> : null,
         )}
       </svg>
       <div className="mt-2 flex justify-between text-[10px] uppercase tracking-[0.2em] text-charcoal/40 tabular-nums">
@@ -558,9 +544,7 @@ function shortDate(iso?: string) {
 
 function EmailQueueHealthCard({ health }: { health: EmailQueueHealth | null }) {
   if (!health) return null;
-  const lastRunLabel = health.lastRunAt
-    ? relativeTime(health.lastRunAt)
-    : "never";
+  const lastRunLabel = health.lastRunAt ? relativeTime(health.lastRunAt) : "never";
   const tone = health.stalled
     ? "text-red-700 border-red-300 bg-red-50"
     : "text-charcoal/70 border-charcoal/10 bg-white";
@@ -569,15 +553,11 @@ function EmailQueueHealthCard({ health }: { health: EmailQueueHealth | null }) {
       className={`mb-12 border ${tone} px-5 py-4 flex flex-wrap items-center gap-6`}
       style={{ borderColor: health.stalled ? undefined : "var(--archive-rule)" }}
     >
-      <div className="text-[11px] uppercase tracking-[0.22em]">
-        Email queue
-      </div>
+      <div className="text-[11px] uppercase tracking-[0.22em]">Email queue</div>
       <div className="text-[12px]">
         Last run: <span className="font-medium">{lastRunLabel}</span>
         {health.lastRunStatus ? ` · ${health.lastRunStatus}` : ""}
-        {typeof health.lastRunProcessed === "number"
-          ? ` · ${health.lastRunProcessed} sent`
-          : ""}
+        {typeof health.lastRunProcessed === "number" ? ` · ${health.lastRunProcessed} sent` : ""}
       </div>
       <div className="text-[12px]">
         Pending (24h): <span className="font-medium">{health.pending}</span>

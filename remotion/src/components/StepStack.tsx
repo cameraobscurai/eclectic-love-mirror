@@ -22,9 +22,26 @@ export const StepStack: React.FC<{ active: 1 | 2 | 3 | 4 | 5 }> = ({ active }) =
   const top = 1780;
 
   return (
-    <div style={{ position: "absolute", inset: 0, opacity: introOp, transform: `translateY(${introY}px)`, pointerEvents: "none" }}>
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        opacity: introOp,
+        transform: `translateY(${introY}px)`,
+        pointerEvents: "none",
+      }}
+    >
       {/* hairline rule above */}
-      <div style={{ position: "absolute", left: GUTTER, right: GUTTER, top: top - 32, height: 1, background: COLORS.rule }} />
+      <div
+        style={{
+          position: "absolute",
+          left: GUTTER,
+          right: GUTTER,
+          top: top - 32,
+          height: 1,
+          background: COLORS.rule,
+        }}
+      />
 
       {/* labels row */}
       {LABELS.map((l, i) => {
@@ -47,7 +64,8 @@ export const StepStack: React.FC<{ active: 1 | 2 | 3 | 4 | 5 }> = ({ active }) =
               fontWeight: isActive ? 500 : 400,
             }}
           >
-            <span style={{ opacity: 0.5, marginRight: 8 }}>0{i + 1}</span>{l}
+            <span style={{ opacity: 0.5, marginRight: 8 }}>0{i + 1}</span>
+            {l}
           </div>
         );
       })}
@@ -86,8 +104,11 @@ export const StepStack: React.FC<{ active: 1 | 2 | 3 | 4 | 5 }> = ({ active }) =
       <div
         style={{
           position: "absolute",
-          left: GUTTER, right: GUTTER, bottom: 50,
-          display: "flex", justifyContent: "space-between",
+          left: GUTTER,
+          right: GUTTER,
+          bottom: 50,
+          display: "flex",
+          justifyContent: "space-between",
           color: COLORS.charcoal,
           opacity: 0.5,
           fontFamily: BODY,

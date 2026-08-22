@@ -4,14 +4,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { CheckCircle2, AlertTriangle, ImagePlus, Loader2, Search, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
-import {
-  getCollectionCatalog,
-  type CollectionProduct,
-} from "@/lib/phase3-catalog";
-import {
-  uploadItemImage,
-  updateItemImages,
-} from "@/lib/inventory-images.functions";
+import { getCollectionCatalog, type CollectionProduct } from "@/lib/phase3-catalog";
+import { uploadItemImage, updateItemImages } from "@/lib/inventory-images.functions";
 
 // ---------------------------------------------------------------------------
 // /admin/upload-hero — One product, one new primary photo.
@@ -62,9 +56,7 @@ function UploadHeroPage() {
   const [over, setOver] = useState(false);
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState<
-    | { kind: "idle" }
-    | { kind: "ok"; url: string; deduped: boolean }
-    | { kind: "err"; msg: string }
+    { kind: "idle" } | { kind: "ok"; url: string; deduped: boolean } | { kind: "err"; msg: string }
   >({ kind: "idle" });
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -107,9 +99,7 @@ function UploadHeroPage() {
       .filter(
         (p) =>
           (categoryFilter === "all" || p.categorySlug === categoryFilter) &&
-          (q === "" ||
-            p.title.toLowerCase().includes(q) ||
-            p.slug.toLowerCase().includes(q)),
+          (q === "" || p.title.toLowerCase().includes(q) || p.slug.toLowerCase().includes(q)),
       )
       .slice(0, 200);
   }, [products, query, categoryFilter]);
@@ -122,31 +112,31 @@ function UploadHeroPage() {
     setStatus({ kind: "idle" });
   }, [preview]);
 
-  const acceptFile = useCallback(
-    (f: File) => {
-      const ext = (f.name.split(".").pop() || "").toLowerCase();
-      if (["heic", "heif"].includes(ext)) {
-        setStatus({ kind: "err", msg: "HEIC isn't supported — export as JPG or PNG." });
-        return;
-      }
-      if (!/^image\/(jpeg|png|webp|avif)$/.test(f.type)) {
-        setStatus({ kind: "err", msg: `Unsupported type: ${f.type || "unknown"}. Use JPG, PNG, WEBP, or AVIF.` });
-        return;
-      }
-      if (f.size > 10 * 1024 * 1024) {
-        setStatus({ kind: "err", msg: "Over 10MB — compress or resize first." });
-        return;
-      }
-      setFile(f);
-      setStatus({ kind: "idle" });
-      const url = URL.createObjectURL(f);
-      setPreview(url);
-      const img = new Image();
-      img.onload = () => setDims({ w: img.naturalWidth, h: img.naturalHeight });
-      img.src = url;
-    },
-    [],
-  );
+  const acceptFile = useCallback((f: File) => {
+    const ext = (f.name.split(".").pop() || "").toLowerCase();
+    if (["heic", "heif"].includes(ext)) {
+      setStatus({ kind: "err", msg: "HEIC isn't supported — export as JPG or PNG." });
+      return;
+    }
+    if (!/^image\/(jpeg|png|webp|avif)$/.test(f.type)) {
+      setStatus({
+        kind: "err",
+        msg: `Unsupported type: ${f.type || "unknown"}. Use JPG, PNG, WEBP, or AVIF.`,
+      });
+      return;
+    }
+    if (f.size > 10 * 1024 * 1024) {
+      setStatus({ kind: "err", msg: "Over 10MB — compress or resize first." });
+      return;
+    }
+    setFile(f);
+    setStatus({ kind: "idle" });
+    const url = URL.createObjectURL(f);
+    setPreview(url);
+    const img = new Image();
+    img.onload = () => setDims({ w: img.naturalWidth, h: img.naturalHeight });
+    img.src = url;
+  }, []);
 
   const ratio = dims ? dims.w / dims.h : null;
   const ratioOk =
@@ -318,13 +308,20 @@ function UploadHeroPage() {
                   ) : null}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[10px] uppercase tracking-[0.18em] text-charcoal/45">Current cover</div>
+                  <div className="text-[10px] uppercase tracking-[0.18em] text-charcoal/45">
+                    Current cover
+                  </div>
                   <div className="text-[15px] text-charcoal truncate">{selected.title}</div>
-                  <div className="text-[10px] uppercase tracking-[0.16em] text-charcoal/45 truncate">{selected.slug}</div>
+                  <div className="text-[10px] uppercase tracking-[0.16em] text-charcoal/45 truncate">
+                    {selected.slug}
+                  </div>
                 </div>
                 <button
                   type="button"
-                  onClick={() => { setSelected(null); resetFile(); }}
+                  onClick={() => {
+                    setSelected(null);
+                    resetFile();
+                  }}
                   className="text-charcoal/40 hover:text-charcoal"
                   aria-label="Clear selection"
                 >
@@ -334,7 +331,10 @@ function UploadHeroPage() {
 
               {/* Drop zone */}
               <div
-                onDragOver={(e) => { e.preventDefault(); setOver(true); }}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setOver(true);
+                }}
                 onDragLeave={() => setOver(false)}
                 onDrop={(e) => {
                   e.preventDefault();
@@ -344,7 +344,9 @@ function UploadHeroPage() {
                 }}
                 onClick={() => inputRef.current?.click()}
                 className={`relative aspect-[4/3] border-2 border-dashed cursor-pointer transition-colors flex items-center justify-center overflow-hidden bg-white ${
-                  over ? "border-charcoal/60 bg-charcoal/[0.02]" : "border-charcoal/20 hover:border-charcoal/35"
+                  over
+                    ? "border-charcoal/60 bg-charcoal/[0.02]"
+                    : "border-charcoal/20 hover:border-charcoal/35"
                 }`}
               >
                 {preview ? (
@@ -362,7 +364,9 @@ function UploadHeroPage() {
                 ) : (
                   <div className="text-center text-charcoal/50">
                     <ImagePlus className="h-8 w-8 mx-auto mb-3 text-charcoal/30" />
-                    <div className="text-[12px] uppercase tracking-[0.18em]">Drop 4:3 render or click to choose</div>
+                    <div className="text-[12px] uppercase tracking-[0.18em]">
+                      Drop 4:3 render or click to choose
+                    </div>
                     <div className="text-[10px] uppercase tracking-[0.16em] text-charcoal/40 mt-1">
                       JPG · PNG · WEBP · AVIF · up to 10MB
                     </div>
@@ -428,7 +432,9 @@ function UploadHeroPage() {
               {status.kind === "ok" && (
                 <div className="mt-4 px-3 py-2 border border-emerald-200 bg-emerald-50 text-[11px] uppercase tracking-[0.14em] text-emerald-700 inline-flex items-center gap-2">
                   <CheckCircle2 className="h-3.5 w-3.5" />
-                  {status.deduped ? "Already in storage — set as primary." : "Uploaded and set as primary."}
+                  {status.deduped
+                    ? "Already in storage — set as primary."
+                    : "Uploaded and set as primary."}
                 </div>
               )}
             </>

@@ -136,22 +136,18 @@ const brookeKeganDuntonHero4118: GalleryImage = {
 
 // Easton Events × Dunton Hot Springs — 5 reels mirrored to videos/dunton-easton/.
 // See scripts-tmp/dunton-videos-manifest.json.
-const DUNTON_EASTON_VIDEO_BASE = publicStorageUrl("videos", "dunton-easton").replace(
-  /\/$/,
-  "",
-);
+const DUNTON_EASTON_VIDEO_BASE = publicStorageUrl("videos", "dunton-easton").replace(/\/$/, "");
 const duntonEastonReels: GalleryImage[] = [
-  { slug: "03-ceremony",   label: "Ceremony" },
-  { slug: "04-reception",  label: "Reception" },
-  { slug: "01-rehearsal",  label: "Rehearsal" },
+  { slug: "03-ceremony", label: "Ceremony" },
+  { slug: "04-reception", label: "Reception" },
+  { slug: "01-rehearsal", label: "Rehearsal" },
   { slug: "05-casino-night", label: "Casino Night" },
-  { slug: "02-fashion",    label: "Fashion" },
+  { slug: "02-fashion", label: "Fashion" },
 ].map(({ slug, label }) => ({
   src: `${DUNTON_EASTON_VIDEO_BASE}/${slug}.jpg`,
   video: `${DUNTON_EASTON_VIDEO_BASE}/${slug}.mp4`,
   alt: `${label} reel — Easton Events at Dunton Hot Springs`,
 }));
-
 
 export const galleryProjects: GalleryProject[] = [
   {
@@ -168,10 +164,10 @@ export const galleryProjects: GalleryProject[] = [
       // Hard-pin: 5-perspective jury (Vogue editor / scroll-stopper / landscape
       // critic / luxury bride) + owner's favorite. Algorithm was burying these.
       pin: [
-        "gahan__Raven_s_Nest_at_Night_3",            // jury #1 — canyon cathedral, wide
-        "chinledinner__D9D9D665",                    // ⭐ owner favorite — long-table vs sandstone
-        "gahan__Raven_s_Nest_at_Night2",             // glowing curved table, blue hour
-        "chinledinner__ADD_ON_Night_Shot_3",         // moody single-structure remote luxury
+        "gahan__Raven_s_Nest_at_Night_3", // jury #1 — canyon cathedral, wide
+        "chinledinner__D9D9D665", // ⭐ owner favorite — long-table vs sandstone
+        "gahan__Raven_s_Nest_at_Night2", // glowing curved table, blue hour
+        "chinledinner__ADD_ON_Night_Shot_3", // moody single-structure remote luxury
       ],
     }),
     summary:
@@ -195,8 +191,7 @@ export const galleryProjects: GalleryProject[] = [
     summary:
       "A private ranch wedding in the Aspen meadows — day to personal to night, tented dinner under linen.",
     coords: [-106.8175, 39.1911],
-    curationNotes:
-      "Tent 2. Day → personal interleaved → end at night.",
+    curationNotes: "Tent 2. Day → personal interleaved → end at night.",
     coverDirective: { filenameHint: "Tent 2", distance: "close", toneSlot: 2 },
   },
   {
@@ -323,9 +318,8 @@ export const galleryProjects: GalleryProject[] = [
     detailImages: promoteHeroes(bishopsLodge42NorthGalleryImages),
     summary:
       "Cocktail hour to ceremony to tent, with Santa Fe earth tones running through Friday's details.",
-    coords: [-105.9378, 35.6870],
-    curationNotes:
-      "Feature Santa Fe. Cocktail hour → ceremony → tent (10) → Friday details (5).",
+    coords: [-105.9378, 35.687],
+    curationNotes: "Feature Santa Fe. Cocktail hour → ceremony → tent (10) → Friday details (5).",
     coverDirective: { distance: "close", toneSlot: 4 },
   },
   {
@@ -341,7 +335,7 @@ export const galleryProjects: GalleryProject[] = [
     detailImages: promoteHeroes(blackberryFarmsEastonGalleryImages),
     summary:
       "A December weekend at Blackberry Farms — wood-paneled dining, lantern light, layered hospitality detail.",
-    coords: [-83.8090, 35.7434],
+    coords: [-83.809, 35.7434],
     curationNotes: "Folder: December Blackberry Farms.",
     coverDirective: { distance: "far", toneSlot: 5 },
   },
@@ -425,9 +419,8 @@ export const galleryProjects: GalleryProject[] = [
     detailImages: promoteHeroes(birchDesignGalleryImages),
     summary:
       "Aspen weekend with Birch — Caribou rehearsal dinner, Aspen Art Museum welcome party, disco after-party in pastel light.",
-    coords: [-106.8231, 39.1880],
+    coords: [-106.8231, 39.188],
     curationNotes: "Folder: BIRCH-DESIGN. Slot moved to end of sequence.",
     coverDirective: { distance: "far", toneSlot: 5 },
-  }
+  },
 ];
-

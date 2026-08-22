@@ -834,20 +834,14 @@
       "cat": "bars",
       "status": "TIE",
       "best_score": 2,
-      "ties": [
-        "Inola Single Black Bar",
-        "Inola Single Black Bar With Gold Mirror Panels"
-      ]
+      "ties": ["Inola Single Black Bar", "Inola Single Black Bar With Gold Mirror Panels"]
     },
     {
       "file": "inventory/BARS/IRAJA Gold Slatted Single.png",
       "cat": "bars",
       "status": "TIE",
       "best_score": 2,
-      "ties": [
-        "Inola Single Black Bar With Gold Mirror Panels",
-        "Iraja Single Weathered Oak Bar"
-      ]
+      "ties": ["Inola Single Black Bar With Gold Mirror Panels", "Iraja Single Weathered Oak Bar"]
     },
     {
       "file": "inventory/CANDLELIGHT/FLORENCE Lantern Large.png",
@@ -898,30 +892,21 @@
       "cat": "candlelight",
       "status": "TIE",
       "best_score": 2,
-      "ties": [
-        "Layla 28\" Lantern",
-        "Layla 32\" Lantern"
-      ]
+      "ties": ["Layla 28\" Lantern", "Layla 32\" Lantern"]
     },
     {
       "file": "inventory/CANDLELIGHT/LAYLA 32in Lantern.png",
       "cat": "candlelight",
       "status": "TIE",
       "best_score": 2,
-      "ties": [
-        "Layla 28\" Lantern",
-        "Layla 32\" Lantern"
-      ]
+      "ties": ["Layla 28\" Lantern", "Layla 32\" Lantern"]
     },
     {
       "file": "inventory/CANDLELIGHT/LAYLA Lantern Pair.png",
       "cat": "candlelight",
       "status": "TIE",
       "best_score": 2,
-      "ties": [
-        "Layla 28\" Lantern",
-        "Layla 32\" Lantern"
-      ]
+      "ties": ["Layla 28\" Lantern", "Layla 32\" Lantern"]
     },
     {
       "file": "inventory/PILLOWS/Black Leather Stud.png",
@@ -978,31 +963,21 @@
       "cat": "pillows-throws",
       "status": "TIE",
       "best_score": 2,
-      "ties": [
-        "Ivory Seamed Boucle Pillow",
-        "Ivory Boucle Pillow"
-      ]
+      "ties": ["Ivory Seamed Boucle Pillow", "Ivory Boucle Pillow"]
     },
     {
       "file": "inventory/PILLOWS/Ivory Mudcloth Lumbar Mini.png",
       "cat": "pillows-throws",
       "status": "TIE",
       "best_score": 2,
-      "ties": [
-        "Ivory Mudcloth Lumbar",
-        "Ivory Mudcloth",
-        "Ivory Sage Mini Tassel"
-      ]
+      "ties": ["Ivory Mudcloth Lumbar", "Ivory Mudcloth", "Ivory Sage Mini Tassel"]
     },
     {
       "file": "inventory/PILLOWS/Ivory Mudcloth Lumbar.png",
       "cat": "pillows-throws",
       "status": "TIE",
       "best_score": 2,
-      "ties": [
-        "Ivory Mudcloth Lumbar",
-        "Ivory Mudcloth"
-      ]
+      "ties": ["Ivory Mudcloth Lumbar", "Ivory Mudcloth"]
     },
     {
       "file": "inventory/PILLOWS/Leopard Velvet.png",
@@ -1020,50 +995,35 @@
       "cat": "pillows-throws",
       "status": "TIE",
       "best_score": 2,
-      "ties": [
-        "Green Sage Velvet",
-        "Green Sage Velvet Lumbar Pillow"
-      ]
+      "ties": ["Green Sage Velvet", "Green Sage Velvet Lumbar Pillow"]
     },
     {
       "file": "inventory/RUGS/HATHOR Light Natural Hide.png",
       "cat": "rugs",
       "status": "TIE",
       "best_score": 2,
-      "ties": [
-        "Hathor Light Colored Hide Rug",
-        "Gopala 7x7 Natural Tan Hide Rug"
-      ]
+      "ties": ["Hathor Light Colored Hide Rug", "Gopala 7x7 Natural Tan Hide Rug"]
     },
     {
       "file": "inventory/SERVEWARE/LAVANYA Bowl Small.png",
       "cat": "serveware",
       "status": "TIE",
       "best_score": 2,
-      "ties": [
-        "Lavanya Small Riverstone Bowl",
-        "Lavanya Medium Riverstone Bowl"
-      ]
+      "ties": ["Lavanya Small Riverstone Bowl", "Lavanya Medium Riverstone Bowl"]
     },
     {
       "file": "inventory/SERVEWARE/POWELL 14in Tray.png",
       "cat": "serveware",
       "status": "TIE",
       "best_score": 2,
-      "ties": [
-        "Powell 18\" Round Dark Brass Tray",
-        "Powell 14\" Round Dark Brass Tray"
-      ]
+      "ties": ["Powell 18\" Round Dark Brass Tray", "Powell 14\" Round Dark Brass Tray"]
     },
     {
       "file": "inventory/SERVEWARE/POWELL 18in Tray.png",
       "cat": "serveware",
       "status": "TIE",
       "best_score": 2,
-      "ties": [
-        "Powell 18\" Round Dark Brass Tray",
-        "Powell 14\" Round Dark Brass Tray"
-      ]
+      "ties": ["Powell 18\" Round Dark Brass Tray", "Powell 14\" Round Dark Brass Tray"]
     },
     {
       "file": "inventory/SERVEWARE/TABITHA Tray Set.png",
@@ -1082,70 +1042,49 @@
       "cat": "serveware",
       "status": "TIE",
       "best_score": 2,
-      "ties": [
-        "Zahavi Large Brass Top Decanter",
-        "Zahavi Small Brass Top Decanter"
-      ]
+      "ties": ["Zahavi Large Brass Top Decanter", "Zahavi Small Brass Top Decanter"]
     },
     {
       "file": "inventory/SERVEWARE/ZALENA Decanter Set.png",
       "cat": "serveware",
       "status": "TIE",
       "best_score": 2,
-      "ties": [
-        "Zalena Large Silver Top Decanter",
-        "Zalena Small Silver Top Decanter"
-      ]
+      "ties": ["Zalena Large Silver Top Decanter", "Zalena Small Silver Top Decanter"]
     },
     {
       "file": "inventory/STYLING/AUSKIN Small Basket.png",
       "cat": "styling",
       "status": "TIE",
       "best_score": 2,
-      "ties": [
-        "Auskin Small Leather Basket",
-        "Auskin Large Leather Basket"
-      ]
+      "ties": ["Auskin Small Leather Basket", "Auskin Large Leather Basket"]
     },
     {
       "file": "inventory/STYLING/ELYSIA Large Marble Bowl.png",
       "cat": "styling",
       "status": "TIE",
       "best_score": 3,
-      "ties": [
-        "Elysia 10\" Ruffled Marble Bowl",
-        "Elysia 14\" Ruffled Marble Bowl"
-      ]
+      "ties": ["Elysia 10\" Ruffled Marble Bowl", "Elysia 14\" Ruffled Marble Bowl"]
     },
     {
       "file": "inventory/STYLING/ELYSIA Med Marble Bowl.png",
       "cat": "styling",
       "status": "TIE",
       "best_score": 3,
-      "ties": [
-        "Elysia 10\" Ruffled Marble Bowl",
-        "Elysia 14\" Ruffled Marble Bowl"
-      ]
+      "ties": ["Elysia 10\" Ruffled Marble Bowl", "Elysia 14\" Ruffled Marble Bowl"]
     },
     {
       "file": "inventory/STYLING/JINA Short Black Metal Vase.png",
       "cat": "styling",
       "status": "TIE",
       "best_score": 4,
-      "ties": [
-        "Jina 14\" Black Metal Vase",
-        "Jina 7.5\" Black Metal Vase"
-      ]
+      "ties": ["Jina 14\" Black Metal Vase", "Jina 7.5\" Black Metal Vase"]
     },
     {
       "file": "inventory/STYLING/JINA Tall Black Metal Vase.png",
       "cat": "styling",
       "status": "TIE",
       "best_score": 4,
-      "ties": [
-        "Jina 14\" Black Metal Vase",
-        "Jina 7.5\" Black Metal Vase"
-      ]
+      "ties": ["Jina 14\" Black Metal Vase", "Jina 7.5\" Black Metal Vase"]
     },
     {
       "file": "inventory/STYLING/MARQUINA Black Marble Bowl.png",
@@ -1166,80 +1105,56 @@
       "cat": "styling",
       "status": "TIE",
       "best_score": 2,
-      "ties": [
-        "Tirzah 8\" Asymmetrical Vase",
-        "Tirzah 6\" Asymmetrical Vase"
-      ]
+      "ties": ["Tirzah 8\" Asymmetrical Vase", "Tirzah 6\" Asymmetrical Vase"]
     },
     {
       "file": "inventory/STYLING/TIRZAH Vase Small.png",
       "cat": "styling",
       "status": "TIE",
       "best_score": 2,
-      "ties": [
-        "Tirzah 8\" Asymmetrical Vase",
-        "Tirzah 6\" Asymmetrical Vase"
-      ]
+      "ties": ["Tirzah 8\" Asymmetrical Vase", "Tirzah 6\" Asymmetrical Vase"]
     },
     {
       "file": "inventory/STYLING/ZAMORA Wood Handle Ceramic Vase.png",
       "cat": "styling",
       "status": "TIE",
       "best_score": 2,
-      "ties": [
-        "Evelda 7\" Ceramic Chain Vase",
-        "Evelda 9.5\" Ceramic Chain Vase"
-      ]
+      "ties": ["Evelda 7\" Ceramic Chain Vase", "Evelda 9.5\" Ceramic Chain Vase"]
     },
     {
       "file": "inventory/TABLES/JETT Community Table 0.png",
       "cat": "tables",
       "status": "TIE",
       "best_score": 2,
-      "ties": [
-        "Jett Brass & Wood Community Table",
-        "Jett Mini Brass & Wood Community Table"
-      ]
+      "ties": ["Jett Brass & Wood Community Table", "Jett Mini Brass & Wood Community Table"]
     },
     {
       "file": "inventory/TABLES/JETT Community Table 1.png",
       "cat": "tables",
       "status": "TIE",
       "best_score": 2,
-      "ties": [
-        "Jett Brass & Wood Community Table",
-        "Jett Mini Brass & Wood Community Table"
-      ]
+      "ties": ["Jett Brass & Wood Community Table", "Jett Mini Brass & Wood Community Table"]
     },
     {
       "file": "inventory/TABLES/RELIC Limestone Column - Smooth Side.png",
       "cat": "tables",
       "status": "TIE",
       "best_score": 3,
-      "ties": [
-        "Relic Limestone Column",
-        "Relic Limestone Side Table"
-      ]
+      "ties": ["Relic Limestone Column", "Relic Limestone Side Table"]
     },
     {
       "file": "inventory/THROWS/FRINGE Cash Ivory.png",
       "cat": "pillows-throws",
       "status": "TIE",
       "best_score": 2,
-      "ties": [
-        "Fringe Ivory Cashmere Throw",
-        "Fringe Ivory Throw"
-      ]
+      "ties": ["Fringe Ivory Cashmere Throw", "Fringe Ivory Throw"]
     },
     {
       "file": "inventory/THROWS/FRINGE Ivory.png",
       "cat": "pillows-throws",
       "status": "TIE",
       "best_score": 2,
-      "ties": [
-        "Fringe Ivory Cashmere Throw",
-        "Fringe Ivory Throw"
-      ]
+      "ties": ["Fringe Ivory Cashmere Throw", "Fringe Ivory Throw"]
     },
     {
       "file": "inventory/THROWS/FRINGE Light Blue.png",
@@ -1259,21 +1174,14 @@
       "cat": "pillows-throws",
       "status": "TIE",
       "best_score": 3,
-      "ties": [
-        "Fur Brown Mongolian Throw",
-        "Fur Brown Mudcloth Mongolian Throw"
-      ]
+      "ties": ["Fur Brown Mongolian Throw", "Fur Brown Mudcloth Mongolian Throw"]
     },
     {
       "file": "inventory/THROWS/PLAID Red.png",
       "cat": "pillows-throws",
       "status": "TIE",
       "best_score": 2,
-      "ties": [
-        "Red Tan Plaid Oversize Lumbar",
-        "Plaid Red Throw",
-        "Red Blue Plaid Throw"
-      ]
+      "ties": ["Red Tan Plaid Oversize Lumbar", "Plaid Red Throw", "Red Blue Plaid Throw"]
     },
     {
       "file": "inventory/THROWS/STRIPE Red Black.png",

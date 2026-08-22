@@ -50,11 +50,7 @@
         "root": "fringe",
         "slug": "pillows-throws",
         "count": 10,
-        "sample": [
-          "Fringe Black Throw",
-          "Fringe Blue Smoke Throw",
-          "Fringe Camel Throw"
-        ]
+        "sample": ["Fringe Black Throw", "Fringe Blue Smoke Throw", "Fringe Camel Throw"]
       },
       {
         "root": "red",
@@ -120,21 +116,13 @@
         "root": "fiona",
         "slug": "tableware",
         "count": 7,
-        "sample": [
-          "Fiona Bone Butter Knife",
-          "Fiona Bone Dinner Fork",
-          "Fiona Bone Dinner Knife"
-        ]
+        "sample": ["Fiona Bone Butter Knife", "Fiona Bone Dinner Fork", "Fiona Bone Dinner Knife"]
       },
       {
         "root": "fur",
         "slug": "pillows-throws",
         "count": 7,
-        "sample": [
-          "Fur Beige Mongolian Throw",
-          "Fur Brown Bear Throw",
-          "Fur Brown Mongolian Throw"
-        ]
+        "sample": ["Fur Beige Mongolian Throw", "Fur Brown Bear Throw", "Fur Brown Mongolian Throw"]
       },
       {
         "root": "quinn",
@@ -160,11 +148,7 @@
         "root": "arian",
         "slug": "tableware",
         "count": 6,
-        "sample": [
-          "Arian Dinner Fork",
-          "Arian Dinner Knife",
-          "Arian Dinner Spoon"
-        ]
+        "sample": ["Arian Dinner Fork", "Arian Dinner Knife", "Arian Dinner Spoon"]
       },
       {
         "root": "deco",

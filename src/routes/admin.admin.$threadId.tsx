@@ -14,7 +14,11 @@ export const Route = createFileRoute("/admin/admin/$threadId")({
 
 function ThreadPage() {
   const { threadId } = Route.useParams();
-  const { data: rows, isLoading, error } = useQuery({
+  const {
+    data: rows,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["admin-thread-messages", threadId],
     queryFn: () => getAdminThreadMessages({ data: { threadId } }),
   });
@@ -30,11 +34,5 @@ function ThreadPage() {
       parts: Array.isArray(r.parts) ? r.parts : [],
     })) as UIMessage[];
 
-  return (
-    <AdminChatWindow
-      key={threadId}
-      threadId={threadId}
-      initialMessages={initial}
-    />
-  );
+  return <AdminChatWindow key={threadId} threadId={threadId} initialMessages={initial} />;
 }

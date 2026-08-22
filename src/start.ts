@@ -14,4 +14,3 @@ export const startInstance = createStart(() => ({
   requestMiddleware: [securityMiddleware],
   functionMiddleware: [attachSupabaseAuth],
 }));
-

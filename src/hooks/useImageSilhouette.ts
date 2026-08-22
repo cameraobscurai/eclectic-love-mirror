@@ -20,7 +20,7 @@ function classify(aspect: number): Silhouette {
  * callers can render a neutral default frame in the interim.
  */
 export function useImageSilhouette(src: string | null | undefined): Silhouette | null {
-  const cached = src ? cache.get(src) ?? null : null;
+  const cached = src ? (cache.get(src) ?? null) : null;
   const [s, setS] = useState<Silhouette | null>(cached);
 
   useEffect(() => {

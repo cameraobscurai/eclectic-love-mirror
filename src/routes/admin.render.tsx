@@ -44,13 +44,21 @@ type Preset = {
 
 const PRESETS: Preset[] = [
   { id: "white_room", label: "White room", hint: "Studio room, soft daylight, no props" },
-  { id: "editorial_scene", label: "Editorial scene", hint: "Plaster wall, oak floor, golden light" },
+  {
+    id: "editorial_scene",
+    label: "Editorial scene",
+    hint: "Plaster wall, oak floor, golden light",
+  },
   { id: "tablescape", label: "Tablescape", hint: "Linen, ceramics, tapers — table hero" },
   { id: "cutout", label: "Cutout", hint: "Pure white background, contact shadow" },
 ];
 
 const MODELS = [
-  { id: "google/gemini-3-pro-image", label: "Gemini 3 Pro Image", note: "highest fidelity · ~$0.10" },
+  {
+    id: "google/gemini-3-pro-image",
+    label: "Gemini 3 Pro Image",
+    note: "highest fidelity · ~$0.10",
+  },
   { id: "google/gemini-3.1-flash-image", label: "Gemini 3.1 Flash Image", note: "fast · ~$0.04" },
   { id: "google/gemini-2.5-flash-image", label: "Nano Banana", note: "fastest · ~$0.02" },
 ];
@@ -98,7 +106,7 @@ function RenderPage() {
   );
 
   useEffect(() => {
-    const scopeRms = historyScope === "library" ? null : selected?.rmsId ?? null;
+    const scopeRms = historyScope === "library" ? null : (selected?.rmsId ?? null);
     refreshHistory(scopeRms).catch(() => {});
   }, [selected, refreshHistory, historyScope]);
 
@@ -109,8 +117,13 @@ function RenderPage() {
       const t = e.target as HTMLElement | null;
       if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
-      if (e.key === "d" || e.key === "D") { e.preventDefault(); onDownloadCurrent(); }
-      else if (e.key === "c" || e.key === "C") { e.preventDefault(); onCopyCurrent(); }
+      if (e.key === "d" || e.key === "D") {
+        e.preventDefault();
+        onDownloadCurrent();
+      } else if (e.key === "c" || e.key === "C") {
+        e.preventDefault();
+        onCopyCurrent();
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -131,7 +144,10 @@ function RenderPage() {
     const q = query.trim().toLowerCase();
     let rows = pickables;
     if (category !== "all") rows = rows.filter((p) => (p.category ?? "—") === category);
-    if (q) rows = rows.filter((p) => p.title.toLowerCase().includes(q) || p.rmsId.toLowerCase().includes(q));
+    if (q)
+      rows = rows.filter(
+        (p) => p.title.toLowerCase().includes(q) || p.rmsId.toLowerCase().includes(q),
+      );
     return rows.slice(0, 400);
   }, [pickables, query, category]);
 
@@ -169,7 +185,11 @@ function RenderPage() {
 
       const parser = createParser({
         onEvent(ev) {
-          if (ev.event !== "image_generation.partial_image" && ev.event !== "image_generation.completed") return;
+          if (
+            ev.event !== "image_generation.partial_image" &&
+            ev.event !== "image_generation.completed"
+          )
+            return;
           try {
             const payload = JSON.parse(ev.data) as { b64_json?: string };
             if (!payload.b64_json) return;
@@ -181,7 +201,9 @@ function RenderPage() {
                 setFinalB64(payload.b64_json ?? null);
               }
             });
-          } catch { /* ignore */ }
+          } catch {
+            /* ignore */
+          }
         },
       });
 
@@ -220,7 +242,8 @@ function RenderPage() {
           b64: finalB64,
         }),
       });
-      if (!res.ok) throw new Error((await res.text().catch(() => "")) || `Save failed (${res.status})`);
+      if (!res.ok)
+        throw new Error((await res.text().catch(() => "")) || `Save failed (${res.status})`);
       setSavedNotice("Saved to library");
       setTimeout(() => setSavedNotice(null), 2000);
       refreshScopedHistory();
@@ -230,7 +253,7 @@ function RenderPage() {
   }
 
   function refreshScopedHistory() {
-    const scopeRms = historyScope === "library" ? null : selected?.rmsId ?? null;
+    const scopeRms = historyScope === "library" ? null : (selected?.rmsId ?? null);
     refreshHistory(scopeRms).catch(() => {});
   }
 
@@ -262,9 +285,16 @@ function RenderPage() {
 
   function onDownloadCurrent() {
     if (!finalB64) return;
-    const slug = (selected?.title ?? "render").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 48);
+    const slug = (selected?.title ?? "render")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "")
+      .slice(0, 48);
     const stamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
-    downloadDataUrl(`data:image/png;base64,${finalB64}`, `${slug || "render"}-${preset}-${stamp}.png`);
+    downloadDataUrl(
+      `data:image/png;base64,${finalB64}`,
+      `${slug || "render"}-${preset}-${stamp}.png`,
+    );
   }
 
   async function onCopyCurrent() {
@@ -276,7 +306,9 @@ function RenderPage() {
       for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
       const blob = new Blob([arr], { type: "image/png" });
       await (navigator.clipboard as unknown as { write: (i: unknown[]) => Promise<void> }).write([
-        new (window as unknown as { ClipboardItem: new (i: Record<string, Blob>) => unknown }).ClipboardItem({ "image/png": blob }),
+        new (
+          window as unknown as { ClipboardItem: new (i: Record<string, Blob>) => unknown }
+        ).ClipboardItem({ "image/png": blob }),
       ]);
       setSavedNotice("Copied to clipboard");
       setTimeout(() => setSavedNotice(null), 1800);
@@ -297,7 +329,8 @@ function RenderPage() {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ intent: "download", id: h.id }),
       });
-      if (!res.ok) throw new Error((await res.text().catch(() => "")) || `Download failed (${res.status})`);
+      if (!res.ok)
+        throw new Error((await res.text().catch(() => "")) || `Download failed (${res.status})`);
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -312,7 +345,6 @@ function RenderPage() {
     }
   }
 
-
   return (
     <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal">
       <header className="px-6 lg:px-12 pt-10 pb-6 border-b border-charcoal/10 flex items-baseline justify-between">
@@ -320,7 +352,9 @@ function RenderPage() {
           <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">Admin · Tool</p>
           <h1 className="mt-1 font-display text-3xl uppercase tracking-[0.04em]">Photo Studio</h1>
         </div>
-        <p className="text-[10px] uppercase tracking-[0.28em] text-charcoal/45">AI render · {model.split("/")[1]}</p>
+        <p className="text-[10px] uppercase tracking-[0.28em] text-charcoal/45">
+          AI render · {model.split("/")[1]}
+        </p>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-px bg-charcoal/10 border-b border-charcoal/10">
@@ -363,7 +397,9 @@ function RenderPage() {
             {filtered.length} item{filtered.length === 1 ? "" : "s"}
           </p>
           <ul className="space-y-px">
-            {pickables === null && <li className="text-[11px] uppercase tracking-[0.22em] text-charcoal/40">Loading…</li>}
+            {pickables === null && (
+              <li className="text-[11px] uppercase tracking-[0.22em] text-charcoal/40">Loading…</li>
+            )}
             {filtered.map((p) => {
               const active = selected?.rmsId === p.rmsId;
               return (
@@ -373,13 +409,25 @@ function RenderPage() {
                     className={`w-full flex items-center gap-3 p-2 text-left transition-colors ${active ? "bg-charcoal text-cream" : "hover:bg-charcoal/[0.04]"}`}
                   >
                     {p.primaryImage ? (
-                      <img src={p.primaryImage} alt="" className="w-10 h-10 object-cover bg-charcoal/5 shrink-0" />
+                      <img
+                        src={p.primaryImage}
+                        alt=""
+                        className="w-10 h-10 object-cover bg-charcoal/5 shrink-0"
+                      />
                     ) : (
                       <span className="w-10 h-10 bg-charcoal/5 shrink-0" />
                     )}
                     <span className="min-w-0 flex-1">
-                      <span className={`block truncate text-[12px] font-sans normal-case ${active ? "text-cream" : "text-charcoal"}`}>{p.title}</span>
-                      <span className={`block text-[9px] uppercase tracking-[0.2em] ${active ? "text-cream/60" : "text-charcoal/45"}`}>{p.category ?? "—"}</span>
+                      <span
+                        className={`block truncate text-[12px] font-sans normal-case ${active ? "text-cream" : "text-charcoal"}`}
+                      >
+                        {p.title}
+                      </span>
+                      <span
+                        className={`block text-[9px] uppercase tracking-[0.2em] ${active ? "text-cream/60" : "text-charcoal/45"}`}
+                      >
+                        {p.category ?? "—"}
+                      </span>
                     </span>
                     {p.renderCount > 0 && (
                       <span
@@ -403,20 +451,30 @@ function RenderPage() {
               <div className="text-center px-8">
                 <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">Reference</p>
                 {selected.primaryImage ? (
-                  <img src={selected.primaryImage} alt="" className="mt-3 max-h-[60vh] mx-auto object-contain" />
+                  <img
+                    src={selected.primaryImage}
+                    alt=""
+                    className="mt-3 max-h-[60vh] mx-auto object-contain"
+                  />
                 ) : (
-                  <p className="mt-3 text-[11px] uppercase tracking-[0.2em] text-charcoal/40">No reference photo</p>
+                  <p className="mt-3 text-[11px] uppercase tracking-[0.2em] text-charcoal/40">
+                    No reference photo
+                  </p>
                 )}
                 <p className="mt-4 font-display text-lg normal-case">{selected.title}</p>
               </div>
             )}
             {!frame && !busy && !selected && (
-              <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/40">Select an item to begin</p>
+              <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/40">
+                Select an item to begin
+              </p>
             )}
             {busy && !frame && (
               <div className="text-center">
                 <Loader2 className="h-5 w-5 animate-spin text-charcoal/60 mx-auto" />
-                <p className="mt-3 text-[10px] uppercase tracking-[0.28em] text-charcoal/50">Rendering</p>
+                <p className="mt-3 text-[10px] uppercase tracking-[0.28em] text-charcoal/50">
+                  Rendering
+                </p>
               </div>
             )}
             {frame && (
@@ -440,7 +498,11 @@ function RenderPage() {
               disabled={!selected?.primaryImage || busy}
               className="px-5 py-2.5 bg-charcoal text-cream text-[11px] uppercase tracking-[0.22em] disabled:opacity-40 hover:bg-charcoal/85 transition-colors inline-flex items-center gap-2"
             >
-              {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Wand2 className="h-3.5 w-3.5" />}
+              {busy ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Wand2 className="h-3.5 w-3.5" />
+              )}
               {busy ? "Rendering" : "Generate"}
             </button>
             <button
@@ -471,7 +533,9 @@ function RenderPage() {
                 <Check className="h-3 w-3" /> {savedNotice}
               </span>
             )}
-            {err && <span className="text-[11px] uppercase tracking-[0.18em] text-red-700/80">{err}</span>}
+            {err && (
+              <span className="text-[11px] uppercase tracking-[0.18em] text-red-700/80">{err}</span>
+            )}
           </div>
         </section>
 
@@ -487,8 +551,16 @@ function RenderPage() {
                     onClick={() => setPreset(p.id)}
                     className={`w-full text-left p-3 border transition-colors ${active ? "border-charcoal bg-charcoal text-cream" : "border-charcoal/15 hover:border-charcoal/40"}`}
                   >
-                    <span className={`block text-[11px] uppercase tracking-[0.22em] ${active ? "text-cream" : "text-charcoal"}`}>{p.label}</span>
-                    <span className={`block text-[10px] mt-1 normal-case font-sans ${active ? "text-cream/70" : "text-charcoal/55"}`}>{p.hint}</span>
+                    <span
+                      className={`block text-[11px] uppercase tracking-[0.22em] ${active ? "text-cream" : "text-charcoal"}`}
+                    >
+                      {p.label}
+                    </span>
+                    <span
+                      className={`block text-[10px] mt-1 normal-case font-sans ${active ? "text-cream/70" : "text-charcoal/55"}`}
+                    >
+                      {p.hint}
+                    </span>
                   </button>
                 </li>
               );
@@ -502,11 +574,15 @@ function RenderPage() {
             className="w-full bg-transparent border border-charcoal/15 p-2 text-[11px] uppercase tracking-[0.18em] mb-5 focus:outline-none focus:border-charcoal/60"
           >
             {MODELS.map((m) => (
-              <option key={m.id} value={m.id}>{m.label} — {m.note}</option>
+              <option key={m.id} value={m.id}>
+                {m.label} — {m.note}
+              </option>
             ))}
           </select>
 
-          <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45 mb-2">Extra direction</p>
+          <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45 mb-2">
+            Extra direction
+          </p>
           <textarea
             value={extra}
             onChange={(e) => setExtra(e.target.value)}
@@ -514,7 +590,6 @@ function RenderPage() {
             placeholder="optional: e.g. 'late winter light, viewed slightly from below'"
             className="w-full bg-transparent border border-charcoal/15 p-2 text-[12px] font-sans normal-case placeholder:text-charcoal/30 focus:outline-none focus:border-charcoal/60 resize-none mb-6"
           />
-
         </aside>
       </div>
 
@@ -524,9 +599,7 @@ function RenderPage() {
           <div>
             <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">Library</p>
             <h2 className="mt-1 font-display text-2xl uppercase tracking-[0.04em]">
-              {historyScope === "product" && selected
-                ? selected.title
-                : "All renders"}
+              {historyScope === "product" && selected ? selected.title : "All renders"}
             </h2>
             <p className="mt-1 text-[10px] uppercase tracking-[0.22em] text-charcoal/45">
               {history.length} render{history.length === 1 ? "" : "s"}
@@ -570,7 +643,9 @@ function RenderPage() {
                 </div>
                 <div className="p-3 flex-1 flex flex-col gap-2">
                   {h.productTitle && (
-                    <p className="text-[11px] font-sans normal-case text-charcoal truncate">{h.productTitle}</p>
+                    <p className="text-[11px] font-sans normal-case text-charcoal truncate">
+                      {h.productTitle}
+                    </p>
                   )}
                   <p className="text-[9px] uppercase tracking-[0.22em] text-charcoal/50">
                     {h.preset} · {new Date(h.createdAt).toLocaleDateString()}
@@ -608,4 +683,3 @@ function RenderPage() {
     </div>
   );
 }
-

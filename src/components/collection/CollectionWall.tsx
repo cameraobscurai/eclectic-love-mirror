@@ -5,7 +5,7 @@ import { CollectionWallTile } from "./CollectionWallTile";
 interface Props {
   products: CollectionProduct[];
   onOpen: (id: string) => void;
-  
+
   /** Hard ceiling — auto-fit packs everything into one viewport, so very
    *  large categories get trimmed. Switch back to scroll view to see all. */
   cap?: number;
@@ -79,7 +79,7 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
 
   const cellAspect = useMemo(() => {
     if (!size.w || !size.h || !cols || !rows) return 1;
-    const aspect = (size.w / cols) / (size.h / rows);
+    const aspect = size.w / cols / (size.h / rows);
     return Math.round(aspect * 100) / 100;
   }, [cols, rows, size.h, size.w]);
 
@@ -184,7 +184,6 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
               onHover={isMobile ? noopHover : setHoveredId}
               onOpen={onOpen}
             />
-
           </div>
         ))}
 

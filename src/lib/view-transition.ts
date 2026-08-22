@@ -24,7 +24,10 @@ export function morphOpen(
   update: () => void,
   getDestEl: () => HTMLElement | null,
 ) {
-  const doc = typeof document !== "undefined" ? (document as Document & { startViewTransition?: StartViewTransition }) : null;
+  const doc =
+    typeof document !== "undefined"
+      ? (document as Document & { startViewTransition?: StartViewTransition })
+      : null;
   const start = doc?.startViewTransition?.bind(doc);
 
   if (!start || !sourceEl || prefersReducedMotion()) {

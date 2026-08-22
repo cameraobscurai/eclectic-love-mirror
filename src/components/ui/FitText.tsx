@@ -35,8 +35,7 @@ interface FitTextProps {
   as?: ElementType;
 }
 
-const useIsoLayoutEffect =
-  typeof window !== "undefined" ? useLayoutEffect : useEffect;
+const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 export function FitText({
   text,
@@ -121,4 +120,3 @@ export function FitText({
     text,
   );
 }
-

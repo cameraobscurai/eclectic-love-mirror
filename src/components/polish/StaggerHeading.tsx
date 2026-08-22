@@ -62,7 +62,7 @@ export function StaggerHeading({
 
   // Reduced motion: render plain heading, no animation, full a11y string.
   if (reduced) {
-    const plain = lines ? lines.join(" ") : text ?? "";
+    const plain = lines ? lines.join(" ") : (text ?? "");
     return createElement(
       as,
       { className, style, id, "aria-label": plain },
@@ -77,7 +77,7 @@ export function StaggerHeading({
     );
   }
 
-  const a11yLabel = lines ? lines.join(" ") : text ?? "";
+  const a11yLabel = lines ? lines.join(" ") : (text ?? "");
   const MotionTag = motion[as] as typeof motion.h1;
 
   return (
@@ -95,7 +95,12 @@ export function StaggerHeading({
       {segments.map((seg, i) => {
         const isLine = !!lines || mode === "lines";
         // Whitespace tokens shouldn't animate — keep layout stable.
-        if (/^\s+$/.test(seg)) return <span key={i} aria-hidden>{seg}</span>;
+        if (/^\s+$/.test(seg))
+          return (
+            <span key={i} aria-hidden>
+              {seg}
+            </span>
+          );
         return (
           <span
             key={i}

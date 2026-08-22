@@ -12,11 +12,11 @@ import { getRequestHeader, getRequestIP } from "@tanstack/react-start/server";
 
 export interface AuditArgs {
   actorId: string;
-  entity: string;          // 'inventory_items' | 'style_boards' | 'inquiries' | ...
-  entityId: string;        // uuid of the affected row
-  action: string;          // 'update_images' | 'set_card_bg' | 'send_board' | 'email_failed' | ...
-  before?: unknown;        // previous shape (only the mutated fields, not the whole row)
-  after?: unknown;         // new shape (only the mutated fields)
+  entity: string; // 'inventory_items' | 'style_boards' | 'inquiries' | ...
+  entityId: string; // uuid of the affected row
+  action: string; // 'update_images' | 'set_card_bg' | 'send_board' | 'email_failed' | ...
+  before?: unknown; // previous shape (only the mutated fields, not the whole row)
+  after?: unknown; // new shape (only the mutated fields)
   /**
    * Extra metadata to merge into the auto-collected { ip, ua } envelope.
    * Use for action-specific context: HTTP status from a failed email send,

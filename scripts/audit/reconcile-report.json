@@ -16,9 +16,7 @@
         "match_type": "family_token",
         "rms_family": "aaron",
         "rms_sku_count": 1,
-        "sample": [
-          "Aaron Matte Black Plank Coffee Table"
-        ]
+        "sample": ["Aaron Matte Black Plank Coffee Table"]
       },
       {
         "live": "AHSTA 31\" Cream Terracotta Vase",
@@ -30,10 +28,7 @@
         "match_type": "family_token",
         "rms_family": "alabaster",
         "rms_sku_count": 2,
-        "sample": [
-          "Alabaster 4.25\" Votive",
-          "Alabaster 5\" Votive"
-        ]
+        "sample": ["Alabaster 4.25\" Votive", "Alabaster 5\" Votive"]
       },
       {
         "live": "ALTA Matte Silver Flatware",
@@ -51,9 +46,7 @@
         "match_type": "family_token",
         "rms_family": "amalia",
         "rms_sku_count": 1,
-        "sample": [
-          "Amalia Smoke Cut Glass Votive"
-        ]
+        "sample": ["Amalia Smoke Cut Glass Votive"]
       },
       {
         "live": "ARTAX Horse Napkin Ring",
@@ -65,18 +58,14 @@
         "match_type": "family_token",
         "rms_family": "abigale",
         "rms_sku_count": 1,
-        "sample": [
-          "Abigale Dark Side Table"
-        ]
+        "sample": ["Abigale Dark Side Table"]
       },
       {
         "live": "Acelin Side Table",
         "match_type": "family_token",
         "rms_family": "acelin",
         "rms_sku_count": 1,
-        "sample": [
-          "Acelin Light Side Table"
-        ]
+        "sample": ["Acelin Light Side Table"]
       },
       {
         "live": "Adelaide Antique Arm Chair",
@@ -88,32 +77,21 @@
         "match_type": "family_token",
         "rms_family": "adonis",
         "rms_sku_count": 4,
-        "sample": [
-          "Adonis Coupe Glass",
-          "Adonis Goblet",
-          "Adonis Red Wine Glass"
-        ]
+        "sample": ["Adonis Coupe Glass", "Adonis Goblet", "Adonis Red Wine Glass"]
       },
       {
         "live": "Agatha Rustic Mini Vases",
         "match_type": "family_token",
         "rms_family": "agatha",
         "rms_sku_count": 2,
-        "sample": [
-          "Agatha 3\" Rustic Vase",
-          "Agatha 4\" Rustic Vase"
-        ]
+        "sample": ["Agatha 3\" Rustic Vase", "Agatha 4\" Rustic Vase"]
       },
       {
         "live": "Akoya",
         "match_type": "family_token",
         "rms_family": "akoya",
         "rms_sku_count": 4,
-        "sample": [
-          "Akoya 11\" Plate",
-          "Akoya 13.5\" Charger",
-          "Akoya 7\" Plate"
-        ]
+        "sample": ["Akoya 11\" Plate", "Akoya 13.5\" Charger", "Akoya 7\" Plate"]
       },
       {
         "live": "Alexander Decanter",
@@ -130,11 +108,7 @@
         "match_type": "family_token",
         "rms_family": "allira",
         "rms_sku_count": 3,
-        "sample": [
-          "Allira Cut Glass Flute",
-          "Allira Cut Glass Goblet",
-          "Allira Cut Glass Wine"
-        ]
+        "sample": ["Allira Cut Glass Flute", "Allira Cut Glass Goblet", "Allira Cut Glass Wine"]
       },
       {
         "live": "Alora Botanical Sculptural Chair",
@@ -172,20 +146,14 @@
         "match_type": "family_token",
         "rms_family": "alumina",
         "rms_sku_count": 4,
-        "sample": [
-          "Alumina 11\" Grey Plate",
-          "Alumina 6.5\" Grey Plate",
-          "Alumina 9\" Cream Plate"
-        ]
+        "sample": ["Alumina 11\" Grey Plate", "Alumina 6.5\" Grey Plate", "Alumina 9\" Cream Plate"]
       },
       {
         "live": "Alvina Marble Tray",
         "match_type": "family_token",
         "rms_family": "alvina",
         "rms_sku_count": 1,
-        "sample": [
-          "Alvina Grey Marble Tray"
-        ]
+        "sample": ["Alvina Grey Marble Tray"]
       },
       {
         "live": "Amina 15\" Pendant Lantern",
@@ -218,9 +186,7 @@
         "match_type": "family_token",
         "rms_family": "anathema",
         "rms_sku_count": 1,
-        "sample": [
-          "Anathema 82\"  Dark Ash Wood Console"
-        ]
+        "sample": ["Anathema 82\"  Dark Ash Wood Console"]
       },
       {
         "live": "Annu 40\" Walnut Hoop Chandelier",
@@ -232,9 +198,7 @@
         "match_type": "family_token",
         "rms_family": "antonella",
         "rms_sku_count": 1,
-        "sample": [
-          "Antonella Cotton Velvet Sofa"
-        ]
+        "sample": ["Antonella Cotton Velvet Sofa"]
       },
       {
         "live": "Antonio Black Leather Butterfly Chair",
@@ -287,11 +251,7 @@
         "match_type": "family_token",
         "rms_family": "arian",
         "rms_sku_count": 6,
-        "sample": [
-          "Arian Dinner Fork",
-          "Arian Dinner Knife",
-          "Arian Dinner Spoon"
-        ]
+        "sample": ["Arian Dinner Fork", "Arian Dinner Knife", "Arian Dinner Spoon"]
       },
       {
         "live": "Arius Chandelier Stand",
@@ -308,9 +268,7 @@
         "match_type": "family_token",
         "rms_family": "ashura",
         "rms_sku_count": 1,
-        "sample": [
-          "Ashura 5\" Rustic Terracotta Vase"
-        ]
+        "sample": ["Ashura 5\" Rustic Terracotta Vase"]
       },
       {
         "live": "Astrid Rose Quartz Flatware",
@@ -338,10 +296,7 @@
         "match_type": "family_token",
         "rms_family": "auskin",
         "rms_sku_count": 2,
-        "sample": [
-          "Auskin Large Leather Basket",
-          "Auskin Small Leather Basket"
-        ]
+        "sample": ["Auskin Large Leather Basket", "Auskin Small Leather Basket"]
       },
       {
         "live": "Ava Sage Velvet Chair",
@@ -388,9 +343,7 @@
         "match_type": "family_token",
         "rms_family": "brantley",
         "rms_sku_count": 1,
-        "sample": [
-          "Brantley Dark Orange Metal Wood Burning Chiminea"
-        ]
+        "sample": ["Brantley Dark Orange Metal Wood Burning Chiminea"]
       },
       {
         "live": "Balsley Vintage Step Ladder",
@@ -402,18 +355,14 @@
         "match_type": "family_token",
         "rms_family": "bambi",
         "rms_sku_count": 1,
-        "sample": [
-          "Bambi Natural Antler Rack"
-        ]
+        "sample": ["Bambi Natural Antler Rack"]
       },
       {
         "live": "Barclay Concrete & Wood Tasting Bar",
         "match_type": "family_token",
         "rms_family": "barclay",
         "rms_sku_count": 1,
-        "sample": [
-          "Barclay Concrete & Split Wood Tasting Bar"
-        ]
+        "sample": ["Barclay Concrete & Split Wood Tasting Bar"]
       },
       {
         "live": "Bard Deconstructed Leather Chair",
@@ -498,10 +447,7 @@
         "match_type": "family_token",
         "rms_family": "bellow",
         "rms_sku_count": 2,
-        "sample": [
-          "Bellow 3'H White Corrugated Partition",
-          "Bellow 8'H White Corrugated Wall"
-        ]
+        "sample": ["Bellow 3'H White Corrugated Partition", "Bellow 8'H White Corrugated Wall"]
       },
       {
         "live": "Benecio Leather Knit Chair",
@@ -513,11 +459,7 @@
         "match_type": "family_token",
         "rms_family": "beren",
         "rms_sku_count": 4,
-        "sample": [
-          "Beren Black Books",
-          "Beren Blue Books",
-          "Beren Red Books"
-        ]
+        "sample": ["Beren Black Books", "Beren Blue Books", "Beren Red Books"]
       },
       {
         "live": "Berkshire Wood Shelf",
@@ -724,20 +666,14 @@
         "match_type": "family_token",
         "rms_family": "boulder",
         "rms_sku_count": 2,
-        "sample": [
-          "Boulder 36\" Cast Coffee Table",
-          "Boulder 48\" Cast Coffee Table"
-        ]
+        "sample": ["Boulder 36\" Cast Coffee Table", "Boulder 48\" Cast Coffee Table"]
       },
       {
         "live": "Boulder 48\" Coffee Table",
         "match_type": "family_token",
         "rms_family": "boulder",
         "rms_sku_count": 2,
-        "sample": [
-          "Boulder 36\" Cast Coffee Table",
-          "Boulder 48\" Cast Coffee Table"
-        ]
+        "sample": ["Boulder 36\" Cast Coffee Table", "Boulder 48\" Cast Coffee Table"]
       },
       {
         "live": "Boyce Concrete & Birch Double Bar",
@@ -759,9 +695,7 @@
         "match_type": "family_token",
         "rms_family": "briar",
         "rms_sku_count": 1,
-        "sample": [
-          "Briar 9x12 Natural Braided Jute Rug"
-        ]
+        "sample": ["Briar 9x12 Natural Braided Jute Rug"]
       },
       {
         "live": "Brinley Charred Wood Tray",
@@ -778,19 +712,14 @@
         "match_type": "family_token",
         "rms_family": "broadway",
         "rms_sku_count": 1,
-        "sample": [
-          "Broadway Concrete Counter Community Table"
-        ]
+        "sample": ["Broadway Concrete Counter Community Table"]
       },
       {
         "live": "Bronson Glassware",
         "match_type": "family_token",
         "rms_family": "bronson",
         "rms_sku_count": 2,
-        "sample": [
-          "Bronson Brown Goblet",
-          "Bronson Brown Rocks Glass"
-        ]
+        "sample": ["Bronson Brown Goblet", "Bronson Brown Rocks Glass"]
       },
       {
         "live": "Brooklyn Plush Charcoal Sofa",
@@ -935,19 +864,14 @@
         "match_type": "family_token",
         "rms_family": "bulan",
         "rms_sku_count": 2,
-        "sample": [
-          "Bulan 11.75\"  Grey Speckle Plate",
-          "Bulan 8.5\"  Grey Speckle Plate"
-        ]
+        "sample": ["Bulan 11.75\"  Grey Speckle Plate", "Bulan 8.5\"  Grey Speckle Plate"]
       },
       {
         "live": "Byron Black Hide Rug",
         "match_type": "family_token",
         "rms_family": "byron",
         "rms_sku_count": 1,
-        "sample": [
-          "Byron 7x7 Black Hide Rug"
-        ]
+        "sample": ["Byron 7x7 Black Hide Rug"]
       },
       {
         "live": "CAMDEN Creamery Crate",
@@ -990,18 +914,14 @@
         "match_type": "family_token",
         "rms_family": "calloway",
         "rms_sku_count": 1,
-        "sample": [
-          "Calloway Wood + Marble Coffee Table"
-        ]
+        "sample": ["Calloway Wood + Marble Coffee Table"]
       },
       {
         "live": "Callum Brass Tray",
         "match_type": "family_token",
         "rms_family": "callum",
         "rms_sku_count": 1,
-        "sample": [
-          "Callum 14\" Round Brass Tray"
-        ]
+        "sample": ["Callum 14\" Round Brass Tray"]
       },
       {
         "live": "Calvary Charcoal Throw",
@@ -1041,18 +961,14 @@
         "match_type": "family_token",
         "rms_family": "cameron",
         "rms_sku_count": 1,
-        "sample": [
-          "Cameron Directors Dining Chair"
-        ]
+        "sample": ["Cameron Directors Dining Chair"]
       },
       {
         "live": "Canyon Pine Bar",
         "match_type": "family_token",
         "rms_family": "canyon",
         "rms_sku_count": 1,
-        "sample": [
-          "Canyon 8' Natural Pine Bar"
-        ]
+        "sample": ["Canyon 8' Natural Pine Bar"]
       },
       {
         "live": "Cardea Metal Screen Cabinet",
@@ -1095,9 +1011,7 @@
         "match_type": "family_token",
         "rms_family": "cernunnos",
         "rms_sku_count": 1,
-        "sample": [
-          "Cernunnos Elk European Mount"
-        ]
+        "sample": ["Cernunnos Elk European Mount"]
       },
       {
         "live": "Champagne Crushed Velvet Pillow",
@@ -1144,9 +1058,7 @@
         "match_type": "family_token",
         "rms_family": "clyde",
         "rms_sku_count": 1,
-        "sample": [
-          "Clyde Smoke Blue Wood Chain"
-        ]
+        "sample": ["Clyde Smoke Blue Wood Chain"]
       },
       {
         "live": "Collin Wood-Filled Concrete Coffee Table",
@@ -1158,9 +1070,7 @@
         "match_type": "family_token",
         "rms_family": "commodore",
         "rms_sku_count": 1,
-        "sample": [
-          "Commodore Canvas Sofa"
-        ]
+        "sample": ["Commodore Canvas Sofa"]
       },
       {
         "live": "Concreta Wall Sconce",
@@ -1182,9 +1092,7 @@
         "match_type": "family_token",
         "rms_family": "cressida",
         "rms_sku_count": 1,
-        "sample": [
-          "Cressida Maroon Marble Table Lamp"
-        ]
+        "sample": ["Cressida Maroon Marble Table Lamp"]
       },
       {
         "live": "Culetta Green Marble Cabaret Lamp",
@@ -1217,36 +1125,28 @@
         "match_type": "family_token",
         "rms_family": "divya",
         "rms_sku_count": 1,
-        "sample": [
-          "Divya 11\" Rustic Paper Mache Vase"
-        ]
+        "sample": ["Divya 11\" Rustic Paper Mache Vase"]
       },
       {
         "live": "Darnell Color-Mixing Uplight",
         "match_type": "family_token",
         "rms_family": "darnell",
         "rms_sku_count": 1,
-        "sample": [
-          "Darnell Color-Mixing LED  Uplight"
-        ]
+        "sample": ["Darnell Color-Mixing LED  Uplight"]
       },
       {
         "live": "Dashiell Coffee Table",
         "match_type": "family_token",
         "rms_family": "dashiell",
         "rms_sku_count": 1,
-        "sample": [
-          "Dashiell Oak Coffee Table"
-        ]
+        "sample": ["Dashiell Oak Coffee Table"]
       },
       {
         "live": "Daxton Wood Wall",
         "match_type": "family_token",
         "rms_family": "daxton",
         "rms_sku_count": 1,
-        "sample": [
-          "Daxton Light Wood Wall"
-        ]
+        "sample": ["Daxton Light Wood Wall"]
       },
       {
         "live": "Dayna 8x10 Grey Pattern Rug",
@@ -1274,18 +1174,14 @@
         "match_type": "family_token",
         "rms_family": "dezik",
         "rms_sku_count": 1,
-        "sample": [
-          "Dezik 48\" Square Tiered Bar Shelving"
-        ]
+        "sample": ["Dezik 48\" Square Tiered Bar Shelving"]
       },
       {
         "live": "Dezmelda Smoke Crystal Chandelier",
         "match_type": "family_token",
         "rms_family": "dezmelda",
         "rms_sku_count": 1,
-        "sample": [
-          "Dezmelda 24\" Smoke Crystal Chandelier"
-        ]
+        "sample": ["Dezmelda 24\" Smoke Crystal Chandelier"]
       },
       {
         "live": "Dinay Cut Glass Beverage Dispenser",
@@ -1343,29 +1239,21 @@
         "match_type": "family_token",
         "rms_family": "eden",
         "rms_sku_count": 4,
-        "sample": [
-          "Eden 10.5\" Plate",
-          "Eden 13\" Charger Plate",
-          "Eden 6\" Plate"
-        ]
+        "sample": ["Eden 10.5\" Plate", "Eden 13\" Charger Plate", "Eden 6\" Plate"]
       },
       {
         "live": "ERIZO XL Leather Chandelier",
         "match_type": "family_token",
         "rms_family": "erizo",
         "rms_sku_count": 1,
-        "sample": [
-          "Erizo Leather Chandelier"
-        ]
+        "sample": ["Erizo Leather Chandelier"]
       },
       {
         "live": "EVY Ivory Stucco Lamp",
         "match_type": "family_token",
         "rms_family": "evy",
         "rms_sku_count": 1,
-        "sample": [
-          "Evy Ivory Stucco Table Lamp"
-        ]
+        "sample": ["Evy Ivory Stucco Table Lamp"]
       },
       {
         "live": "Eagan Decanter",
@@ -1382,36 +1270,28 @@
         "match_type": "family_token",
         "rms_family": "elgin",
         "rms_sku_count": 1,
-        "sample": [
-          "Elgin Pony Bronze Bookend Set"
-        ]
+        "sample": ["Elgin Pony Bronze Bookend Set"]
       },
       {
         "live": "Elijah Antique Marble Top Console",
         "match_type": "family_token",
         "rms_family": "elijah",
         "rms_sku_count": 1,
-        "sample": [
-          "Elijah Marble Top Antique Console Table"
-        ]
+        "sample": ["Elijah Marble Top Antique Console Table"]
       },
       {
         "live": "Elise Dark Mahogany Cocktail Table",
         "match_type": "family_token",
         "rms_family": "elise",
         "rms_sku_count": 1,
-        "sample": [
-          "Elise Mahogany Cocktail Table"
-        ]
+        "sample": ["Elise Mahogany Cocktail Table"]
       },
       {
         "live": "Elizabeth Velvet Sofa",
         "match_type": "family_token",
         "rms_family": "elizabeth",
         "rms_sku_count": 1,
-        "sample": [
-          "Elizabeth Champagne Velvet Sofa"
-        ]
+        "sample": ["Elizabeth Champagne Velvet Sofa"]
       },
       {
         "live": "Ellora Sage Velvet Ottoman",
@@ -1428,9 +1308,7 @@
         "match_type": "family_token",
         "rms_family": "elspeth",
         "rms_sku_count": 1,
-        "sample": [
-          "Elspeth Almond Velour Chair"
-        ]
+        "sample": ["Elspeth Almond Velour Chair"]
       },
       {
         "live": "Elwood Concrete & Split Wood Bar",
@@ -1442,10 +1320,7 @@
         "match_type": "family_token",
         "rms_family": "elysia",
         "rms_sku_count": 2,
-        "sample": [
-          "Elysia 10\" Ruffled Marble Bowl",
-          "Elysia 14\" Ruffled Marble Bowl"
-        ]
+        "sample": ["Elysia 10\" Ruffled Marble Bowl", "Elysia 14\" Ruffled Marble Bowl"]
       },
       {
         "live": "Ember 38\" Square Weathered Steel Firepit",
@@ -1462,18 +1337,14 @@
         "match_type": "family_token",
         "rms_family": "eniko",
         "rms_sku_count": 1,
-        "sample": [
-          "Eniko 6x6 Brindle Hide Rug"
-        ]
+        "sample": ["Eniko 6x6 Brindle Hide Rug"]
       },
       {
         "live": "Ennai Oil Lamp",
         "match_type": "family_token",
         "rms_family": "ennai",
         "rms_sku_count": 1,
-        "sample": [
-          "Ennai Concrete Oil Lamp"
-        ]
+        "sample": ["Ennai Concrete Oil Lamp"]
       },
       {
         "live": "Eriksen Mesh Edison Side Table",
@@ -1495,55 +1366,42 @@
         "match_type": "family_token",
         "rms_family": "eustace",
         "rms_sku_count": 1,
-        "sample": [
-          "Eustace 36\" White Cast Antler Chandelier"
-        ]
+        "sample": ["Eustace 36\" White Cast Antler Chandelier"]
       },
       {
         "live": "Evander Tapered Hide Ottoman",
         "match_type": "family_token",
         "rms_family": "evander",
         "rms_sku_count": 1,
-        "sample": [
-          "Evander Grey Hide Tapered Ottoman"
-        ]
+        "sample": ["Evander Grey Hide Tapered Ottoman"]
       },
       {
         "live": "Evangeline Silver Bar Cart",
         "match_type": "family_token",
         "rms_family": "evangeline",
         "rms_sku_count": 1,
-        "sample": [
-          "Evangeline Silver Folding Bar Cart"
-        ]
+        "sample": ["Evangeline Silver Folding Bar Cart"]
       },
       {
         "live": "Evelda Ceramic Chain Vase",
         "match_type": "family_token",
         "rms_family": "evelda",
         "rms_sku_count": 2,
-        "sample": [
-          "Evelda 7\" Ceramic Chain Vase",
-          "Evelda 9.5\" Ceramic Chain Vase"
-        ]
+        "sample": ["Evelda 7\" Ceramic Chain Vase", "Evelda 9.5\" Ceramic Chain Vase"]
       },
       {
         "live": "Evita 13\" White Marble Charger",
         "match_type": "family_token",
         "rms_family": "evita",
         "rms_sku_count": 1,
-        "sample": [
-          "Evita 13\" Marble Charger"
-        ]
+        "sample": ["Evita 13\" Marble Charger"]
       },
       {
         "live": "Evren 8x10 Kilim Rug",
         "match_type": "family_token",
         "rms_family": "evren",
         "rms_sku_count": 1,
-        "sample": [
-          "Evren 8x10Kilim Rug"
-        ]
+        "sample": ["Evren 8x10Kilim Rug"]
       },
       {
         "live": "Excursion Champagne Bar Trunk",
@@ -1555,9 +1413,7 @@
         "match_type": "family_token",
         "rms_family": "ezra",
         "rms_sku_count": 1,
-        "sample": [
-          "Ezra Marble Top Antique Console Table"
-        ]
+        "sample": ["Ezra Marble Top Antique Console Table"]
       },
       {
         "live": "FARROW Cocktail Column Tables",
@@ -1595,9 +1451,7 @@
         "match_type": "family_token",
         "rms_family": "fabian",
         "rms_sku_count": 1,
-        "sample": [
-          "Fabian Grey Hide Barrel Chair"
-        ]
+        "sample": ["Fabian Grey Hide Barrel Chair"]
       },
       {
         "live": "Farrah Triple Gold Globe Lamp",
@@ -1624,9 +1478,7 @@
         "match_type": "family_token",
         "rms_family": "felina",
         "rms_sku_count": 1,
-        "sample": [
-          "Felina 5x8 Grey + Natural Tassel Jute Rug"
-        ]
+        "sample": ["Felina 5x8 Grey + Natural Tassel Jute Rug"]
       },
       {
         "live": "Felix Natural Antler",
@@ -1643,11 +1495,7 @@
         "match_type": "family_token",
         "rms_family": "fiona",
         "rms_sku_count": 7,
-        "sample": [
-          "Fiona Bone Butter Knife",
-          "Fiona Bone Dinner Fork",
-          "Fiona Bone Dinner Knife"
-        ]
+        "sample": ["Fiona Bone Butter Knife", "Fiona Bone Dinner Fork", "Fiona Bone Dinner Knife"]
       },
       {
         "live": "Flint Leather & Brass Coffee Table",
@@ -1670,9 +1518,7 @@
         "match_type": "family_token",
         "rms_family": "florian",
         "rms_sku_count": 1,
-        "sample": [
-          "Florian Ivory Hide Barrel Chair"
-        ]
+        "sample": ["Florian Ivory Hide Barrel Chair"]
       },
       {
         "live": "Ford Deconstructed Leather Wingback Chair",
@@ -1694,11 +1540,7 @@
         "match_type": "family_token",
         "rms_family": "fringe",
         "rms_sku_count": 10,
-        "sample": [
-          "Fringe Black Throw",
-          "Fringe Blue Smoke Throw",
-          "Fringe Camel Throw"
-        ]
+        "sample": ["Fringe Black Throw", "Fringe Blue Smoke Throw", "Fringe Camel Throw"]
       },
       {
         "live": "Fringe Cashmere Ivory Throw",
@@ -1740,9 +1582,7 @@
         "match_type": "family_token",
         "rms_family": "frost",
         "rms_sku_count": 1,
-        "sample": [
-          "Frost White Antler Table Lamp"
-        ]
+        "sample": ["Frost White Antler Table Lamp"]
       },
       {
         "live": "Fulton White Leather Butterfly Chair",
@@ -1769,11 +1609,7 @@
         "match_type": "family_token",
         "rms_family": "fur",
         "rms_sku_count": 7,
-        "sample": [
-          "Fur Beige Mongolian Throw",
-          "Fur Brown Bear Throw",
-          "Fur Brown Mongolian Throw"
-        ]
+        "sample": ["Fur Beige Mongolian Throw", "Fur Brown Bear Throw", "Fur Brown Mongolian Throw"]
       },
       {
         "live": "GURA Black Marble Chain",
@@ -1790,18 +1626,14 @@
         "match_type": "family_token",
         "rms_family": "gemma",
         "rms_sku_count": 1,
-        "sample": [
-          "Gemma Sage Glass Table Lamp"
-        ]
+        "sample": ["Gemma Sage Glass Table Lamp"]
       },
       {
         "live": "Georgia Brass Sconce + Pleated Shade",
         "match_type": "family_token",
         "rms_family": "georgia",
         "rms_sku_count": 1,
-        "sample": [
-          "Georgia Brass Sconce"
-        ]
+        "sample": ["Georgia Brass Sconce"]
       },
       {
         "live": "Geraldine Goat Fur Wood Bench",
@@ -1813,9 +1645,7 @@
         "match_type": "family_token",
         "rms_family": "gibbs",
         "rms_sku_count": 1,
-        "sample": [
-          "Gibbs 15\" Square Brown Leather Tray"
-        ]
+        "sample": ["Gibbs 15\" Square Brown Leather Tray"]
       },
       {
         "live": "Gideon Bamboo Pendant Light",
@@ -1889,9 +1719,7 @@
         "match_type": "family_token",
         "rms_family": "gopala",
         "rms_sku_count": 1,
-        "sample": [
-          "Gopala 7x7 Natural Tan Hide Rug"
-        ]
+        "sample": ["Gopala 7x7 Natural Tan Hide Rug"]
       },
       {
         "live": "Green Antique Textile Pillow",
@@ -1980,9 +1808,7 @@
         "match_type": "family_token",
         "rms_family": "greige",
         "rms_sku_count": 1,
-        "sample": [
-          "Greige Textured Lumbar Pillow"
-        ]
+        "sample": ["Greige Textured Lumbar Pillow"]
       },
       {
         "live": "Grey Dark Velvet Pillow",
@@ -2042,9 +1868,7 @@
         "match_type": "family_token",
         "rms_family": "gunnison",
         "rms_sku_count": 1,
-        "sample": [
-          "Gunnison Black Wood Side Table"
-        ]
+        "sample": ["Gunnison Black Wood Side Table"]
       },
       {
         "live": "Gwenevere Mulberry Daybed",
@@ -2071,9 +1895,7 @@
         "match_type": "family_token",
         "rms_family": "harlow",
         "rms_sku_count": 1,
-        "sample": [
-          "Harlow 8x10 Grey Area Rug"
-        ]
+        "sample": ["Harlow 8x10 Grey Area Rug"]
       },
       {
         "live": "Hathor Light Colored Hide Rug",
@@ -2090,10 +1912,7 @@
         "match_type": "family_token",
         "rms_family": "hazel",
         "rms_sku_count": 2,
-        "sample": [
-          "Hazel Large Charred Terracotta Bowl",
-          "Hazel Small Charred Terracotta Bowl"
-        ]
+        "sample": ["Hazel Large Charred Terracotta Bowl", "Hazel Small Charred Terracotta Bowl"]
       },
       {
         "live": "Helena Antique Carved Chair",
@@ -2136,21 +1955,14 @@
         "match_type": "family_token",
         "rms_family": "honey",
         "rms_sku_count": 5,
-        "sample": [
-          "Honey  Rocks Glass",
-          "Honey Coupe Glass",
-          "Honey Decanter"
-        ]
+        "sample": ["Honey  Rocks Glass", "Honey Coupe Glass", "Honey Decanter"]
       },
       {
         "live": "Hudson Rock Wall + Shelving Display",
         "match_type": "family_token",
         "rms_family": "hudson",
         "rms_sku_count": 2,
-        "sample": [
-          "Hudson Rock Wall",
-          "Hudson Rock Wall with Shelves"
-        ]
+        "sample": ["Hudson Rock Wall", "Hudson Rock Wall with Shelves"]
       },
       {
         "live": "Ignacio Silver Balancing Scale",
@@ -2162,9 +1974,7 @@
         "match_type": "family_token",
         "rms_family": "ignatius",
         "rms_sku_count": 1,
-        "sample": [
-          "Ignatius Brass Balancing Scale"
-        ]
+        "sample": ["Ignatius Brass Balancing Scale"]
       },
       {
         "live": "Ina Black Wood Side Table",
@@ -2338,10 +2148,7 @@
         "match_type": "family_token",
         "rms_family": "jina",
         "rms_sku_count": 2,
-        "sample": [
-          "Jina 14\" Black Metal Vase",
-          "Jina 7.5\" Black Metal Vase"
-        ]
+        "sample": ["Jina 14\" Black Metal Vase", "Jina 7.5\" Black Metal Vase"]
       },
       {
         "live": "JOZI Side Table",
@@ -2353,9 +2160,7 @@
         "match_type": "family_token",
         "rms_family": "jacen",
         "rms_sku_count": 1,
-        "sample": [
-          "Jacen Indoor Firepit"
-        ]
+        "sample": ["Jacen Indoor Firepit"]
       },
       {
         "live": "Jacinda Armless Textile Loveseat",
@@ -2417,19 +2222,14 @@
         "match_type": "family_token",
         "rms_family": "joslin",
         "rms_sku_count": 2,
-        "sample": [
-          "Joslin Large Leather Basket",
-          "Joslin Small Leather Basket"
-        ]
+        "sample": ["Joslin Large Leather Basket", "Joslin Small Leather Basket"]
       },
       {
         "live": "Jourdain Bench",
         "match_type": "family_token",
         "rms_family": "jourdain",
         "rms_sku_count": 1,
-        "sample": [
-          "Jourdain Natural Bench"
-        ]
+        "sample": ["Jourdain Natural Bench"]
       },
       {
         "live": "Judah Espresso Martini Side Table",
@@ -2446,9 +2246,7 @@
         "match_type": "family_token",
         "rms_family": "kette",
         "rms_sku_count": 1,
-        "sample": [
-          "Kette Marble Chain"
-        ]
+        "sample": ["Kette Marble Chain"]
       },
       {
         "live": "KIMORA Glassware",
@@ -2481,20 +2279,14 @@
         "match_type": "family_token",
         "rms_family": "keitha",
         "rms_sku_count": 1,
-        "sample": [
-          "Keitha 9x12 Chunky Jute Tassels Rug"
-        ]
+        "sample": ["Keitha 9x12 Chunky Jute Tassels Rug"]
       },
       {
         "live": "Kinlee Cocoon Luminary",
         "match_type": "family_token",
         "rms_family": "kinlee",
         "rms_sku_count": 4,
-        "sample": [
-          "Kinlee Cocoon Large",
-          "Kinlee Cocoon Medium",
-          "Kinlee Cocoon Petite"
-        ]
+        "sample": ["Kinlee Cocoon Large", "Kinlee Cocoon Medium", "Kinlee Cocoon Petite"]
       },
       {
         "live": "LACHLAN 36\" Black Iron Lantern",
@@ -2506,20 +2298,14 @@
         "match_type": "family_token",
         "rms_family": "lapis",
         "rms_sku_count": 4,
-        "sample": [
-          "Lapis 10.5\" Low Bowl",
-          "Lapis 10\" Plate",
-          "Lapis 11\" Plate"
-        ]
+        "sample": ["Lapis 10.5\" Low Bowl", "Lapis 10\" Plate", "Lapis 11\" Plate"]
       },
       {
         "live": "LAUNCE Riverstone Platter",
         "match_type": "family_token",
         "rms_family": "launce",
         "rms_sku_count": 1,
-        "sample": [
-          "Launce Riverstone Serving Platter"
-        ]
+        "sample": ["Launce Riverstone Serving Platter"]
       },
       {
         "live": "Lagos Swivel Chair",
@@ -2558,18 +2344,14 @@
         "match_type": "family_token",
         "rms_family": "lazar",
         "rms_sku_count": 1,
-        "sample": [
-          "Lazar Gold + Bronze Side Table"
-        ]
+        "sample": ["Lazar Gold + Bronze Side Table"]
       },
       {
         "live": "Leanna Ivory Hide Ottoman",
         "match_type": "family_token",
         "rms_family": "leanna",
         "rms_sku_count": 1,
-        "sample": [
-          "Leanna Ivory Hide Tapered Ottoman"
-        ]
+        "sample": ["Leanna Ivory Hide Tapered Ottoman"]
       },
       {
         "live": "Lemiere Vintage Binoculars w/ Leather Case",
@@ -2601,18 +2383,14 @@
         "match_type": "family_token",
         "rms_family": "lilith",
         "rms_sku_count": 1,
-        "sample": [
-          "Lilith 14\" Textured Earth Vase"
-        ]
+        "sample": ["Lilith 14\" Textured Earth Vase"]
       },
       {
         "live": "Limulus White Porcelain Vase",
         "match_type": "family_token",
         "rms_family": "limulus",
         "rms_sku_count": 1,
-        "sample": [
-          "Limulus 5.75\" White Porcelain Vase"
-        ]
+        "sample": ["Limulus 5.75\" White Porcelain Vase"]
       },
       {
         "live": "Lindt Toffee Velvet Channel Tufted Sofa",
@@ -2624,9 +2402,7 @@
         "match_type": "family_token",
         "rms_family": "linus",
         "rms_sku_count": 1,
-        "sample": [
-          "Linus 12.25\" White Porcelain Vase"
-        ]
+        "sample": ["Linus 12.25\" White Porcelain Vase"]
       },
       {
         "live": "Lockwood Concrete & Birch Double Bar",
@@ -2638,9 +2414,7 @@
         "match_type": "family_token",
         "rms_family": "lorenzo",
         "rms_sku_count": 1,
-        "sample": [
-          "Lorenzo Ivory Round Hide Ottoman"
-        ]
+        "sample": ["Lorenzo Ivory Round Hide Ottoman"]
       },
       {
         "live": "Lucille Gold Bar Cart",
@@ -2662,11 +2436,7 @@
         "match_type": "family_token",
         "rms_family": "millie",
         "rms_sku_count": 5,
-        "sample": [
-          "Millie Butter Knife",
-          "Millie Dessert/Tea Spoon",
-          "Millie Dinner Fork"
-        ]
+        "sample": ["Millie Butter Knife", "Millie Dessert/Tea Spoon", "Millie Dinner Fork"]
       },
       {
         "live": "Madden Longhorn Skull",
@@ -2698,9 +2468,7 @@
         "match_type": "family_token",
         "rms_family": "marceline",
         "rms_sku_count": 1,
-        "sample": [
-          "Marceline Brass Folding Bar Cart"
-        ]
+        "sample": ["Marceline Brass Folding Bar Cart"]
       },
       {
         "live": "Marlow Rope Wall",
@@ -2722,9 +2490,7 @@
         "match_type": "family_token",
         "rms_family": "marvin",
         "rms_sku_count": 1,
-        "sample": [
-          "Marvin White Stucco Table Lamp"
-        ]
+        "sample": ["Marvin White Stucco Table Lamp"]
       },
       {
         "live": "Masozi Teardrop Funnel",
@@ -2762,20 +2528,14 @@
         "match_type": "family_token",
         "rms_family": "midori",
         "rms_sku_count": 3,
-        "sample": [
-          "Midori 10\" Low Bowl",
-          "Midori 11\" Plate",
-          "Midori 8\" Plate"
-        ]
+        "sample": ["Midori 10\" Low Bowl", "Midori 11\" Plate", "Midori 8\" Plate"]
       },
       {
         "live": "Millicent Antique Ornate Chair",
         "match_type": "family_token",
         "rms_family": "millicent",
         "rms_sku_count": 1,
-        "sample": [
-          "Millicent Antique Arm Chair"
-        ]
+        "sample": ["Millicent Antique Arm Chair"]
       },
       {
         "live": "Milos Column Side Table",
@@ -2833,20 +2593,14 @@
         "match_type": "family_token",
         "rms_family": "nantucket",
         "rms_sku_count": 1,
-        "sample": [
-          "Nantucket 41\" Oak Wood Column"
-        ]
+        "sample": ["Nantucket 41\" Oak Wood Column"]
       },
       {
         "live": "Narin Glassware",
         "match_type": "family_token",
         "rms_family": "narin",
         "rms_sku_count": 3,
-        "sample": [
-          "Narin Champagne Flute",
-          "Narin Red Wine Glass",
-          "Narin White Wine Glass"
-        ]
+        "sample": ["Narin Champagne Flute", "Narin Red Wine Glass", "Narin White Wine Glass"]
       },
       {
         "live": "Nathalie Black Spindle Dining Table",
@@ -2858,9 +2612,7 @@
         "match_type": "family_token",
         "rms_family": "natori",
         "rms_sku_count": 1,
-        "sample": [
-          "Natori Oak + Fur Chair"
-        ]
+        "sample": ["Natori Oak + Fur Chair"]
       },
       {
         "live": "Navajo Cotton Brick Throw",
@@ -2892,27 +2644,21 @@
         "match_type": "family_token",
         "rms_family": "nera",
         "rms_sku_count": 1,
-        "sample": [
-          "Nera 4\" Alabaster Votive"
-        ]
+        "sample": ["Nera 4\" Alabaster Votive"]
       },
       {
         "live": "Neriya Ivory Ottoman",
         "match_type": "family_token",
         "rms_family": "neriya",
         "rms_sku_count": 1,
-        "sample": [
-          "Neriya Ivory Hide Ottoman"
-        ]
+        "sample": ["Neriya Ivory Hide Ottoman"]
       },
       {
         "live": "Niketas Vintage Trophy Collection",
         "match_type": "family_token",
         "rms_family": "niketas",
         "rms_sku_count": 1,
-        "sample": [
-          "Niketas Assorted Vintage Trophy"
-        ]
+        "sample": ["Niketas Assorted Vintage Trophy"]
       },
       {
         "live": "Nima Fabric Banquette",
@@ -2930,9 +2676,7 @@
         "match_type": "family_token",
         "rms_family": "ninsun",
         "rms_sku_count": 1,
-        "sample": [
-          "Ninsun 7x7 Silver Hide Rug"
-        ]
+        "sample": ["Ninsun 7x7 Silver Hide Rug"]
       },
       {
         "live": "Nisha Matte Black Flatware",
@@ -2960,9 +2704,7 @@
         "match_type": "family_token",
         "rms_family": "norwood",
         "rms_sku_count": 1,
-        "sample": [
-          "Norwood Concrete & Split Wood Top Bar"
-        ]
+        "sample": ["Norwood Concrete & Split Wood Top Bar"]
       },
       {
         "live": "Noya Sand Pendants",
@@ -2990,9 +2732,7 @@
         "match_type": "family_token",
         "rms_family": "olive",
         "rms_sku_count": 1,
-        "sample": [
-          "Olive 13\" Leather Charger"
-        ]
+        "sample": ["Olive 13\" Leather Charger"]
       },
       {
         "live": "Omar Brown Leather Ottoman",
@@ -3004,18 +2744,14 @@
         "match_type": "family_token",
         "rms_family": "oni",
         "rms_sku_count": 1,
-        "sample": [
-          "Oni Grey Ceramic Table Lamp"
-        ]
+        "sample": ["Oni Grey Ceramic Table Lamp"]
       },
       {
         "live": "Ophidia",
         "match_type": "family_token",
         "rms_family": "ophidia",
         "rms_sku_count": 1,
-        "sample": [
-          "Ophidia 10\" Serpent Plate"
-        ]
+        "sample": ["Ophidia 10\" Serpent Plate"]
       },
       {
         "live": "Orange Brown Textile Pillow",
@@ -3048,18 +2784,14 @@
         "match_type": "family_token",
         "rms_family": "orla",
         "rms_sku_count": 1,
-        "sample": [
-          "Orla 13\" Chestnut Leather Charger"
-        ]
+        "sample": ["Orla 13\" Chestnut Leather Charger"]
       },
       {
         "live": "Osprey Black Metal Bench",
         "match_type": "family_token",
         "rms_family": "osprey",
         "rms_sku_count": 1,
-        "sample": [
-          "Osprey Black Metal Chair"
-        ]
+        "sample": ["Osprey Black Metal Chair"]
       },
       {
         "live": "Oxford Fossil Plinth",
@@ -3103,9 +2835,7 @@
         "match_type": "family_token",
         "rms_family": "pema",
         "rms_sku_count": 1,
-        "sample": [
-          "Pema Ancient Carved Wood Wall"
-        ]
+        "sample": ["Pema Ancient Carved Wood Wall"]
       },
       {
         "live": "Pendleton Grey Cross Throw",
@@ -3137,9 +2867,7 @@
         "match_type": "family_token",
         "rms_family": "pickford",
         "rms_sku_count": 1,
-        "sample": [
-          "Pickford Concrete & Split Wood Bar"
-        ]
+        "sample": ["Pickford Concrete & Split Wood Bar"]
       },
       {
         "live": "Pierce French Antique Console",
@@ -3223,9 +2951,7 @@
         "match_type": "family_token",
         "rms_family": "rumen",
         "rms_sku_count": 1,
-        "sample": [
-          "Rumen 11\" Red LED Camping Lantern"
-        ]
+        "sample": ["Rumen 11\" Red LED Camping Lantern"]
       },
       {
         "live": "Raden Distressed Metal Coffee Table",
@@ -3237,10 +2963,7 @@
         "match_type": "family_token",
         "rms_family": "ravindra",
         "rms_sku_count": 2,
-        "sample": [
-          "Ravindra Large Wire & Leather Basket",
-          "Ravindra Small Wire & Leather Basket"
-        ]
+        "sample": ["Ravindra Large Wire & Leather Basket", "Ravindra Small Wire & Leather Basket"]
       },
       {
         "live": "Red Tan Plaid Lumbar",
@@ -3306,9 +3029,7 @@
         "match_type": "family_token",
         "rms_family": "regina",
         "rms_sku_count": 1,
-        "sample": [
-          "Regina Brass Table Lamp"
-        ]
+        "sample": ["Regina Brass Table Lamp"]
       },
       {
         "live": "Relic Limestone Coffee Table",
@@ -3340,29 +3061,21 @@
         "match_type": "family_token",
         "rms_family": "ritika",
         "rms_sku_count": 1,
-        "sample": [
-          "Ritika 33\" Brass Tray"
-        ]
+        "sample": ["Ritika 33\" Brass Tray"]
       },
       {
         "live": "River 42\" Coffee Table",
         "match_type": "family_token",
         "rms_family": "river",
         "rms_sku_count": 2,
-        "sample": [
-          "River 42\" Stone Coffee Table",
-          "River 54\" Stone Coffee Table"
-        ]
+        "sample": ["River 42\" Stone Coffee Table", "River 54\" Stone Coffee Table"]
       },
       {
         "live": "River 54\" Coffee Table",
         "match_type": "family_token",
         "rms_family": "river",
         "rms_sku_count": 2,
-        "sample": [
-          "River 42\" Stone Coffee Table",
-          "River 54\" Stone Coffee Table"
-        ]
+        "sample": ["River 42\" Stone Coffee Table", "River 54\" Stone Coffee Table"]
       },
       {
         "live": "Rodgers Lariat Rope",
@@ -3374,9 +3087,7 @@
         "match_type": "family_token",
         "rms_family": "rodrick",
         "rms_sku_count": 1,
-        "sample": [
-          "Rodrick Brass Cabaret Lamp"
-        ]
+        "sample": ["Rodrick Brass Cabaret Lamp"]
       },
       {
         "live": "Rollins Stone Side Table",
@@ -3393,9 +3104,7 @@
         "match_type": "family_token",
         "rms_family": "romana",
         "rms_sku_count": 1,
-        "sample": [
-          "Romana Tapered Concrete Side Table"
-        ]
+        "sample": ["Romana Tapered Concrete Side Table"]
       },
       {
         "live": "Romina Brass Floor Lamp",
@@ -3407,9 +3116,7 @@
         "match_type": "family_token",
         "rms_family": "rosa",
         "rms_sku_count": 1,
-        "sample": [
-          "Rosa Acacia Wood Shelf"
-        ]
+        "sample": ["Rosa Acacia Wood Shelf"]
       },
       {
         "live": "Rosie Antique Linen Chair",
@@ -3421,28 +3128,21 @@
         "match_type": "family_token",
         "rms_family": "rowntree",
         "rms_sku_count": 1,
-        "sample": [
-          "Rowntree Chocolate Leather Loveseat"
-        ]
+        "sample": ["Rowntree Chocolate Leather Loveseat"]
       },
       {
         "live": "SANARA Dining Chairs",
         "match_type": "family_token",
         "rms_family": "sanara",
         "rms_sku_count": 2,
-        "sample": [
-          "Sanara Dining Chair - Brown Tweed",
-          "Sanara Dining Chair - Taupe Velvet"
-        ]
+        "sample": ["Sanara Dining Chair - Brown Tweed", "Sanara Dining Chair - Taupe Velvet"]
       },
       {
         "live": "SINIA TRIPOD FLOOR LAMP",
         "match_type": "family_token",
         "rms_family": "sinia",
         "rms_sku_count": 1,
-        "sample": [
-          "Sinia Telescoping Floor Lamp"
-        ]
+        "sample": ["Sinia Telescoping Floor Lamp"]
       },
       {
         "live": "SUHANA COGNAC LEATHER CHAIR",
@@ -3459,11 +3159,7 @@
         "match_type": "family_token",
         "rms_family": "sage",
         "rms_sku_count": 5,
-        "sample": [
-          "Sage Coupe Glass",
-          "Sage Red Wine Glass",
-          "Sage Rocks Glass"
-        ]
+        "sample": ["Sage Coupe Glass", "Sage Red Wine Glass", "Sage Rocks Glass"]
       },
       {
         "live": "Salida Acacia Shelf",
@@ -3495,9 +3191,7 @@
         "match_type": "family_token",
         "rms_family": "shay",
         "rms_sku_count": 1,
-        "sample": [
-          "Shay Tan Leather Basket"
-        ]
+        "sample": ["Shay Tan Leather Basket"]
       },
       {
         "live": "Shea Steer Skull",
@@ -3519,10 +3213,7 @@
         "match_type": "family_token",
         "rms_family": "shetani",
         "rms_sku_count": 2,
-        "sample": [
-          "Shetani 21\" Dark Brass Tray",
-          "Shetani 33\" Dark Brass Tray"
-        ]
+        "sample": ["Shetani 21\" Dark Brass Tray", "Shetani 33\" Dark Brass Tray"]
       },
       {
         "live": "Shiloh 8x10 Grey & Ivory Rug",
@@ -3539,9 +3230,7 @@
         "match_type": "family_token",
         "rms_family": "shiraz",
         "rms_sku_count": 1,
-        "sample": [
-          "Shiraz 8x10 Ivory & Grey Woven Wool Rug"
-        ]
+        "sample": ["Shiraz 8x10 Ivory & Grey Woven Wool Rug"]
       },
       {
         "live": "Sidecar Dark Wood Bar",
@@ -3553,9 +3242,7 @@
         "match_type": "family_token",
         "rms_family": "sidony",
         "rms_sku_count": 1,
-        "sample": [
-          "Sidony White + Wood Sofa"
-        ]
+        "sample": ["Sidony White + Wood Sofa"]
       },
       {
         "live": "Siete Rattan Ottoman",
@@ -3623,9 +3310,7 @@
         "match_type": "family_token",
         "rms_family": "sutton",
         "rms_sku_count": 1,
-        "sample": [
-          "Sutton 36\" Black Firepit + Tank Cover"
-        ]
+        "sample": ["Sutton 36\" Black Firepit + Tank Cover"]
       },
       {
         "live": "Tabitha Copper Rimmed Tray Set",
@@ -3683,11 +3368,7 @@
         "match_type": "family_token",
         "rms_family": "thistle",
         "rms_sku_count": 4,
-        "sample": [
-          "Thistle Coupe Glass",
-          "Thistle Red Wine Glass",
-          "Thistle Rocks Glass"
-        ]
+        "sample": ["Thistle Coupe Glass", "Thistle Red Wine Glass", "Thistle Rocks Glass"]
       },
       {
         "live": "Tibur Travertine Tray",
@@ -3699,9 +3380,7 @@
         "match_type": "family_token",
         "rms_family": "tierre",
         "rms_sku_count": 1,
-        "sample": [
-          "Tierre Smoked Wood Round Coffee Table"
-        ]
+        "sample": ["Tierre Smoked Wood Round Coffee Table"]
       },
       {
         "live": "Tigran Linear Floor Lamp",
@@ -3724,9 +3403,7 @@
         "match_type": "family_token",
         "rms_family": "timber",
         "rms_sku_count": 1,
-        "sample": [
-          "Timber Stump Side Table"
-        ]
+        "sample": ["Timber Stump Side Table"]
       },
       {
         "live": "Timon Wood Cocktail Table",
@@ -3738,10 +3415,7 @@
         "match_type": "family_token",
         "rms_family": "tirzah",
         "rms_sku_count": 2,
-        "sample": [
-          "Tirzah 6\" Asymmetrical Vase",
-          "Tirzah 8\" Asymmetrical Vase"
-        ]
+        "sample": ["Tirzah 6\" Asymmetrical Vase", "Tirzah 8\" Asymmetrical Vase"]
       },
       {
         "live": "Tomina Marble Base Table Lamp",
@@ -3784,9 +3458,7 @@
         "match_type": "family_token",
         "rms_family": "valdiva",
         "rms_sku_count": 1,
-        "sample": [
-          "Valdiva 8x10 Olive Rug"
-        ]
+        "sample": ["Valdiva 8x10 Olive Rug"]
       },
       {
         "live": "Valla Patina Side Table",
@@ -3798,9 +3470,7 @@
         "match_type": "family_token",
         "rms_family": "verna",
         "rms_sku_count": 1,
-        "sample": [
-          "Verna Classic Wood Picnic Box"
-        ]
+        "sample": ["Verna Classic Wood Picnic Box"]
       },
       {
         "live": "Versailles Cane Coffee Table",
@@ -3817,29 +3487,21 @@
         "match_type": "family_token",
         "rms_family": "silver",
         "rms_sku_count": 2,
-        "sample": [
-          "Silver Disco Pillow",
-          "Silver Leather Woven Pillow"
-        ]
+        "sample": ["Silver Disco Pillow", "Silver Leather Woven Pillow"]
       },
       {
         "live": "Voyage Bar Trunk",
         "match_type": "family_token",
         "rms_family": "voyage",
         "rms_sku_count": 2,
-        "sample": [
-          "Voyage Black Trunk Bar",
-          "Voyage Navy Trunk Bar"
-        ]
+        "sample": ["Voyage Black Trunk Bar", "Voyage Navy Trunk Bar"]
       },
       {
         "live": "WASHINGTON Wall",
         "match_type": "family_token",
         "rms_family": "washington",
         "rms_sku_count": 1,
-        "sample": [
-          "Washington Wall 24'W x 8'H"
-        ]
+        "sample": ["Washington Wall 24'W x 8'H"]
       },
       {
         "live": "Wadsworth Concrete & Birch Bar",
@@ -3913,18 +3575,14 @@
         "match_type": "family_token",
         "rms_family": "wilhelm",
         "rms_sku_count": 1,
-        "sample": [
-          "Wilhelm 11\" Rustic LED Camping Lantern"
-        ]
+        "sample": ["Wilhelm 11\" Rustic LED Camping Lantern"]
       },
       {
         "live": "Winona Silver Trophy Lamp",
         "match_type": "family_token",
         "rms_family": "winona",
         "rms_sku_count": 1,
-        "sample": [
-          "Winona Silver Trophy Table Lamp"
-        ]
+        "sample": ["Winona Silver Trophy Table Lamp"]
       },
       {
         "live": "Winslow Tortoise Bistro Flatware",
@@ -3942,9 +3600,7 @@
         "match_type": "family_token",
         "rms_family": "woodsley",
         "rms_sku_count": 1,
-        "sample": [
-          "Woodsley Concrete & Split Wood Bar"
-        ]
+        "sample": ["Woodsley Concrete & Split Wood Bar"]
       },
       {
         "live": "Woven Autumn Stripe Throw",
@@ -3976,29 +3632,21 @@
         "match_type": "family_token",
         "rms_family": "zahavi",
         "rms_sku_count": 2,
-        "sample": [
-          "Zahavi Large Brass Top Decanter",
-          "Zahavi Small Brass Top Decanter"
-        ]
+        "sample": ["Zahavi Large Brass Top Decanter", "Zahavi Small Brass Top Decanter"]
       },
       {
         "live": "Zalena Silver Top Decanters",
         "match_type": "family_token",
         "rms_family": "zalena",
         "rms_sku_count": 2,
-        "sample": [
-          "Zalena Large Silver Top Decanter",
-          "Zalena Small Silver Top Decanter"
-        ]
+        "sample": ["Zalena Large Silver Top Decanter", "Zalena Small Silver Top Decanter"]
       },
       {
         "live": "Zeki Kilim Arm Chair",
         "match_type": "family_token",
         "rms_family": "zeki",
         "rms_sku_count": 1,
-        "sample": [
-          "Zeki Kilim Armchair"
-        ]
+        "sample": ["Zeki Kilim Armchair"]
       }
     ],
     "owner_slug_divergent": [

@@ -8,36 +8,100 @@ import { readFileSync, writeFileSync } from "node:fs";
 
 function parse(text) {
   if (text.charCodeAt(0) === 0xfeff) text = text.slice(1);
-  const rows = []; let row = [], field = "", q = false, i = 0;
+  const rows = [];
+  let row = [],
+    field = "",
+    q = false,
+    i = 0;
   while (i < text.length) {
     const c = text[i];
     if (q) {
-      if (c === '"') { if (text[i + 1] === '"') { field += '"'; i += 2; continue; } q = false; i++; continue; }
-      field += c; i++; continue;
+      if (c === '"') {
+        if (text[i + 1] === '"') {
+          field += '"';
+          i += 2;
+          continue;
+        }
+        q = false;
+        i++;
+        continue;
+      }
+      field += c;
+      i++;
+      continue;
     }
-    if (c === '"') { q = true; i++; continue; }
-    if (c === ",") { row.push(field); field = ""; i++; continue; }
-    if (c === "\r") { i++; continue; }
-    if (c === "\n") { row.push(field); field = ""; if (!(row.length === 1 && row[0] === "")) rows.push(row); row = []; i++; continue; }
-    field += c; i++;
+    if (c === '"') {
+      q = true;
+      i++;
+      continue;
+    }
+    if (c === ",") {
+      row.push(field);
+      field = "";
+      i++;
+      continue;
+    }
+    if (c === "\r") {
+      i++;
+      continue;
+    }
+    if (c === "\n") {
+      row.push(field);
+      field = "";
+      if (!(row.length === 1 && row[0] === "")) rows.push(row);
+      row = [];
+      i++;
+      continue;
+    }
+    field += c;
+    i++;
   }
-  if (field.length || row.length) { row.push(field); if (!(row.length === 1 && row[0] === "")) rows.push(row); }
+  if (field.length || row.length) {
+    row.push(field);
+    if (!(row.length === 1 && row[0] === "")) rows.push(row);
+  }
   const h = rows[0];
-  return rows.slice(1).map(r => Object.fromEntries(h.map((k, j) => [k, r[j] ?? ""])));
+  return rows.slice(1).map((r) => Object.fromEntries(h.map((k, j) => [k, r[j] ?? ""])));
 }
 
 const CATEGORY_DISPLAY_MAP = {
-  accents1: "Accents", bars1: "Cocktail & Bar", "benches-ottomans1": "Benches & Ottomans",
-  "chairs-stools1": "Chairs & Stools", "cocktail-bar": "Cocktail & Bar", dining: "Dining",
-  "large-decor": "Large Decor", light: "Lighting", lounge: "Lounge Seating",
-  "lounge-tables": "Lounge Tables", "pillows-throws1": "Pillows & Throws", rugs: "Rugs",
-  "sofas-loveseats1": "Sofas & Loveseats", storage1: "Storage", styling: "Styling",
-  tables1: "Tables", tableware: "Tableware", textiles: "Textiles",
+  accents1: "Accents",
+  bars1: "Cocktail & Bar",
+  "benches-ottomans1": "Benches & Ottomans",
+  "chairs-stools1": "Chairs & Stools",
+  "cocktail-bar": "Cocktail & Bar",
+  dining: "Dining",
+  "large-decor": "Large Decor",
+  light: "Lighting",
+  lounge: "Lounge Seating",
+  "lounge-tables": "Lounge Tables",
+  "pillows-throws1": "Pillows & Throws",
+  rugs: "Rugs",
+  "sofas-loveseats1": "Sofas & Loveseats",
+  storage1: "Storage",
+  styling: "Styling",
+  tables1: "Tables",
+  tableware: "Tableware",
+  textiles: "Textiles",
 };
 const CATEGORY_DISPLAY_ORDER = [
-  "Lounge Seating", "Sofas & Loveseats", "Chairs & Stools", "Benches & Ottomans", "Lounge Tables",
-  "Tables", "Dining", "Cocktail & Bar", "Tableware", "Textiles", "Pillows & Throws", "Rugs",
-  "Lighting", "Large Decor", "Styling", "Accents", "Storage",
+  "Lounge Seating",
+  "Sofas & Loveseats",
+  "Chairs & Stools",
+  "Benches & Ottomans",
+  "Lounge Tables",
+  "Tables",
+  "Dining",
+  "Cocktail & Bar",
+  "Tableware",
+  "Textiles",
+  "Pillows & Throws",
+  "Rugs",
+  "Lighting",
+  "Large Decor",
+  "Styling",
+  "Accents",
+  "Storage",
 ];
 // Subcategory keyword detection per category. Order matters — first match wins.
 // 0-count subcategories are auto-hidden in the UI by faceting against the
@@ -95,7 +159,10 @@ const SUBCATEGORY_RULES = {
     { label: "Fireplaces", match: /\bfireplace|hearth/i },
     { label: "Planters", match: /\bplanter|urn|jardiniere/i },
     { label: "Mirrors", match: /\bmirror/i },
-    { label: "Structures", match: /\barch|pergola|gazebo|column|pedestal|backdrop|frame|structure/i },
+    {
+      label: "Structures",
+      match: /\barch|pergola|gazebo|column|pedestal|backdrop|frame|structure/i,
+    },
   ],
   // Lighting
   light: [
@@ -117,10 +184,23 @@ const SUBCATEGORY_RULES = {
   ],
 };
 const KNOWN_404 = "https://www.eclectichive.com/cocktail-bar/broadway-32in";
-const nullable = v => { if (v == null) return null; const t = v.trim(); return t.length === 0 ? null : t; };
-const bool = v => v === "true" || v === "TRUE" || v === "1";
-const num = (v, f = 0) => { if (v == null || v === "") return f; const n = Number(v); return Number.isFinite(n) ? n : f; };
-const detectSub = (cat, title) => { const r = SUBCATEGORY_RULES[cat]; if (!r) return null; for (const x of r) if (x.match.test(title)) return x.label; return null; };
+const nullable = (v) => {
+  if (v == null) return null;
+  const t = v.trim();
+  return t.length === 0 ? null : t;
+};
+const bool = (v) => v === "true" || v === "TRUE" || v === "1";
+const num = (v, f = 0) => {
+  if (v == null || v === "") return f;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : f;
+};
+const detectSub = (cat, title) => {
+  const r = SUBCATEGORY_RULES[cat];
+  if (!r) return null;
+  for (const x of r) if (x.match.test(title)) return x.label;
+  return null;
+};
 
 const productRows = parse(readFileSync("src/data/phase3/phase3_final_products.csv", "utf8"));
 const imageRows = parse(readFileSync("src/data/phase3/phase3_final_images.csv", "utf8"));
@@ -154,28 +234,28 @@ try {
 // First match wins, preserving the live page's order within each fallback.
 const FALLBACK_LIVE_CATEGORIES = {
   // Lounge family — all live on /lounge
-  "lounge": ["lounge"],
+  lounge: ["lounge"],
   "sofas-loveseats1": ["lounge"],
   "chairs-stools1": ["lounge"],
   "benches-ottomans1": ["lounge"],
   // Tables family — /lounge-tables (cocktail-bar holds bar/community/highboy tables too)
   "lounge-tables": ["lounge-tables"],
-  "tables1": ["lounge-tables", "cocktail-bar", "dining"],
+  tables1: ["lounge-tables", "cocktail-bar", "dining"],
   // Cocktail & Bar family
   "cocktail-bar": ["cocktail-bar"],
-  "bars1": ["cocktail-bar"],
-  "storage1": ["cocktail-bar", "large-decor"],
+  bars1: ["cocktail-bar"],
+  storage1: ["cocktail-bar", "large-decor"],
   // Textiles family — pillows & throws live on /textiles
-  "textiles": ["textiles"],
+  textiles: ["textiles"],
   "pillows-throws1": ["textiles"],
   // Styling / Accents — accents live on /styling
-  "styling": ["styling"],
-  "accents1": ["styling"],
+  styling: ["styling"],
+  accents1: ["styling"],
   // Singletons
-  "dining": ["dining"],
-  "tableware": ["tableware"],
-  "light": ["light"],
-  "rugs": ["rugs"],
+  dining: ["dining"],
+  tableware: ["tableware"],
+  light: ["light"],
+  rugs: ["rugs"],
   "large-decor": ["large-decor"],
 };
 
@@ -205,42 +285,72 @@ function resolveOwnerRank(categorySlug, normTitle) {
   return null;
 }
 
-const reviewByUrl = new Map(reviewRows.map(r => [r.url, r.issue_type ?? ""]));
+const reviewByUrl = new Map(reviewRows.map((r) => [r.url, r.issue_type ?? ""]));
 const imagesByPid = new Map();
 for (const im of imageRows) {
   if (!im.scraped_product_id || !im.image_url) continue;
   const a = imagesByPid.get(im.scraped_product_id) ?? [];
-  a.push({ url: im.image_url, position: num(im.position, 0), isHero: bool(im.is_hero), inferredFilename: nullable(im.inferred_filename), altText: nullable(im.alt_text) });
+  a.push({
+    url: im.image_url,
+    position: num(im.position, 0),
+    isHero: bool(im.is_hero),
+    inferredFilename: nullable(im.inferred_filename),
+    altText: nullable(im.alt_text),
+  });
   imagesByPid.set(im.scraped_product_id, a);
 }
-for (const list of imagesByPid.values()) list.sort((a, b) => Number(b.isHero) - Number(a.isHero) || a.position - b.position);
+for (const list of imagesByPid.values())
+  list.sort((a, b) => Number(b.isHero) - Number(a.isHero) || a.position - b.position);
 
 const products = productRows.map((p, idx) => {
-  const id = p.id, url = p.url, categorySlug = p.category_slug ?? "";
-  const title = nullable(p.product_title_normalized) ?? nullable(p.product_title_original) ?? nullable(p.title) ?? "(untitled)";
+  const id = p.id,
+    url = p.url,
+    categorySlug = p.category_slug ?? "";
+  const title =
+    nullable(p.product_title_normalized) ??
+    nullable(p.product_title_original) ??
+    nullable(p.title) ??
+    "(untitled)";
   const images = imagesByPid.get(id) ?? [];
-  const primaryImage = images.find(i => i.isHero) ?? images.find(i => i.position === 0) ?? images[0] ?? null;
+  const primaryImage =
+    images.find((i) => i.isHero) ?? images.find((i) => i.position === 0) ?? images[0] ?? null;
   const confidence = num(p.final_confidence, 0);
   const reviewIssue = reviewByUrl.get(url) ?? "";
   const isKnown404 = url === KNOWN_404 || reviewIssue === "source_404";
-  const publicReady = !!primaryImage && !isKnown404 && !!nullable(p.product_title_normalized ?? p.product_title_original) && confidence >= 0.7;
+  const publicReady =
+    !!primaryImage &&
+    !isKnown404 &&
+    !!nullable(p.product_title_normalized ?? p.product_title_original) &&
+    confidence >= 0.7;
   // Owner-site rank: lookup by normalized title within the product's
   // categorySlug. Null for unmatched items — they tail by keyword rank in
   // the runtime sorter.
   const resolved = resolveOwnerRank(categorySlug, normalizeTitle(title));
   const ownerSiteRank = resolved?.rank ?? null;
   return {
-    id, sourceUrl: url, slug: p.product_slug ?? id, categorySlug,
+    id,
+    sourceUrl: url,
+    slug: p.product_slug ?? id,
+    categorySlug,
     displayCategory: CATEGORY_DISPLAY_MAP[categorySlug] ?? categorySlug,
-    title, description: nullable(p.description), dimensions: nullable(p.dimensions),
-    stockedQuantity: nullable(p.stocked_quantity), isCustomOrder: bool(p.is_custom_order_co),
-    confidence, needsManualReview: bool(p.needs_manual_review), images, primaryImage,
-    imageCount: images.length, publicReady, scrapedOrder: idx, subcategory: detectSub(categorySlug, title),
+    title,
+    description: nullable(p.description),
+    dimensions: nullable(p.dimensions),
+    stockedQuantity: nullable(p.stocked_quantity),
+    isCustomOrder: bool(p.is_custom_order_co),
+    confidence,
+    needsManualReview: bool(p.needs_manual_review),
+    images,
+    primaryImage,
+    imageCount: images.length,
+    publicReady,
+    scrapedOrder: idx,
+    subcategory: detectSub(categorySlug, title),
     ownerSiteRank,
   };
 });
 
-let publicProducts = products.filter(p => p.publicReady);
+let publicProducts = products.filter((p) => p.publicReady);
 
 // ---- Cross-category dedup (build-time) -----------------------------------
 // Jill's live site exposes legacy *1 slugs alongside her modern slugs. Many
@@ -264,10 +374,10 @@ let publicProducts = products.filter(p => p.publicReady);
   // Step 2: build "claimed by more specific slug" map for the catch-all slugs.
   // For each loser slug, list the winner slugs whose titles displace it.
   const LOSER_RULES = {
-    "lounge":      ["sofas-loveseats1", "chairs-stools1", "benches-ottomans1"],
-    "tables1":     ["lounge-tables", "dining", "cocktail-bar"],
-    "accents1":    ["tableware", "styling", "large-decor"],
-    "storage1":    ["cocktail-bar", "large-decor"],
+    lounge: ["sofas-loveseats1", "chairs-stools1", "benches-ottomans1"],
+    tables1: ["lounge-tables", "dining", "cocktail-bar"],
+    accents1: ["tableware", "styling", "large-decor"],
+    storage1: ["cocktail-bar", "large-decor"],
   };
 
   const titlesBySlug = new Map();
@@ -279,7 +389,7 @@ let publicProducts = products.filter(p => p.publicReady);
 
   const dropReport = new Map(); // loserSlug → [titles]
   const beforeCount = publicProducts.length;
-  publicProducts = publicProducts.filter(p => {
+  publicProducts = publicProducts.filter((p) => {
     const winners = LOSER_RULES[p.categorySlug];
     if (!winners) return true;
     const k = normalizeTitle(p.title);
@@ -302,7 +412,10 @@ let publicProducts = products.filter(p => p.publicReady);
     if (p.categorySlug !== "cocktail-bar") continue;
     const k = normalizeTitle(p.title);
     const existing = cbByTitle.get(k);
-    if (!existing) { cbByTitle.set(k, p); continue; }
+    if (!existing) {
+      cbByTitle.set(k, p);
+      continue;
+    }
     // Pick winner
     const existingIsBars1 = existing.sourceUrl.includes("/bars1/");
     const newIsBars1 = p.sourceUrl.includes("/bars1/");
@@ -313,16 +426,18 @@ let publicProducts = products.filter(p => p.publicReady);
     else if (!existingIsBars1 && newIsBars1) keep = existing;
     cbByTitle.set(k, keep);
   }
-  const cbKeepIds = new Set([...cbByTitle.values()].map(p => p.id));
+  const cbKeepIds = new Set([...cbByTitle.values()].map((p) => p.id));
   let cbDropped = 0;
-  publicProducts = publicProducts.filter(p => {
+  publicProducts = publicProducts.filter((p) => {
     if (p.categorySlug !== "cocktail-bar") return true;
     if (cbKeepIds.has(p.id)) return true;
     cbDropped++;
     return false;
   });
 
-  console.log(`\nDedup pass: ${beforeCount} → ${publicProducts.length} (-${beforeCount - publicProducts.length})`);
+  console.log(
+    `\nDedup pass: ${beforeCount} → ${publicProducts.length} (-${beforeCount - publicProducts.length})`,
+  );
   console.log(`  Cocktail & Bar (bars1↔cocktail-bar): -${cbDropped}`);
   for (const [slug, titles] of dropReport) {
     console.log(`  ${slug}: -${titles.length}`);
@@ -335,15 +450,22 @@ let publicProducts = products.filter(p => p.publicReady);
 const counts = new Map();
 for (const p of publicProducts) {
   const e = counts.get(p.categorySlug) ?? { display: p.displayCategory, count: 0 };
-  e.count++; counts.set(p.categorySlug, e);
+  e.count++;
+  counts.set(p.categorySlug, e);
 }
 const orderIdx = new Map(CATEGORY_DISPLAY_ORDER.map((d, i) => [d, i]));
 const facets = [...counts.entries()]
   .map(([slug, v]) => ({ slug, display: v.display, count: v.count }))
-  .sort((a, b) => (orderIdx.get(a.display) ?? 999) - (orderIdx.get(b.display) ?? 999) || a.display.localeCompare(b.display));
+  .sort(
+    (a, b) =>
+      (orderIdx.get(a.display) ?? 999) - (orderIdx.get(b.display) ?? 999) ||
+      a.display.localeCompare(b.display),
+  );
 
 const out = {
-  products: publicProducts, facets, total: publicProducts.length,
+  products: publicProducts,
+  facets,
+  total: publicProducts.length,
   meta: {
     generatedAt: new Date().toISOString(),
     totalRecords: products.length,
@@ -353,7 +475,9 @@ const out = {
   },
 };
 writeFileSync("src/data/phase3/phase3_catalog.json", JSON.stringify(out));
-console.log(`Wrote ${publicProducts.length} public-ready / ${products.length} total. ${(JSON.stringify(out).length / 1024).toFixed(1)} KB`);
+console.log(
+  `Wrote ${publicProducts.length} public-ready / ${products.length} total. ${(JSON.stringify(out).length / 1024).toFixed(1)} KB`,
+);
 
 // Owner-site match report (public-ready products only).
 if (ownerRankByLive.size > 0) {
@@ -368,7 +492,9 @@ if (ownerRankByLive.size > 0) {
   }
   for (const [slug, e] of [...byCat.entries()].sort()) {
     const pct = e.total ? Math.round((e.matched / e.total) * 100) : 0;
-    console.log(`  ${slug.padEnd(22)} ${String(e.matched).padStart(3)}/${String(e.total).padEnd(3)}  ${pct}%`);
+    console.log(
+      `  ${slug.padEnd(22)} ${String(e.matched).padStart(3)}/${String(e.total).padEnd(3)}  ${pct}%`,
+    );
     if (e.unmatched.length && e.unmatched.length <= 8) {
       for (const t of e.unmatched) console.log(`      · ${t}`);
     } else if (e.unmatched.length) {

@@ -267,7 +267,6 @@ export const rollbackVariantBatch = createServerFn({ method: "POST" })
       items += typeof touched === "number" ? touched : 0;
     }
 
-
     const { error: mErr } = await db
       .from("variant_config_snapshots")
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

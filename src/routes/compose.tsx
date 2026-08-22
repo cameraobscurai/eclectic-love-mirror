@@ -1,10 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import {
-  getCollectionCatalog,
-  type CollectionProduct,
-} from "@/lib/phase3-catalog";
+import { getCollectionCatalog, type CollectionProduct } from "@/lib/phase3-catalog";
 import { renderUrl } from "@/lib/storage-image";
 import { VIGNETTES, type Vignette } from "@/content/vignettes";
 import { composeSeating, type ComposeResult } from "@/lib/compose-seating";
@@ -169,18 +166,23 @@ function ComposePage() {
           </p>
           <h1
             className="font-display text-charcoal"
-            style={{ fontSize: "clamp(2.25rem, 5vw, 4rem)", lineHeight: 1.05, letterSpacing: "-0.01em" }}
+            style={{
+              fontSize: "clamp(2.25rem, 5vw, 4rem)",
+              lineHeight: 1.05,
+              letterSpacing: "-0.01em",
+            }}
           >
-            Guest count in.<br />
+            Guest count in.
+            <br />
             Composition out.
           </h1>
           <p
             className="mt-6 max-w-2xl text-charcoal/70"
             style={{ fontSize: "1rem", lineHeight: 1.55 }}
           >
-            A working sketchpad. Pick a guest count and a format; we&apos;ll stack
-            curated vignettes against live stock. The result is a starting point
-            — the design team refines it with you.
+            A working sketchpad. Pick a guest count and a format; we&apos;ll stack curated vignettes
+            against live stock. The result is a starting point — the design team refines it with
+            you.
           </p>
         </div>
       </header>
@@ -291,11 +293,7 @@ function ComposePage() {
             style={{ borderColor: "var(--hairline)" }}
           >
             <Stat label="Target seats" value={String(target)} />
-            <Stat
-              label="Composed seats"
-              value={String(result.totalSeats)}
-              muted={result.capped}
-            />
+            <Stat label="Composed seats" value={String(result.totalSeats)} muted={result.capped} />
             <Stat
               label="Pieces used"
               value={String(Object.values(result.usedByRmsId).reduce((a, b) => a + b, 0))}
@@ -311,10 +309,7 @@ function ComposePage() {
                 background: "rgba(26,26,26,0.03)",
               }}
             >
-              <p
-                className="text-charcoal"
-                style={{ fontSize: "0.95rem", lineHeight: 1.55 }}
-              >
+              <p className="text-charcoal" style={{ fontSize: "0.95rem", lineHeight: 1.55 }}>
                 <strong className="font-normal" style={{ letterSpacing: "0.02em" }}>
                   Stock seats {result.totalSeats} — target was {target}.
                 </strong>{" "}
@@ -393,11 +388,7 @@ function ComposePage() {
                   const stock = stockByRmsId[rmsId] ?? 0;
                   const left = stock - used;
                   return (
-                    <tr
-                      key={rmsId}
-                      className="border-t"
-                      style={{ borderColor: "var(--hairline)" }}
-                    >
+                    <tr key={rmsId} className="border-t" style={{ borderColor: "var(--hairline)" }}>
                       <td className="py-3 pr-4">
                         <span className="text-charcoal">{p?.title ?? rmsId}</span>
                       </td>
@@ -513,10 +504,7 @@ function VignetteCard({
   useEffect(() => setMounted(true), []);
 
   return (
-    <article
-      className="flex flex-col"
-      style={{ border: `1px solid var(--hairline)` }}
-    >
+    <article className="flex flex-col" style={{ border: `1px solid var(--hairline)` }}>
       {/* Thumbnail row — up to 3 previews */}
       <div className="grid grid-cols-3" style={{ borderBottom: `1px solid var(--hairline)` }}>
         {pieces.slice(0, 3).map(({ rmsId, product }) => {
@@ -538,7 +526,11 @@ function VignetteCard({
               ) : (
                 <span
                   className="text-charcoal/40 px-2 text-center"
-                  style={{ fontSize: "0.62rem", letterSpacing: "0.22em", textTransform: "uppercase" }}
+                  style={{
+                    fontSize: "0.62rem",
+                    letterSpacing: "0.22em",
+                    textTransform: "uppercase",
+                  }}
                 >
                   {product?.title ?? rmsId}
                 </span>
@@ -550,10 +542,7 @@ function VignetteCard({
 
       <div className="p-5">
         <div className="flex items-baseline justify-between gap-3">
-          <h3
-            className="text-charcoal"
-            style={{ fontSize: "1.05rem", letterSpacing: "-0.005em" }}
-          >
+          <h3 className="text-charcoal" style={{ fontSize: "1.05rem", letterSpacing: "-0.005em" }}>
             {vignette.name}
           </h3>
           <span
@@ -570,7 +559,12 @@ function VignetteCard({
         </div>
         <p
           className="mt-2 text-charcoal/60"
-          style={{ fontSize: "0.7rem", letterSpacing: "0.22em", textTransform: "uppercase", fontVariantNumeric: "tabular-nums" }}
+          style={{
+            fontSize: "0.7rem",
+            letterSpacing: "0.22em",
+            textTransform: "uppercase",
+            fontVariantNumeric: "tabular-nums",
+          }}
         >
           Seats {vignette.seats * count}
         </p>

@@ -99,7 +99,6 @@ import { ImageOrderEditor } from "./ImageOrderEditor";
 import { FamilyBoard } from "./FamilyBoard";
 import { useBodyScrollLock } from "@/hooks/use-body-scroll-lock";
 
-
 /* ═════════════ TOKENS (src/styles.css + glass.ts) ═════════════ */
 
 const T = {
@@ -119,8 +118,12 @@ const T = {
 };
 
 const micro = (size = 10, track = T.trackUltra, color = "rgba(26,26,26,0.5)") => ({
-  fontFamily: T.sans, fontSize: size, letterSpacing: track,
-  textTransform: "uppercase", color, fontWeight: 500,
+  fontFamily: T.sans,
+  fontSize: size,
+  letterSpacing: track,
+  textTransform: "uppercase",
+  color,
+  fontWeight: 500,
 });
 
 /* ═════════════ STATUS — real item_status enum, EH voice ═════════════ */
@@ -136,79 +139,152 @@ const STATUS_OPTIONS = [
 
 const FIELD_META = {
   title: {
-    group: "basics", label: "Name", type: "text", staffEditable: true,
+    group: "basics",
+    label: "Name",
+    type: "text",
+    staffEditable: true,
     help: "Shown on the collection page, in inquiries, and in proposals.",
     validate: (v) => (!v || !String(v).trim() ? "Every piece needs a name." : null),
   },
   collection_slug: {
-    group: "basics", label: "Collection", type: "collection", staffEditable: true,
+    group: "basics",
+    label: "Collection",
+    type: "collection",
+    staffEditable: true,
     help: "One of the ten collections. This is the vocabulary from your spreadsheet — same words the site uses.",
   },
   category_slug: {
-    group: "basics", label: "Category", type: "taxonomy-category", staffEditable: true,
+    group: "basics",
+    label: "Category",
+    type: "taxonomy-category",
+    staffEditable: true,
     help: "The category inside that collection. Collection + Category decide where the piece appears.",
   },
 
   status: {
-    group: "basics", label: "Status", type: "status", staffEditable: true,
+    group: "basics",
+    label: "Status",
+    type: "status",
+    staffEditable: true,
     help: "Drafts and sold pieces stay in the system; only what's in rotation belongs on the site.",
   },
   description: {
-    group: "story", label: "Description", type: "textarea", staffEditable: true,
+    group: "story",
+    label: "Description",
+    type: "textarea",
+    staffEditable: true,
     help: "A sentence or two in the Hive voice. Clients read this in Quick View.",
   },
   dimensions_raw: {
-    group: "details", label: "Dimensions", type: "text", staffEditable: true,
+    group: "details",
+    label: "Dimensions",
+    type: "text",
+    staffEditable: true,
     help: 'As written on the tag — e.g. 30"W × 30"D × 29"H. Planners live by these.',
   },
   materials: {
-    group: "details", label: "Materials", type: "text", staffEditable: true,
+    group: "details",
+    label: "Materials",
+    type: "text",
+    staffEditable: true,
     help: "Oak, brass, bouclé — comma-separated is fine.",
   },
   origin: {
-    group: "details", label: "Origin", type: "text", staffEditable: true,
+    group: "details",
+    label: "Origin",
+    type: "text",
+    staffEditable: true,
     help: "Where it came from — maker, market, or a story worth keeping.",
   },
   quantity: {
-    group: "details", label: "Quantity on hand", type: "number", staffEditable: true,
+    group: "details",
+    label: "Quantity on hand",
+    type: "number",
+    staffEditable: true,
     help: "How many we own, total — not how many go to one event.",
     validate: (v) =>
       v !== "" && v != null && (!Number.isFinite(+v) || +v < 0 || !Number.isInteger(+v))
-        ? "Whole numbers only — like 4 or 12." : null,
+        ? "Whole numbers only — like 4 or 12."
+        : null,
   },
   quantity_label: {
-    group: "details", label: "Counted as", type: "text", staffEditable: true,
+    group: "details",
+    label: "Counted as",
+    type: "text",
+    staffEditable: true,
     help: 'Optional unit — "sets", "pairs", "per dozen".',
   },
   // Rental rate (`price`) is intentionally NOT editable here — pricing lives
   // outside the inventory tool. Do not re-add a rate field to this drawer.
 
   public_ready: {
-    group: "visibility", label: "Visible on site", type: "toggle", staffEditable: true,
+    group: "visibility",
+    label: "Visible on site",
+    type: "toggle",
+    staffEditable: true,
     help: "Controls whether this piece appears in the public collection.",
   },
   editorial_order: {
-    group: "visibility", label: "Sort order", type: "number", staffEditable: true,
+    group: "visibility",
+    label: "Sort order",
+    type: "number",
+    staffEditable: true,
     help: "Lower numbers appear first in the category. Blank = automatic.",
-    validate: (v) => (v !== "" && v != null && !Number.isFinite(+v) ? "Needs to be a number." : null),
+    validate: (v) =>
+      v !== "" && v != null && !Number.isFinite(+v) ? "Needs to be a number." : null,
   },
   hidden_note: {
-    group: "visibility", label: "Team note", type: "textarea", staffEditable: true,
+    group: "visibility",
+    label: "Team note",
+    type: "textarea",
+    staffEditable: true,
     help: "Only the team sees this — condition, sourcing, staging warnings.",
   },
   slug: {
-    group: "system", label: "Web address", type: "locked", staffEditable: false,
+    group: "system",
+    label: "Web address",
+    type: "locked",
+    staffEditable: false,
     help: "Changing this breaks saved links. Ask Darian.",
   },
   rms_id: {
-    group: "system", label: "RMS id", type: "locked", staffEditable: false, neverEditable: true,
+    group: "system",
+    label: "RMS id",
+    type: "locked",
+    staffEditable: false,
+    neverEditable: true,
     help: "Ties this piece to the rental-system import.",
   },
-  meta_title: { group: "seo", label: "Meta title", type: "text", staffEditable: false, adminOnly: true, help: "Search-result headline override." },
-  meta_description: { group: "seo", label: "Meta description", type: "textarea", staffEditable: false, adminOnly: true, help: "Search-result blurb override." },
-  og_image: { group: "advanced", label: "Social share image", type: "text", staffEditable: false, adminOnly: true, help: "URL override for link previews (Open Graph)." },
+  meta_title: {
+    group: "seo",
+    label: "Meta title",
+    type: "text",
+    staffEditable: false,
+    adminOnly: true,
+    help: "Search-result headline override.",
+  },
+  meta_description: {
+    group: "seo",
+    label: "Meta description",
+    type: "textarea",
+    staffEditable: false,
+    adminOnly: true,
+    help: "Search-result blurb override.",
+  },
+  og_image: {
+    group: "advanced",
+    label: "Social share image",
+    type: "text",
+    staffEditable: false,
+    adminOnly: true,
+    help: "URL override for link previews (Open Graph).",
+  },
   manual_injection: {
-    group: "advanced", label: "Manual injection", type: "toggle", staffEditable: false, adminOnly: true,
+    group: "advanced",
+    label: "Manual injection",
+    type: "toggle",
+    staffEditable: false,
+    adminOnly: true,
     help: "Marks a hand-added piece so the RMS importer never overwrites it.",
   },
   /* manual_order intentionally has no field here: it is written by the
@@ -257,7 +333,10 @@ export function flattenAuditRows(rows, limit = 8) {
   const out = [];
   for (const r of rows ?? []) {
     if (!r) continue;
-    if ("field" in r) { out.push(r); continue; } /* already flat */
+    if ("field" in r) {
+      out.push(r);
+      continue;
+    } /* already flat */
     const before = r.before ?? {};
     const after = r.after ?? {};
     const keys = new Set([...Object.keys(before), ...Object.keys(after)]);
@@ -269,7 +348,7 @@ export function flattenAuditRows(rows, limit = 8) {
       out.push({
         id: `${r.id}:${k}`,
         field: k,
-        rawBefore: b === undefined ? null : b, /* exact prior value for Undo */
+        rawBefore: b === undefined ? null : b /* exact prior value for Undo */,
         before: displayAuditValue(k, b),
         after: displayAuditValue(k, a),
         when: timeAgo(r.at),
@@ -292,13 +371,27 @@ function computeReadiness(values, product) {
       pass: !!values.collection_slug && !!values.category_slug,
     },
 
-    { id: "dims", label: "Dimensions on record", pass: !!String(values.dimensions_raw ?? "").trim() },
-    { id: "desc", label: "Described in the Hive voice", pass: String(values.description ?? "").trim().length >= 20 },
+    {
+      id: "dims",
+      label: "Dimensions on record",
+      pass: !!String(values.dimensions_raw ?? "").trim(),
+    },
+    {
+      id: "desc",
+      label: "Described in the Hive voice",
+      pass: String(values.description ?? "").trim().length >= 20,
+    },
   ];
 
   const missing = checks.filter((c) => !c.pass);
   const publicMissing = missing.filter((c) => !c.internal);
-  return { checks, missing, publicMissing, ready: missing.length === 0, publicReadyOk: publicMissing.length === 0 };
+  return {
+    checks,
+    missing,
+    publicMissing,
+    ready: missing.length === 0,
+    publicReadyOk: publicMissing.length === 0,
+  };
 }
 
 /* ═════════════ FORM ENGINE (RHF stand-in — swappable on port) ═════════════ */
@@ -349,7 +442,9 @@ function useDraft(product) {
   }, [values]);
 
   return {
-    values, dirty, errors,
+    values,
+    dirty,
+    errors,
     dirtyCount: Object.keys(dirty).length,
     hasErrors: Object.keys(errors).length > 0,
     setField: (k, v) => setValues((s) => ({ ...s, [k]: v })),
@@ -368,7 +463,6 @@ function useDraft(product) {
   };
 }
 
-
 /* ═════════════ ATOMS ═════════════ */
 
 function SectionHeader({ children }) {
@@ -382,42 +476,88 @@ function SectionHeader({ children }) {
 
 function HelpText({ children, error }) {
   return (
-    <p style={{ fontFamily: T.sans, fontSize: 11, lineHeight: 1.5, marginTop: 5, color: error ? T.destructive : "rgba(26,26,26,0.42)" }}>
+    <p
+      style={{
+        fontFamily: T.sans,
+        fontSize: 11,
+        lineHeight: 1.5,
+        marginTop: 5,
+        color: error ? T.destructive : "rgba(26,26,26,0.42)",
+      }}
+    >
       {error || children}
     </p>
   );
 }
 
 function DirtyDot({ show }) {
-  return <span aria-hidden style={{ display: "inline-block", width: 5, height: 5, marginLeft: 7, background: T.charcoal, opacity: show ? 1 : 0, transition: "opacity 160ms", verticalAlign: "middle" }} />;
+  return (
+    <span
+      aria-hidden
+      style={{
+        display: "inline-block",
+        width: 5,
+        height: 5,
+        marginLeft: 7,
+        background: T.charcoal,
+        opacity: show ? 1 : 0,
+        transition: "opacity 160ms",
+        verticalAlign: "middle",
+      }}
+    />
+  );
 }
 
 const inputBase = {
-  fontFamily: T.sans, fontSize: 13, color: T.charcoal, width: "100%",
-  background: T.white, border: T.hairline, borderRadius: 0, padding: "9px 11px", outline: "none",
+  fontFamily: T.sans,
+  fontSize: 13,
+  color: T.charcoal,
+  width: "100%",
+  background: T.white,
+  border: T.hairline,
+  borderRadius: 0,
+  padding: "9px 11px",
+  outline: "none",
 };
 
 function TextField({ k, meta, value, onChange, error, dirty, rows, trailing }) {
   const [focus, setFocus] = useState(false);
-  const style = { ...inputBase, borderColor: error ? T.destructive : focus ? T.charcoal : "rgba(26,26,26,0.12)", resize: "vertical" };
+  const style = {
+    ...inputBase,
+    borderColor: error ? T.destructive : focus ? T.charcoal : "rgba(26,26,26,0.12)",
+    resize: "vertical",
+  };
   const shared = {
-    id: `f-${k}`, value: value ?? "", style,
-    onFocus: () => setFocus(true), onBlur: () => setFocus(false),
+    id: `f-${k}`,
+    value: value ?? "",
+    style,
+    onFocus: () => setFocus(true),
+    onBlur: () => setFocus(false),
     onChange: (e) => onChange(e.target.value),
-    "aria-invalid": !!error, "aria-describedby": `h-${k}`,
+    "aria-invalid": !!error,
+    "aria-describedby": `h-${k}`,
   };
   return (
     <div className="mb-5">
       <label htmlFor={`f-${k}`} style={micro(10, T.trackLabel, "rgba(26,26,26,0.62)")}>
-        {meta.label}<DirtyDot show={dirty} />
+        {meta.label}
+        <DirtyDot show={dirty} />
       </label>
       <div style={{ marginTop: 6 }}>
-        {rows ? <textarea rows={rows} {...shared} /> : (
-          <input type="text" inputMode={meta.type === "number" || meta.type === "price" ? "decimal" : undefined} {...shared} />
+        {rows ? (
+          <textarea rows={rows} {...shared} />
+        ) : (
+          <input
+            type="text"
+            inputMode={meta.type === "number" || meta.type === "price" ? "decimal" : undefined}
+            {...shared}
+          />
         )}
       </div>
       {trailing}
-      <span id={`h-${k}`}><HelpText error={error}>{meta.help}</HelpText></span>
+      <span id={`h-${k}`}>
+        <HelpText error={error}>{meta.help}</HelpText>
+      </span>
     </div>
   );
 }
@@ -435,15 +575,45 @@ function SelectField({ k, meta, value, onChange, dirty, options }) {
   return (
     <div className="mb-5">
       <label htmlFor={`f-${k}`} style={micro(10, T.trackLabel, "rgba(26,26,26,0.62)")}>
-        {meta.label}<DirtyDot show={dirty} />
+        {meta.label}
+        <DirtyDot show={dirty} />
       </label>
       <div style={{ marginTop: 6, position: "relative" }}>
-        <select id={`f-${k}`} value={value ?? ""} onChange={(e) => onChange(e.target.value)}
-          style={{ ...inputBase, appearance: "none", WebkitAppearance: "none", paddingRight: 30, cursor: "pointer" }}>
-          <option value="" disabled>Choose…</option>
-          {opts.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+        <select
+          id={`f-${k}`}
+          value={value ?? ""}
+          onChange={(e) => onChange(e.target.value)}
+          style={{
+            ...inputBase,
+            appearance: "none",
+            WebkitAppearance: "none",
+            paddingRight: 30,
+            cursor: "pointer",
+          }}
+        >
+          <option value="" disabled>
+            Choose…
+          </option>
+          {opts.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
         </select>
-        <span aria-hidden style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", fontSize: 9, color: "rgba(26,26,26,0.5)", pointerEvents: "none" }}>▾</span>
+        <span
+          aria-hidden
+          style={{
+            position: "absolute",
+            right: 12,
+            top: "50%",
+            transform: "translateY(-50%)",
+            fontSize: 9,
+            color: "rgba(26,26,26,0.5)",
+            pointerEvents: "none",
+          }}
+        >
+          ▾
+        </span>
       </div>
       <HelpText>{meta.help}</HelpText>
     </div>
@@ -455,12 +625,41 @@ function ToggleField({ k, meta, value, onChange, dirty, warning }) {
   return (
     <div className="mb-5">
       <div className="flex items-center justify-between gap-4">
-        <label htmlFor={`f-${k}`} style={{ ...micro(10, T.trackLabel, "rgba(26,26,26,0.62)"), cursor: "pointer" }}>
-          {meta.label}<DirtyDot show={dirty} />
+        <label
+          htmlFor={`f-${k}`}
+          style={{ ...micro(10, T.trackLabel, "rgba(26,26,26,0.62)"), cursor: "pointer" }}
+        >
+          {meta.label}
+          <DirtyDot show={dirty} />
         </label>
-        <button id={`f-${k}`} role="switch" aria-checked={on} onClick={() => onChange(!on)}
-          style={{ width: 44, height: 24, padding: 2, borderRadius: 0, cursor: "pointer", border: T.hairline, background: on ? T.charcoal : T.white, transition: "background 180ms", flexShrink: 0 }}>
-          <span aria-hidden style={{ display: "block", width: 18, height: 18, background: on ? T.paper : T.sand, transform: on ? "translateX(20px)" : "translateX(0)", transition: "transform 180ms cubic-bezier(0.4,0,0.2,1), background 180ms" }} />
+        <button
+          id={`f-${k}`}
+          role="switch"
+          aria-checked={on}
+          onClick={() => onChange(!on)}
+          style={{
+            width: 44,
+            height: 24,
+            padding: 2,
+            borderRadius: 0,
+            cursor: "pointer",
+            border: T.hairline,
+            background: on ? T.charcoal : T.white,
+            transition: "background 180ms",
+            flexShrink: 0,
+          }}
+        >
+          <span
+            aria-hidden
+            style={{
+              display: "block",
+              width: 18,
+              height: 18,
+              background: on ? T.paper : T.sand,
+              transform: on ? "translateX(20px)" : "translateX(0)",
+              transition: "transform 180ms cubic-bezier(0.4,0,0.2,1), background 180ms",
+            }}
+          />
         </button>
       </div>
       <HelpText>{meta.help}</HelpText>
@@ -474,9 +673,30 @@ function LockedChip({ meta, value }) {
     <div className="mb-5">
       <span style={micro(10, T.trackLabel, "rgba(26,26,26,0.45)")}>{meta.label}</span>
       <div className="flex items-center gap-2" style={{ marginTop: 6 }}>
-        <span style={{ fontFamily: T.sans, fontSize: 12, color: "rgba(26,26,26,0.55)", background: "rgba(26,26,26,0.04)", border: T.hairlineSoft, padding: "6px 10px", display: "inline-flex", alignItems: "center", gap: 7 }}>
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-            <rect x="4" y="11" width="16" height="10" /><path d="M8 11V7a4 4 0 0 1 8 0v4" />
+        <span
+          style={{
+            fontFamily: T.sans,
+            fontSize: 12,
+            color: "rgba(26,26,26,0.55)",
+            background: "rgba(26,26,26,0.04)",
+            border: T.hairlineSoft,
+            padding: "6px 10px",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 7,
+          }}
+        >
+          <svg
+            width="10"
+            height="10"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            aria-hidden
+          >
+            <rect x="4" y="11" width="16" height="10" />
+            <path d="M8 11V7a4 4 0 0 1 8 0v4" />
           </svg>
           {value || "—"}
         </span>
@@ -492,49 +712,116 @@ function SpecRow({ label, value }) {
   return (
     <div style={{ paddingTop: 10 }}>
       <p style={micro(8.5, T.trackWide, "rgba(26,26,26,0.4)")}>{label}</p>
-      <p style={{ fontFamily: T.sans, fontSize: 12, color: "rgba(26,26,26,0.8)", marginTop: 3 }}>{value}</p>
+      <p style={{ fontFamily: T.sans, fontSize: 12, color: "rgba(26,26,26,0.8)", marginTop: 3 }}>
+        {value}
+      </p>
     </div>
   );
 }
 
 function PreviewTile({ values, product, sketch }) {
   const hidden = !values.public_ready;
-  const qty = values.quantity !== "" && values.quantity != null
-    ? `${values.quantity}${values.quantity_label ? ` ${values.quantity_label}` : ""}` : null;
+  const qty =
+    values.quantity !== "" && values.quantity != null
+      ? `${values.quantity}${values.quantity_label ? ` ${values.quantity_label}` : ""}`
+      : null;
   return (
     <div style={{ position: "relative" }}>
-      <div style={{ background: T.white, border: T.hairlineSoft, filter: hidden ? "grayscale(1)" : "none", opacity: hidden ? 0.55 : 1, transition: "opacity 240ms, filter 240ms" }}>
-        <div style={{ position: "relative", width: "100%", aspectRatio: "5 / 4", background: T.white, overflow: "hidden" }}>
+      <div
+        style={{
+          background: T.white,
+          border: T.hairlineSoft,
+          filter: hidden ? "grayscale(1)" : "none",
+          opacity: hidden ? 0.55 : 1,
+          transition: "opacity 240ms, filter 240ms",
+        }}
+      >
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            aspectRatio: "5 / 4",
+            background: T.white,
+            overflow: "hidden",
+          }}
+        >
           {(product?.images?.length ?? 0) > 0 ? (
-            <div style={{ position: "absolute", left: "50%", bottom: "8%", transform: "translateX(-50%)", width: "72%" }}>{sketch}</div>
+            <div
+              style={{
+                position: "absolute",
+                left: "50%",
+                bottom: "8%",
+                transform: "translateX(-50%)",
+                width: "72%",
+              }}
+            >
+              {sketch}
+            </div>
           ) : (
-            <div style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", background: "#f5f3ef" }}>
-              <span style={micro(8.5, T.trackWide, "rgba(26,26,26,0.35)")}>Awaiting photography</span>
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                display: "grid",
+                placeItems: "center",
+                background: "#f5f3ef",
+              }}
+            >
+              <span style={micro(8.5, T.trackWide, "rgba(26,26,26,0.35)")}>
+                Awaiting photography
+              </span>
             </div>
           )}
         </div>
         <div style={{ padding: "10px 12px 12px" }}>
-          <p style={{
-            fontFamily: T.sans, fontSize: 11, lineHeight: 1.4, letterSpacing: "0.08em",
-            textTransform: "uppercase", color: "rgba(26,26,26,0.8)",
-            display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
-            minHeight: "2.8em",
-          }}>
+          <p
+            style={{
+              fontFamily: T.sans,
+              fontSize: 11,
+              lineHeight: 1.4,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: "rgba(26,26,26,0.8)",
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+              minHeight: "2.8em",
+            }}
+          >
             {String(values.title ?? "").trim() || "Untitled piece"}
           </p>
         </div>
       </div>
       {hidden && (
-        <div style={{ position: "absolute", top: 10, left: 10, background: T.charcoal, padding: "5px 9px" }}>
+        <div
+          style={{
+            position: "absolute",
+            top: 10,
+            left: 10,
+            background: T.charcoal,
+            padding: "5px 9px",
+          }}
+        >
           <span style={micro(8, T.trackWide, T.paper)}>Hidden from site</span>
         </div>
       )}
       <div style={{ borderTop: T.hairlineSoft, marginTop: 12 }}>
-        {String(values.dimensions_raw ?? "").trim() && <SpecRow label="Dimensions" value={values.dimensions_raw} />}
+        {String(values.dimensions_raw ?? "").trim() && (
+          <SpecRow label="Dimensions" value={values.dimensions_raw} />
+        )}
         {qty && <SpecRow label="Stocked" value={qty} />}
         {String(values.description ?? "").trim() && (
           <div style={{ paddingTop: 10 }}>
-            <p style={{ fontFamily: T.serif, fontSize: 12.5, lineHeight: 1.6, color: "rgba(26,26,26,0.72)", fontStyle: "italic" }}>
+            <p
+              style={{
+                fontFamily: T.serif,
+                fontSize: 12.5,
+                lineHeight: 1.6,
+                color: "rgba(26,26,26,0.72)",
+                fontStyle: "italic",
+              }}
+            >
               {values.description}
             </p>
           </div>
@@ -553,27 +840,76 @@ function ReadinessCard({ readiness, isDraftStatus }) {
         <p style={micro(9, T.trackUltra, "rgba(26,26,26,0.5)")}>
           {isDraftStatus ? "Prep before it goes live" : "Site readiness"}
         </p>
-        <p style={{ fontFamily: T.sans, fontSize: 11, color: "rgba(26,26,26,0.45)" }}>{passCount} / {checks.length}</p>
+        <p style={{ fontFamily: T.sans, fontSize: 11, color: "rgba(26,26,26,0.45)" }}>
+          {passCount} / {checks.length}
+        </p>
       </div>
       <ol style={{ listStyle: "none", padding: 0, margin: "12px 0 0" }}>
         {checks.map((c) => (
           <li key={c.id} className="flex items-start gap-3" style={{ padding: "5px 0" }}>
-            <span aria-hidden style={{
-              width: 12, height: 12, flexShrink: 0, marginTop: 2, display: "grid", placeItems: "center",
-              border: c.pass ? `1px solid ${T.charcoal}` : "1px solid rgba(26,26,26,0.25)",
-              background: c.pass ? T.charcoal : "transparent", transition: "background 200ms, border-color 200ms",
-            }}>
-              {c.pass && <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke={T.paper} strokeWidth="3.5"><path d="M20 6L9 17l-5-5" /></svg>}
+            <span
+              aria-hidden
+              style={{
+                width: 12,
+                height: 12,
+                flexShrink: 0,
+                marginTop: 2,
+                display: "grid",
+                placeItems: "center",
+                border: c.pass ? `1px solid ${T.charcoal}` : "1px solid rgba(26,26,26,0.25)",
+                background: c.pass ? T.charcoal : "transparent",
+                transition: "background 200ms, border-color 200ms",
+              }}
+            >
+              {c.pass && (
+                <svg
+                  width="8"
+                  height="8"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke={T.paper}
+                  strokeWidth="3.5"
+                >
+                  <path d="M20 6L9 17l-5-5" />
+                </svg>
+              )}
             </span>
-            <span style={{ fontFamily: T.sans, fontSize: 11.5, lineHeight: 1.45, color: c.pass ? "rgba(26,26,26,0.75)" : "rgba(26,26,26,0.45)" }}>
-              {c.label}{c.internal && <span style={{ ...micro(7.5, T.trackLabel, "rgba(26,26,26,0.35)"), marginLeft: 6 }}>Internal</span>}
+            <span
+              style={{
+                fontFamily: T.sans,
+                fontSize: 11.5,
+                lineHeight: 1.45,
+                color: c.pass ? "rgba(26,26,26,0.75)" : "rgba(26,26,26,0.45)",
+              }}
+            >
+              {c.label}
+              {c.internal && (
+                <span style={{ ...micro(7.5, T.trackLabel, "rgba(26,26,26,0.35)"), marginLeft: 6 }}>
+                  Internal
+                </span>
+              )}
             </span>
           </li>
         ))}
       </ol>
       {ready && (
-        <div style={{ marginTop: 14, border: `1px solid ${T.charcoal}`, padding: "9px 12px", textAlign: "center" }}>
-          <span style={{ fontFamily: T.serif, fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: T.charcoal }}>
+        <div
+          style={{
+            marginTop: 14,
+            border: `1px solid ${T.charcoal}`,
+            padding: "9px 12px",
+            textAlign: "center",
+          }}
+        >
+          <span
+            style={{
+              fontFamily: T.serif,
+              fontSize: 12,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: T.charcoal,
+            }}
+          >
             Ready for the archive
           </span>
         </div>
@@ -586,9 +922,18 @@ function RateContext({ category, price, stats }) {
   const s = stats?.[category];
   if (!s) return null;
   const p = price !== "" && price != null ? +price : null;
-  const outlier = p != null && Number.isFinite(p) && p > 0 && (p > s.max * 3 || (p < s.min / 3 && p > 0));
+  const outlier =
+    p != null && Number.isFinite(p) && p > 0 && (p > s.max * 3 || (p < s.min / 3 && p > 0));
   return (
-    <p style={{ fontFamily: T.sans, fontSize: 11, lineHeight: 1.5, marginTop: 5, color: outlier ? T.destructive : "rgba(26,26,26,0.42)" }}>
+    <p
+      style={{
+        fontFamily: T.sans,
+        fontSize: 11,
+        lineHeight: 1.5,
+        marginTop: 5,
+        color: outlier ? T.destructive : "rgba(26,26,26,0.42)",
+      }}
+    >
       {outlier
         ? `That's well outside the ${category} range ($${s.min}–$${s.max}) — double-check before it lands in a proposal.`
         : `${category ? category[0].toUpperCase() + category.slice(1) : ""} in the archive runs $${s.min}–$${s.max} · most pieces around $${s.median}.`}
@@ -606,45 +951,93 @@ function DeleteZone({ title, disabled, onDelete }) {
   return (
     <div style={{ marginTop: 22, paddingTop: 16, borderTop: T.hairlineSoft }}>
       {!armed ? (
-        <button type="button" onClick={() => { setErr(null); setArmed(true); }} disabled={disabled}
+        <button
+          type="button"
+          onClick={() => {
+            setErr(null);
+            setArmed(true);
+          }}
+          disabled={disabled}
           style={{
-            fontFamily: T.sans, fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase",
-            color: T.destructive, background: "none", border: `1px solid ${T.destructive}`,
-            padding: "8px 14px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
-          }}>
+            fontFamily: T.sans,
+            fontSize: 11,
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            color: T.destructive,
+            background: "none",
+            border: `1px solid ${T.destructive}`,
+            padding: "8px 14px",
+            cursor: disabled ? "not-allowed" : "pointer",
+            opacity: disabled ? 0.5 : 1,
+          }}
+        >
           Delete this piece
         </button>
       ) : (
         <div style={{ border: `1px solid ${T.destructive}`, padding: 14 }}>
-          <p style={{ fontFamily: T.sans, fontSize: 12.5, lineHeight: 1.55, color: T.charcoal, margin: 0 }}>
+          <p
+            style={{
+              fontFamily: T.sans,
+              fontSize: 12.5,
+              lineHeight: 1.55,
+              color: T.charcoal,
+              margin: 0,
+            }}
+          >
             Are you sure you want to delete <strong>{title}</strong>? This removes it from the
             database for good — photos, notes and history included. It can’t be undone.
           </p>
           {err && (
-            <p style={{ fontFamily: T.sans, fontSize: 12, color: T.destructive, marginTop: 8 }}>{err}</p>
+            <p style={{ fontFamily: T.sans, fontSize: 12, color: T.destructive, marginTop: 8 }}>
+              {err}
+            </p>
           )}
           <div className="flex gap-3" style={{ marginTop: 12 }}>
-            <button type="button" disabled={busy}
+            <button
+              type="button"
+              disabled={busy}
               onClick={async () => {
-                setBusy(true); setErr(null);
-                try { await onDelete(); }
-                catch (e) {
-                  setErr(e instanceof Error ? e.message : "Could not delete this piece. Try again.");
+                setBusy(true);
+                setErr(null);
+                try {
+                  await onDelete();
+                } catch (e) {
+                  setErr(
+                    e instanceof Error ? e.message : "Could not delete this piece. Try again.",
+                  );
                   setBusy(false);
                 }
               }}
               style={{
-                fontFamily: T.sans, fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase",
-                color: "#fff", background: T.destructive, border: `1px solid ${T.destructive}`,
-                padding: "8px 14px", cursor: busy ? "wait" : "pointer",
-              }}>
+                fontFamily: T.sans,
+                fontSize: 11,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: "#fff",
+                background: T.destructive,
+                border: `1px solid ${T.destructive}`,
+                padding: "8px 14px",
+                cursor: busy ? "wait" : "pointer",
+              }}
+            >
               {busy ? "Deleting…" : "Yes, delete it"}
             </button>
-            <button type="button" onClick={() => setArmed(false)} disabled={busy}
+            <button
+              type="button"
+              onClick={() => setArmed(false)}
+              disabled={busy}
               style={{
-                fontFamily: T.sans, fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase",
-                color: T.charcoal, background: "none", border: T.hairline, padding: "8px 14px", cursor: "pointer",
-              }}>
+                fontFamily: T.sans,
+                fontSize: 11,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: T.charcoal,
+                background: "none",
+                border: T.hairline,
+                padding: "8px 14px",
+                cursor: "pointer",
+              }}
+            >
               Cancel
             </button>
           </div>
@@ -657,21 +1050,28 @@ function DeleteZone({ title, disabled, onDelete }) {
 /* ═════════════ THE DRAWER (portable) ═════════════ */
 
 export function ProductEditDrawer({
-  product, taxonomy, role = "staff", recentChanges = [], categoryPriceStats = {},
-  onSave, onClose, onOpenPhotos, liveUrl, sketch, onPhotosSaved, onDelete,
+  product,
+  taxonomy,
+  role = "staff",
+  recentChanges = [],
+  categoryPriceStats = {},
+  onSave,
+  onClose,
+  onOpenPhotos,
+  liveUrl,
+  sketch,
+  onPhotosSaved,
+  onDelete,
   focus,
 }) {
   // Opened by clicking a photo in COLLECTION? Then photos are what you came
   // for — put that section first and don't drop the cursor in a text field.
   const photosFirst = focus === "photos";
   const groups = photosFirst
-    ? [
-        GROUPS.find((g) => g.id === "photos"),
-        ...GROUPS.filter((g) => g.id !== "photos"),
-      ].filter(Boolean) as typeof GROUPS
+    ? ([GROUPS.find((g) => g.id === "photos"), ...GROUPS.filter((g) => g.id !== "photos")].filter(
+        Boolean,
+      ) as typeof GROUPS)
     : GROUPS;
-
-
 
   const draft = useDraft(product);
   const [saving, setSaving] = useState(false);
@@ -693,11 +1093,12 @@ export function ProductEditDrawer({
   // (clean) draft and silently discards unsaved edits.
   const requestCloseRef = useRef<() => void>(() => {});
   useEffect(() => {
-    const onKey = (e) => { if (e.key === "Escape") requestCloseRef.current(); };
+    const onKey = (e) => {
+      if (e.key === "Escape") requestCloseRef.current();
+    };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
-
 
   // Focus trap + background inertness. Saves the previously-focused element,
   // moves focus into the drawer, marks the rest of #root inert so screen
@@ -710,8 +1111,8 @@ export function ProductEditDrawer({
     const focusables = () =>
       Array.from(
         aside.querySelectorAll<HTMLElement>(
-          'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
-        )
+          'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
       ).filter((el) => el.offsetParent !== null || el === document.activeElement);
     // Photos-first opens focus the panel itself; landing in the Name input
     // when you clicked a photograph is the wrong place to start.
@@ -725,7 +1126,7 @@ export function ProductEditDrawer({
     // Mark siblings inert so background is fully unreachable.
     const root = document.getElementById("root") || document.body;
     const siblings = Array.from(root.parentElement?.children ?? []).filter(
-      (n) => n !== aside.parentElement && n !== aside && !(n as HTMLElement).contains(aside)
+      (n) => n !== aside.parentElement && n !== aside && !(n as HTMLElement).contains(aside),
     ) as HTMLElement[];
     const prevInert: Array<[HTMLElement, string | null, string | null]> = siblings.map((s) => [
       s,
@@ -741,7 +1142,10 @@ export function ProductEditDrawer({
     const onTab = (e: KeyboardEvent) => {
       if (e.key !== "Tab") return;
       const list = focusables();
-      if (list.length === 0) { e.preventDefault(); return; }
+      if (list.length === 0) {
+        e.preventDefault();
+        return;
+      }
       const firstEl = list[0];
       const lastEl = list[list.length - 1];
       if (e.shiftKey && document.activeElement === firstEl) {
@@ -766,7 +1170,6 @@ export function ProductEditDrawer({
     };
   }, []);
 
-
   const requestClose = () => (draft.dirtyCount > 0 ? setConfirmDiscard(true) : onClose());
   requestCloseRef.current = requestClose;
 
@@ -783,9 +1186,10 @@ export function ProductEditDrawer({
       // Never fail silently — a save that didn't land must be visible.
       const msg = err instanceof Error ? err.message : String(err ?? "Save failed");
       toast.error("Save failed — your edits are still here", { description: msg });
-    } finally { setSaving(false); }
+    } finally {
+      setSaving(false);
+    }
   };
-
 
   /* Undo = single-field patch from the snapshot's exact prior value (§7).
      Blocked while other edits are dirty so Undo can't quietly drop them:
@@ -805,23 +1209,39 @@ export function ProductEditDrawer({
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err ?? "Undo failed");
       toast.error("Undo failed", { description: msg });
-    } finally { setSaving(false); }
-
+    } finally {
+      setSaving(false);
+    }
   };
-
 
   const visibilityWarning = (() => {
     if (nowLive && !readiness.publicReadyOk) {
       const gaps = readiness.publicMissing.map((c) => c.label.toLowerCase()).join(", ");
       return (
-        <p style={{ fontFamily: T.sans, fontSize: 11, lineHeight: 1.55, marginTop: 6, color: T.destructive }}>
+        <p
+          style={{
+            fontFamily: T.sans,
+            fontSize: 11,
+            lineHeight: 1.55,
+            marginTop: 6,
+            color: T.destructive,
+          }}
+        >
           It will appear with gaps clients can see: {gaps}. It can still go live — your call.
         </p>
       );
     }
     if (wasLive && !nowLive) {
       return (
-        <p style={{ fontFamily: T.sans, fontSize: 11, lineHeight: 1.55, marginTop: 6, color: "rgba(26,26,26,0.55)" }}>
+        <p
+          style={{
+            fontFamily: T.sans,
+            fontSize: 11,
+            lineHeight: 1.55,
+            marginTop: 6,
+            color: "rgba(26,26,26,0.55)",
+          }}
+        >
           This piece leaves the public collection at the next site publish. Nothing is deleted.
         </p>
       );
@@ -834,62 +1254,124 @@ export function ProductEditDrawer({
     const editable = !meta.neverEditable && (isAdmin || meta.staffEditable);
     if (meta.type === "locked" || !editable) {
       if (isAdmin && meta.type === "locked" && !meta.neverEditable) {
-        return <TextField key={k} k={k} meta={meta} value={draft.values[k]} dirty={draft.dirty[k]} error={draft.errors[k]} onChange={(v) => draft.setField(k, v)} />;
+        return (
+          <TextField
+            key={k}
+            k={k}
+            meta={meta}
+            value={draft.values[k]}
+            dirty={draft.dirty[k]}
+            error={draft.errors[k]}
+            onChange={(v) => draft.setField(k, v)}
+          />
+        );
       }
       return <LockedChip key={k} meta={meta} value={product?.[k]} />;
     }
-    const common = { k, meta, value: draft.values[k], dirty: draft.dirty[k], error: draft.errors[k], onChange: (v) => draft.setField(k, v) };
-    if (meta.type === "toggle") return <ToggleField key={k} {...common} warning={k === "public_ready" ? visibilityWarning : null} />;
+    const common = {
+      k,
+      meta,
+      value: draft.values[k],
+      dirty: draft.dirty[k],
+      error: draft.errors[k],
+      onChange: (v) => draft.setField(k, v),
+    };
+    if (meta.type === "toggle")
+      return (
+        <ToggleField
+          key={k}
+          {...common}
+          warning={k === "public_ready" ? visibilityWarning : null}
+        />
+      );
     if (meta.type === "status") return <SelectField key={k} {...common} options={STATUS_OPTIONS} />;
     if (meta.type === "collection") {
       const cols = taxonomy?.collections ?? [];
       return (
-        <SelectField key={k} {...common}
+        <SelectField
+          key={k}
+          {...common}
           onChange={(v) => {
             // Changing collection invalidates a category from the old one.
-            const stillValid = (taxonomy?.categories ?? [])
-              .some((c) => c.slug === draft.values.category_slug && c.collection_slug === v);
+            const stillValid = (taxonomy?.categories ?? []).some(
+              (c) => c.slug === draft.values.category_slug && c.collection_slug === v,
+            );
             draft.setField(k, v);
             if (!stillValid) draft.setField("category_slug", "");
           }}
-          options={[{ value: "", label: "— Unassigned —" },
-                    ...cols.map((c) => ({ value: c.slug, label: c.label }))]} />
+          options={[
+            { value: "", label: "— Unassigned —" },
+            ...cols.map((c) => ({ value: c.slug, label: c.label })),
+          ]}
+        />
       );
     }
     if (meta.type === "taxonomy-category") {
       const col = draft.values.collection_slug as string | undefined;
       const cats = (taxonomy?.categories ?? []).filter((c) => !col || c.collection_slug === col);
       return (
-        <SelectField key={k} {...common}
-          options={[{ value: "", label: col ? "— Unassigned —" : "— Pick a collection first —" },
-                    ...cats.map((c) => ({ value: c.slug, label: c.label }))]} />
+        <SelectField
+          key={k}
+          {...common}
+          options={[
+            { value: "", label: col ? "— Unassigned —" : "— Pick a collection first —" },
+            ...cats.map((c) => ({ value: c.slug, label: c.label })),
+          ]}
+        />
       );
     }
     if (meta.type === "textarea") return <TextField key={k} {...common} rows={4} />;
-    if (meta.type === "price") return (
-      <TextField key={k} {...common}
-        trailing={!common.error ? <RateContext category={draft.values.category_slug} price={draft.values.price} stats={categoryPriceStats} /> : null} />
-    );
+    if (meta.type === "price")
+      return (
+        <TextField
+          key={k}
+          {...common}
+          trailing={
+            !common.error ? (
+              <RateContext
+                category={draft.values.category_slug}
+                price={draft.values.price}
+                stats={categoryPriceStats}
+              />
+            ) : null
+          }
+        />
+      );
 
     return <TextField key={k} {...common} />;
-
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end" role="dialog" aria-modal="true" aria-label={`Edit ${product?.title ?? "product"}`}>
-      <button onClick={requestClose} aria-label="Close editor" className="absolute inset-0 w-full"
+    <div
+      className="fixed inset-0 z-50 flex justify-end"
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Edit ${product?.title ?? "product"}`}
+    >
+      <button
+        onClick={requestClose}
+        aria-label="Close editor"
+        className="absolute inset-0 w-full"
         style={{
           background: "linear-gradient(to bottom, rgba(26,26,26,0.10), rgba(26,26,26,0.24))",
           backdropFilter: "blur(6px) saturate(1.05) brightness(0.92)",
           WebkitBackdropFilter: "blur(6px) saturate(1.05) brightness(0.92)",
-          border: "none", cursor: "pointer",
-        }} />
+          border: "none",
+          cursor: "pointer",
+        }}
+      />
 
-      <aside ref={asideRef} className="relative h-full w-full flex flex-col" style={{
-        maxWidth: 920, background: T.paper, borderLeft: T.hairline,
-        boxShadow: "-24px 0 64px -32px rgba(26,26,26,0.35)",
-        animation: "eh-drawer-in 320ms cubic-bezier(0.32,0.72,0,1) both",
-      }}>
+      <aside
+        ref={asideRef}
+        className="relative h-full w-full flex flex-col"
+        style={{
+          maxWidth: 920,
+          background: T.paper,
+          borderLeft: T.hairline,
+          boxShadow: "-24px 0 64px -32px rgba(26,26,26,0.35)",
+          animation: "eh-drawer-in 320ms cubic-bezier(0.32,0.72,0,1) both",
+        }}
+      >
         <style>{`
           @keyframes eh-drawer-in { from { transform: translateX(24px); opacity: 0 } to { transform: none; opacity: 1 } }
           @media (prefers-reduced-motion: reduce) { aside { animation: none !important } }
@@ -899,31 +1381,92 @@ export function ProductEditDrawer({
           @media (max-width: 860px) { .eh-cols { grid-template-columns: minmax(0,1fr) } .eh-preview-col { display: none } }
         `}</style>
 
-        <header style={{ padding: "20px 26px 16px", borderBottom: T.hairline, background: T.white }}>
+        <header
+          style={{ padding: "20px 26px 16px", borderBottom: T.hairline, background: T.white }}
+        >
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
               <p style={micro(9, T.trackUltra, "rgba(26,26,26,0.4)")}>
-                {(taxonomy?.collections ?? []).find((c) => c.slug === draft.values.collection_slug)?.label
-                  || (draft.values.collection_slug ? String(draft.values.collection_slug) : "Unassigned")}
+                {(taxonomy?.collections ?? []).find((c) => c.slug === draft.values.collection_slug)
+                  ?.label ||
+                  (draft.values.collection_slug
+                    ? String(draft.values.collection_slug)
+                    : "Unassigned")}
 
-                {product?.rms_id ? <span style={{ marginLeft: 10, letterSpacing: T.trackLabel }}>№ {product.rms_id}</span> : null}
+                {product?.rms_id ? (
+                  <span style={{ marginLeft: 10, letterSpacing: T.trackLabel }}>
+                    № {product.rms_id}
+                  </span>
+                ) : null}
               </p>
-              <h2 style={{ fontFamily: T.serif, fontWeight: 400, fontSize: 25, lineHeight: 1.15, letterSpacing: "-0.01em", color: T.charcoal, marginTop: 5, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              <h2
+                style={{
+                  fontFamily: T.serif,
+                  fontWeight: 400,
+                  fontSize: 25,
+                  lineHeight: 1.15,
+                  letterSpacing: "-0.01em",
+                  color: T.charcoal,
+                  marginTop: 5,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
                 {draft.values.title || product?.title || "Untitled piece"}
               </h2>
             </div>
-            <button onClick={requestClose} style={{ ...micro(10, T.trackLabel, "rgba(26,26,26,0.55)"), background: "none", border: "none", cursor: "pointer", padding: "4px 2px", flexShrink: 0 }}
+            <button
+              onClick={requestClose}
+              style={{
+                ...micro(10, T.trackLabel, "rgba(26,26,26,0.55)"),
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: "4px 2px",
+                flexShrink: 0,
+              }}
               onMouseEnter={(e) => (e.currentTarget.style.color = T.charcoal)}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(26,26,26,0.55)")}>Close</button>
+              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(26,26,26,0.55)")}
+            >
+              Close
+            </button>
           </div>
           <div className="flex items-center gap-4" style={{ marginTop: 10 }}>
             {liveUrl && (
-              <a href={liveUrl} target="_blank" rel="noreferrer" style={{ ...micro(9, T.trackLabel, "rgba(26,26,26,0.55)"), textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}>
+              <a
+                href={liveUrl}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  ...micro(9, T.trackLabel, "rgba(26,26,26,0.55)"),
+                  textDecoration: "none",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                }}
+              >
                 View on live site
-                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden><path d="M7 17L17 7M9 7h8v8" /></svg>
+                <svg
+                  width="9"
+                  height="9"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  aria-hidden
+                >
+                  <path d="M7 17L17 7M9 7h8v8" />
+                </svg>
               </a>
             )}
-            <span style={micro(9, T.trackLabel, nowLive ? "rgba(26,26,26,0.55)" : "rgba(140,47,34,0.8)")}>
+            <span
+              style={micro(
+                9,
+                T.trackLabel,
+                nowLive ? "rgba(26,26,26,0.55)" : "rgba(140,47,34,0.8)",
+              )}
+            >
               {nowLive ? "● In the public collection" : "○ Hidden from site"}
             </span>
           </div>
@@ -947,19 +1490,22 @@ export function ProductEditDrawer({
                           rms_id: (product.rms_id as string | null) ?? null,
                           title: (product.title as string) ?? draft.values.title ?? "",
                           images: Array.isArray(product.images) ? (product.images as string[]) : [],
-                          card_background_url: (product.card_background_url as string | null) ?? null,
+                          card_background_url:
+                            (product.card_background_url as string | null) ?? null,
                           category_slug: (product.category_slug as string | null) ?? null,
-                          dimensions: (product.dimensions as string | null)
-                            ?? (product.dimensions_raw as string | null) ?? null,
+                          dimensions:
+                            (product.dimensions as string | null) ??
+                            (product.dimensions_raw as string | null) ??
+                            null,
                           cover_focal_x: (product.cover_focal_x as number | null) ?? null,
                           cover_focal_y: (product.cover_focal_y as number | null) ?? null,
                           updated_at: (product.updated_at as string | null) ?? null,
                           cover_framed_url: (product.cover_framed_url as string | null) ?? null,
                         }}
-
-                        onClose={() => { /* embedded: no-op, drawer owns close */ }}
+                        onClose={() => {
+                          /* embedded: no-op, drawer owns close */
+                        }}
                         onSaved={(next) => onPhotosSaved?.(next)}
-
                       />
                     </section>
                   );
@@ -972,14 +1518,17 @@ export function ProductEditDrawer({
                     {keys.map(fieldControl)}
                     {g.id === "visibility" && product && onDelete && (
                       <DeleteZone
-                        title={(draft.values.title as string) || (product.title as string) || "this piece"}
+                        title={
+                          (draft.values.title as string) ||
+                          (product.title as string) ||
+                          "this piece"
+                        }
                         disabled={saving}
                         onDelete={onDelete}
                       />
                     )}
                   </section>
                 );
-
               })}
 
               {flatChanges.length > 0 && (
@@ -987,21 +1536,63 @@ export function ProductEditDrawer({
                   <SectionHeader>Recent changes</SectionHeader>
                   <ol style={{ listStyle: "none", padding: 0, margin: 0 }}>
                     {flatChanges.map((c) => (
-                      <li key={c.id} className="flex items-baseline justify-between gap-3" style={{ padding: "10px 0", borderBottom: T.hairlineSoft }}>
-                        <div style={{ fontFamily: T.sans, fontSize: 12, color: "rgba(26,26,26,0.72)", lineHeight: 1.5 }}>
-                          <span style={{ color: T.charcoal, fontWeight: 500 }}>{FIELD_META[c.field]?.label || c.field}</span>
-                          {" "}changed from <s style={{ color: "rgba(26,26,26,0.45)" }}>{String(c.before ?? "—")}</s> to{" "}
-                          <span style={{ fontWeight: 500 }}>{String(c.after ?? "—")}</span>
-                          <span style={{ color: "rgba(26,26,26,0.38)", marginLeft: 8, fontSize: 11 }}>{c.when}</span>
+                      <li
+                        key={c.id}
+                        className="flex items-baseline justify-between gap-3"
+                        style={{ padding: "10px 0", borderBottom: T.hairlineSoft }}
+                      >
+                        <div
+                          style={{
+                            fontFamily: T.sans,
+                            fontSize: 12,
+                            color: "rgba(26,26,26,0.72)",
+                            lineHeight: 1.5,
+                          }}
+                        >
+                          <span style={{ color: T.charcoal, fontWeight: 500 }}>
+                            {FIELD_META[c.field]?.label || c.field}
+                          </span>{" "}
+                          changed from{" "}
+                          <s style={{ color: "rgba(26,26,26,0.45)" }}>{String(c.before ?? "—")}</s>{" "}
+                          to <span style={{ fontWeight: 500 }}>{String(c.after ?? "—")}</span>
+                          <span
+                            style={{ color: "rgba(26,26,26,0.38)", marginLeft: 8, fontSize: 11 }}
+                          >
+                            {c.when}
+                          </span>
                         </div>
                         {canUndoField(c.field) && (
-                          <button onClick={() => undoChange(c)} disabled={saving || undoBlocked}
-                            title={undoBlocked ? "Save or discard your current edits before undoing history." : undefined}
-                            style={{ ...micro(9, T.trackLabel, undoBlocked ? "rgba(26,26,26,0.25)" : "rgba(26,26,26,0.5)"), background: "none", border: "none", cursor: (saving || undoBlocked) ? "not-allowed" : "pointer", flexShrink: 0 }}
-                            onMouseEnter={(e) => { if (!undoBlocked && !saving) e.currentTarget.style.color = T.charcoal; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.color = undoBlocked ? "rgba(26,26,26,0.25)" : "rgba(26,26,26,0.5)"; }}>Undo</button>
+                          <button
+                            onClick={() => undoChange(c)}
+                            disabled={saving || undoBlocked}
+                            title={
+                              undoBlocked
+                                ? "Save or discard your current edits before undoing history."
+                                : undefined
+                            }
+                            style={{
+                              ...micro(
+                                9,
+                                T.trackLabel,
+                                undoBlocked ? "rgba(26,26,26,0.25)" : "rgba(26,26,26,0.5)",
+                              ),
+                              background: "none",
+                              border: "none",
+                              cursor: saving || undoBlocked ? "not-allowed" : "pointer",
+                              flexShrink: 0,
+                            }}
+                            onMouseEnter={(e) => {
+                              if (!undoBlocked && !saving) e.currentTarget.style.color = T.charcoal;
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.color = undoBlocked
+                                ? "rgba(26,26,26,0.25)"
+                                : "rgba(26,26,26,0.5)";
+                            }}
+                          >
+                            Undo
+                          </button>
                         )}
-
                       </li>
                     ))}
                   </ol>
@@ -1009,52 +1600,118 @@ export function ProductEditDrawer({
               )}
             </div>
 
-            <div className="eh-preview-col overflow-y-auto" style={{ padding: "24px 22px 130px", background: T.paper }}>
-              <p style={{ ...micro(9, T.trackUltra, "rgba(26,26,26,0.4)"), marginBottom: 12 }}>As clients will see it</p>
+            <div
+              className="eh-preview-col overflow-y-auto"
+              style={{ padding: "24px 22px 130px", background: T.paper }}
+            >
+              <p style={{ ...micro(9, T.trackUltra, "rgba(26,26,26,0.4)"), marginBottom: 12 }}>
+                As clients will see it
+              </p>
               <PreviewTile values={draft.values} product={product} sketch={sketch} />
               <ReadinessCard readiness={readiness} isDraftStatus={isDraftStatus} />
             </div>
           </div>
         </div>
 
-        <footer className="absolute bottom-0 left-0 right-0" style={{
-          borderTop: T.hairline, padding: "14px 26px",
-          background: "linear-gradient(to bottom, rgba(255,255,255,0.85), rgba(255,255,255,0.95))",
-          backdropFilter: "blur(14px) saturate(1.05)", WebkitBackdropFilter: "blur(14px) saturate(1.05)",
-        }}>
+        <footer
+          className="absolute bottom-0 left-0 right-0"
+          style={{
+            borderTop: T.hairline,
+            padding: "14px 26px",
+            background:
+              "linear-gradient(to bottom, rgba(255,255,255,0.85), rgba(255,255,255,0.95))",
+            backdropFilter: "blur(14px) saturate(1.05)",
+            WebkitBackdropFilter: "blur(14px) saturate(1.05)",
+          }}
+        >
           {confirmDiscard ? (
             <div className="flex items-center justify-between gap-3">
               <p style={{ fontFamily: T.sans, fontSize: 12, color: T.charcoal }}>
                 You have {draft.dirtyCount} unsaved change{draft.dirtyCount === 1 ? "" : "s"}.
               </p>
               <div className="flex gap-2">
-                <button onClick={() => setConfirmDiscard(false)}
-                  style={{ ...micro(10, T.trackLabel, T.charcoal), background: "none", border: T.hairline, padding: "9px 14px", cursor: "pointer" }}>Keep editing</button>
-                <button onClick={() => { draft.reset(); setConfirmDiscard(false); onClose(); }}
-                  style={{ ...micro(10, T.trackLabel, T.paper), background: T.destructive, border: `1px solid ${T.destructive}`, padding: "9px 14px", cursor: "pointer" }}>Discard & close</button>
+                <button
+                  onClick={() => setConfirmDiscard(false)}
+                  style={{
+                    ...micro(10, T.trackLabel, T.charcoal),
+                    background: "none",
+                    border: T.hairline,
+                    padding: "9px 14px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Keep editing
+                </button>
+                <button
+                  onClick={() => {
+                    draft.reset();
+                    setConfirmDiscard(false);
+                    onClose();
+                  }}
+                  style={{
+                    ...micro(10, T.trackLabel, T.paper),
+                    background: T.destructive,
+                    border: `1px solid ${T.destructive}`,
+                    padding: "9px 14px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Discard & close
+                </button>
               </div>
             </div>
           ) : (
             <div className="flex items-center justify-between gap-3">
               <span style={{ fontFamily: T.sans, fontSize: 11, color: "rgba(26,26,26,0.45)" }}>
-                {saving ? "Saving…"
-                  : draft.dirtyCount > 0 ? `${draft.dirtyCount} unsaved change${draft.dirtyCount === 1 ? "" : "s"}`
-                  : savedAt ? "Saved — goes live with the next site publish" : "No changes yet"}
+                {saving
+                  ? "Saving…"
+                  : draft.dirtyCount > 0
+                    ? `${draft.dirtyCount} unsaved change${draft.dirtyCount === 1 ? "" : "s"}`
+                    : savedAt
+                      ? "Saved — goes live with the next site publish"
+                      : "No changes yet"}
               </span>
               <div className="flex items-center gap-2">
                 {draft.dirtyCount > 0 && !saving && (
-                  <button onClick={() => draft.reset()}
-                    style={{ ...micro(10, T.trackLabel, "rgba(26,26,26,0.55)"), background: "none", border: "none", padding: "9px 6px", cursor: "pointer" }}>Discard</button>
+                  <button
+                    onClick={() => draft.reset()}
+                    style={{
+                      ...micro(10, T.trackLabel, "rgba(26,26,26,0.55)"),
+                      background: "none",
+                      border: "none",
+                      padding: "9px 6px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Discard
+                  </button>
                 )}
-                <button onClick={save} disabled={saving || draft.dirtyCount === 0 || draft.hasErrors}
+                <button
+                  onClick={save}
+                  disabled={saving || draft.dirtyCount === 0 || draft.hasErrors}
                   style={{
-                    ...micro(10, T.trackWide, draft.dirtyCount > 0 && !draft.hasErrors ? T.paper : "rgba(26,26,26,0.35)"),
-                    background: draft.dirtyCount > 0 && !draft.hasErrors ? T.charcoal : "rgba(26,26,26,0.05)",
-                    border: T.hairline, padding: "11px 20px",
+                    ...micro(
+                      10,
+                      T.trackWide,
+                      draft.dirtyCount > 0 && !draft.hasErrors ? T.paper : "rgba(26,26,26,0.35)",
+                    ),
+                    background:
+                      draft.dirtyCount > 0 && !draft.hasErrors ? T.charcoal : "rgba(26,26,26,0.05)",
+                    border: T.hairline,
+                    padding: "11px 20px",
                     cursor: draft.dirtyCount > 0 && !draft.hasErrors ? "pointer" : "default",
-                    transition: "background 180ms, color 180ms", minWidth: 150, textAlign: "center",
-                  }}>
-                  {saving ? "Saving…" : draft.hasErrors ? "Fix errors first" : draft.dirtyCount > 0 ? `Save ${draft.dirtyCount} change${draft.dirtyCount === 1 ? "" : "s"}` : "Saved"}
+                    transition: "background 180ms, color 180ms",
+                    minWidth: 150,
+                    textAlign: "center",
+                  }}
+                >
+                  {saving
+                    ? "Saving…"
+                    : draft.hasErrors
+                      ? "Fix errors first"
+                      : draft.dirtyCount > 0
+                        ? `Save ${draft.dirtyCount} change${draft.dirtyCount === 1 ? "" : "s"}`
+                        : "Saved"}
                 </button>
               </div>
             </div>
@@ -1064,4 +1721,3 @@ export function ProductEditDrawer({
     </div>
   );
 }
-

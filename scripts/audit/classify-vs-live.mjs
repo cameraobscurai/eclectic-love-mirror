@@ -13,9 +13,13 @@ import { pathToFileURL } from "node:url";
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../..");
 const truth = JSON.parse(fs.readFileSync(path.join(ROOT, "scripts/audit/live-truth.json"), "utf8"));
-const catalog = JSON.parse(fs.readFileSync(path.join(ROOT, "src/data/inventory/current_catalog.json"), "utf8"));
+const catalog = JSON.parse(
+  fs.readFileSync(path.join(ROOT, "src/data/inventory/current_catalog.json"), "utf8"),
+);
 // Manual live-title -> catalog-title aliases. See scripts/audit/pillow-aliases.json.
-const pillowAliases = JSON.parse(fs.readFileSync(path.join(ROOT, "scripts/audit/pillow-aliases.json"), "utf8")).aliases ?? {};
+const pillowAliases =
+  JSON.parse(fs.readFileSync(path.join(ROOT, "scripts/audit/pillow-aliases.json"), "utf8"))
+    .aliases ?? {};
 
 // Tiny shim: import the TS modules via tsx if available, otherwise via bun.
 // We expect this to be run with `bun scripts/audit/classify-vs-live.mjs`.
@@ -44,36 +48,36 @@ const SUBS_BY_PARENT = {
 const SUB_LABEL_TO_ID = {
   // sub label (from XLSX) -> internal sub id
   "Sofas & Loveseats": "sofas-loveseats",
-  "Chairs": "chairs",
-  "Ottomans": "ottomans",
-  "Benches": "benches",
+  Chairs: "chairs",
+  Ottomans: "ottomans",
+  Benches: "benches",
   "Coffee Tables": "coffee-tables",
   "Side Tables": "side-tables",
-  "Consoles": "consoles",
-  "Bars": "bars",
+  Consoles: "consoles",
+  Bars: "bars",
   "Cocktail Tables": "cocktail-tables",
   "Community Tables": "community-tables",
-  "Stools": "stools",
-  "Storage": "storage",
+  Stools: "stools",
+  Storage: "storage",
   "Dining Chairs": "dining-chairs",
   "Dining Tables": "dining-tables",
-  "Dinnerware": "dinnerware",
-  "Flatware": "flatware",
-  "Glassware": "glassware",
-  "Serveware": "serveware",
-  "Candlelight": "candlelight",
-  "Chandeliers": "chandeliers",
-  "Lamps": "lamps",
-  "Specialty": "specialty",
-  "Pillows": "pillows",
-  "Throws": "throws",
-  "Rugs": "rugs",
-  "Accents": "accents",
+  Dinnerware: "dinnerware",
+  Flatware: "flatware",
+  Glassware: "glassware",
+  Serveware: "serveware",
+  Candlelight: "candlelight",
+  Chandeliers: "chandeliers",
+  Lamps: "lamps",
+  Specialty: "specialty",
+  Pillows: "pillows",
+  Throws: "throws",
+  Rugs: "rugs",
+  Accents: "accents",
   "Crates & Baskets": "crates-baskets",
-  "Games": "games",
-  "Structures": "structures",
-  "Walls": "walls",
-  "Other": "other",
+  Games: "games",
+  Structures: "structures",
+  Walls: "walls",
+  Other: "other",
 };
 
 const onlyMisses = process.argv.includes("--misses");
@@ -117,24 +121,33 @@ for (const [title, info] of Object.entries(truth)) {
     }
   }
   if (ourParent === info.parent && ourSub === expectedSubId) subOk++;
-  else subMisses.push({ title, live: `${info.parent}/${expectedSubId}`, ours: `${ourParent}/${ourSub}` });
+  else
+    subMisses.push({
+      title,
+      live: `${info.parent}/${expectedSubId}`,
+      ours: `${ourParent}/${ourSub}`,
+    });
 }
 
 const pct = (n, d) => (d === 0 ? "n/a" : ((n / d) * 100).toFixed(1) + "%");
 
 if (!onlyMisses) {
-  console.log(`\nMatched ${parentTotal} of ${Object.keys(truth).length} live products to catalog (${notFound.length} not found).`);
+  console.log(
+    `\nMatched ${parentTotal} of ${Object.keys(truth).length} live products to catalog (${notFound.length} not found).`,
+  );
   console.log(`Parent accuracy: ${parentOk}/${parentTotal} (${pct(parentOk, parentTotal)})`);
   console.log(`Sub accuracy:    ${subOk}/${subTotal} (${pct(subOk, subTotal)})`);
 }
 
 if (parentMisses.length) {
   console.log(`\n--- PARENT MISSES (${parentMisses.length}) ---`);
-  for (const m of parentMisses) console.log(`  ${m.live.padEnd(16)} → ours=${m.ours ?? "null"}    ${m.title}`);
+  for (const m of parentMisses)
+    console.log(`  ${m.live.padEnd(16)} → ours=${m.ours ?? "null"}    ${m.title}`);
 }
 if (subMisses.length) {
   console.log(`\n--- SUB MISSES (${subMisses.length}) ---`);
-  for (const m of subMisses) console.log(`  ${m.live.padEnd(36)} → ours=${m.ours ?? "null"}    ${m.title}`);
+  for (const m of subMisses)
+    console.log(`  ${m.live.padEnd(36)} → ours=${m.ours ?? "null"}    ${m.title}`);
 }
 if (notFound.length && !onlyMisses) {
   console.log(`\n--- NOT FOUND IN CATALOG (${notFound.length}) ---`);
@@ -145,6 +158,8 @@ if (notFound.length && !onlyMisses) {
 const parentAcc = parentOk / parentTotal;
 const subAcc = subOk / subTotal;
 if (parentAcc < 0.95 || subAcc < 0.85) {
-  console.error(`\nFAIL: parent ${pct(parentOk, parentTotal)} (need ≥95%), sub ${pct(subOk, subTotal)} (need ≥85%)`);
+  console.error(
+    `\nFAIL: parent ${pct(parentOk, parentTotal)} (need ≥95%), sub ${pct(subOk, subTotal)} (need ≥85%)`,
+  );
   process.exit(1);
 }

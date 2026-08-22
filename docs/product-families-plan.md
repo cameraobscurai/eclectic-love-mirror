@@ -1,6 +1,6 @@
 # Product families — locked plan (2026-08-12)
 
-Replaces bake-time family *inference* with a declared DB model, without changing
+Replaces bake-time family _inference_ with a declared DB model, without changing
 today's 636-tile output on day one.
 
 ## Why
@@ -28,6 +28,7 @@ inventory_items
 ```
 
 Rules:
+
 - Every variant stays a **full inventory row** — own quantity, dimensions,
   photos, taxonomy, audit trail. A family is a display grouping, nothing else.
 - Grid shows **one tile per family**; PDP shows a variant switcher.
@@ -73,6 +74,7 @@ JSON with no staleness indicator.
 ## Vocabulary
 
 Three words are in use for two concepts. Lock:
+
 - **Collection** = declared taxonomy (`collection_slug`). Ten of them.
 - **Family** = variant grouping that renders one tile. Rename FamilyPanel's
   "Part of a collection" label and the photos-grid "N variants" badge to

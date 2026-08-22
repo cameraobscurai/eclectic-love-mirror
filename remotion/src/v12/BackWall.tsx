@@ -5,8 +5,9 @@ import { useRemotionTexture } from "./useRemotionTexture";
 import manifest from "../v11-manifest.json";
 import { PHASE, easeIn } from "./camera-path";
 
-const POSTER_FILE = (manifest.home as Record<string, string>).poster05
-  ?? (manifest.home as Record<string, string>).poster04;
+const POSTER_FILE =
+  (manifest.home as Record<string, string>).poster05 ??
+  (manifest.home as Record<string, string>).poster04;
 
 export const BackWall: React.FC = () => {
   const frame = useCurrentFrame();

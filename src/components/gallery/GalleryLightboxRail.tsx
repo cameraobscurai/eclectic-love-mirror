@@ -15,11 +15,7 @@ interface GalleryLightboxRailProps {
   onSelect: (index: number) => void;
 }
 
-export function GalleryLightboxRail({
-  images,
-  currentIndex,
-  onSelect,
-}: GalleryLightboxRailProps) {
+export function GalleryLightboxRail({ images, currentIndex, onSelect }: GalleryLightboxRailProps) {
   const railRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -29,11 +25,7 @@ export function GalleryLightboxRail({
     if (!active) return;
     const railRect = rail.getBoundingClientRect();
     const activeRect = active.getBoundingClientRect();
-    const offset =
-      activeRect.left -
-      railRect.left -
-      rail.clientWidth / 2 +
-      activeRect.width / 2;
+    const offset = activeRect.left - railRect.left - rail.clientWidth / 2 + activeRect.width / 2;
     rail.scrollBy({ left: offset, behavior: "smooth" });
   }, [currentIndex]);
 
@@ -60,9 +52,7 @@ export function GalleryLightboxRail({
               className={[
                 "shrink-0 h-10 w-14 lg:h-16 lg:w-24 overflow-hidden transition-all duration-300",
                 "focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40",
-                active
-                  ? "opacity-100 ring-1 ring-cream/80"
-                  : "opacity-40 hover:opacity-80",
+                active ? "opacity-100 ring-1 ring-cream/80" : "opacity-40 hover:opacity-80",
               ].join(" ")}
             >
               <div className="relative w-full h-full">
@@ -75,10 +65,7 @@ export function GalleryLightboxRail({
                   className="w-full h-full object-cover"
                 />
                 {img.video && (
-                  <span
-                    aria-hidden
-                    className="absolute inset-0 flex items-center justify-center"
-                  >
+                  <span aria-hidden className="absolute inset-0 flex items-center justify-center">
                     <span className="flex items-center justify-center h-6 w-6 rounded-full bg-charcoal/70 backdrop-blur-sm border border-cream/40">
                       <svg viewBox="0 0 12 12" className="h-3 w-3 fill-cream translate-x-[1px]">
                         <path d="M2 1l9 5-9 5z" />

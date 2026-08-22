@@ -45,7 +45,10 @@ const SLIDES: Slide[] = [
     label: "Edit reaches the live site",
     line: "Notes typed in the admin drawer, published, live — no engineer.",
     before: { src: "/receipts/round-trip-1-before.png", caption: "22:03 UTC — live, no notes" },
-    after: { src: "/receipts/round-trip-2-after-live.png", caption: "22:12 UTC — live, notes present" },
+    after: {
+      src: "/receipts/round-trip-2-after-live.png",
+      caption: "22:12 UTC — live, notes present",
+    },
   },
   {
     label: "Publish is the gate",

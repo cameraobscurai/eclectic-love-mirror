@@ -1,8 +1,4 @@
-import {
-  PARENT_LABELS,
-  PARENT_SUBS,
-  type ParentId,
-} from "@/lib/collection-parents";
+import { PARENT_LABELS, PARENT_SUBS, type ParentId } from "@/lib/collection-parents";
 
 interface Props {
   parent: ParentId;

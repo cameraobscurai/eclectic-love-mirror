@@ -28,10 +28,7 @@ export const Route = createFileRoute("/admin/taxonomy")({
   beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
   component: TaxonomyStudio,
   head: () => ({
-    meta: [
-      { title: "Taxonomy Studio — Admin" },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
+    meta: [{ title: "Taxonomy Studio — Admin" }, { name: "robots", content: "noindex, nofollow" }],
   }),
 });
 
@@ -100,7 +97,12 @@ function TaxonomyStudio() {
 
   const counts = useMemo(() => {
     const c: Record<FilterId, number> = {
-      all: 0, confirm: 0, unassigned: 0, needs_ruling: 0, needs_owner: 0, ruled: 0,
+      all: 0,
+      confirm: 0,
+      unassigned: 0,
+      needs_ruling: 0,
+      needs_owner: 0,
+      ruled: 0,
     };
     for (const r of rows ?? []) {
       c.all++;
@@ -142,29 +144,40 @@ function TaxonomyStudio() {
 
   const onAssignOne = (row: TaxonomyRow, collection: string, category: string) =>
     run(
-      () => assignTaxonomy({ data: { ids: [row.id], collection_slug: collection, category_slug: category } }),
+      () =>
+        assignTaxonomy({
+          data: { ids: [row.id], collection_slug: collection, category_slug: category },
+        }),
       `${row.title} → ${collection} / ${category}`,
     );
 
   const onConfirm = (ids: string[]) =>
-    run(async () => {
-      const res = await confirmTaxonomy({ data: { ids } });
-      if (res.confirmed === 0) throw new Error("nothing confirmable in that selection");
-      return res;
-    }, `${ids.length === 1 ? "Confirmed" : `Confirmed ${ids.length}`}`);
+    run(
+      async () => {
+        const res = await confirmTaxonomy({ data: { ids } });
+        if (res.confirmed === 0) throw new Error("nothing confirmable in that selection");
+        return res;
+      },
+      `${ids.length === 1 ? "Confirmed" : `Confirmed ${ids.length}`}`,
+    );
 
   // CONFIRM ALL scopes to the currently visible filter and always skips
   // needs_owner rows (the server enforces the skip too).
   const confirmAllVisible = () => {
     const ids = visible
-      .filter((r) => r.collection_slug && r.category_slug && !r.review?.needs_owner && !r.review?.reviewed)
+      .filter(
+        (r) =>
+          r.collection_slug && r.category_slug && !r.review?.needs_owner && !r.review?.reviewed,
+      )
       .map((r) => r.id);
     if (!ids.length) return toast.info("Nothing to confirm in this view.");
     void onConfirm(ids);
   };
 
   if (!rows || !tree) {
-    return <div className="p-8 text-xs uppercase tracking-widest text-muted-foreground">Loading…</div>;
+    return (
+      <div className="p-8 text-xs uppercase tracking-widest text-muted-foreground">Loading…</div>
+    );
   }
 
   return (
@@ -179,7 +192,11 @@ function TaxonomyStudio() {
       {/* Ledger strip — one tick per product, drains as rulings land. */}
       <div className="flex h-3 w-full gap-px overflow-hidden rounded-sm">
         {rows.map((r) => (
-          <span key={r.id} className={`h-full flex-1 ${STATE_COLOR[rowState(r)]}`} title={`${r.title} — ${rowState(r)}`} />
+          <span
+            key={r.id}
+            className={`h-full flex-1 ${STATE_COLOR[rowState(r)]}`}
+            title={`${r.title} — ${rowState(r)}`}
+          />
         ))}
       </div>
 
@@ -187,9 +204,14 @@ function TaxonomyStudio() {
         {FILTERS.map((f) => (
           <button
             key={f.id}
-            onClick={() => { setFilter(f.id); setSelected(new Set()); }}
+            onClick={() => {
+              setFilter(f.id);
+              setSelected(new Set());
+            }}
             className={`rounded-full border px-3 py-1 text-[10px] uppercase tracking-widest ${
-              filter === f.id ? "border-foreground bg-foreground text-background" : "border-border text-muted-foreground"
+              filter === f.id
+                ? "border-foreground bg-foreground text-background"
+                : "border-border text-muted-foreground"
             }`}
           >
             {f.label} {counts[f.id]}
@@ -237,7 +259,9 @@ function TaxonomyStudio() {
                     No photo
                   </span>
                 )}
-                <span className={`absolute left-1 top-1 h-2 w-2 rounded-full ${STATE_COLOR[state]}`} />
+                <span
+                  className={`absolute left-1 top-1 h-2 w-2 rounded-full ${STATE_COLOR[state]}`}
+                />
               </button>
 
               <p className="truncate text-[11px] uppercase tracking-wider" title={row.title}>
@@ -260,7 +284,9 @@ function TaxonomyStudio() {
               >
                 <option value="">— collection —</option>
                 {tree.collections.map((c) => (
-                  <option key={c.slug} value={c.slug}>{c.label}</option>
+                  <option key={c.slug} value={c.slug}>
+                    {c.label}
+                  </option>
                 ))}
               </select>
 
@@ -272,22 +298,29 @@ function TaxonomyStudio() {
               >
                 <option value="">— category —</option>
                 {categoriesFor(row.collection_slug ?? "").map((c) => (
-                  <option key={c.slug} value={c.slug}>{c.label}</option>
+                  <option key={c.slug} value={c.slug}>
+                    {c.label}
+                  </option>
                 ))}
               </select>
 
               <div className="flex gap-1">
-                {state !== "ruled" && row.collection_slug && row.category_slug && !row.review?.needs_owner && (
-                  <button
-                    onClick={() => onConfirm([row.id])}
-                    disabled={busy}
-                    className="flex-1 border border-emerald-600 px-2 py-1 text-[10px] uppercase tracking-widest text-emerald-700 disabled:opacity-40"
-                  >
-                    ✓ Confirm
-                  </button>
-                )}
+                {state !== "ruled" &&
+                  row.collection_slug &&
+                  row.category_slug &&
+                  !row.review?.needs_owner && (
+                    <button
+                      onClick={() => onConfirm([row.id])}
+                      disabled={busy}
+                      className="flex-1 border border-emerald-600 px-2 py-1 text-[10px] uppercase tracking-widest text-emerald-700 disabled:opacity-40"
+                    >
+                      ✓ Confirm
+                    </button>
+                  )}
                 <button
-                  onClick={() => run(() => flagForOwner({ data: { ids: [row.id] } }), "Flagged for Adrienne")}
+                  onClick={() =>
+                    run(() => flagForOwner({ data: { ids: [row.id] } }), "Flagged for Adrienne")
+                  }
                   disabled={busy}
                   className="flex-1 border border-border px-2 py-1 text-[10px] uppercase tracking-widest text-muted-foreground disabled:opacity-40"
                 >
@@ -310,12 +343,17 @@ function TaxonomyStudio() {
           <span className="text-[10px] uppercase tracking-widest">{selected.size} selected</span>
           <select
             value={bulkCollection}
-            onChange={(e) => { setBulkCollection(e.target.value); setBulkCategory(""); }}
+            onChange={(e) => {
+              setBulkCollection(e.target.value);
+              setBulkCategory("");
+            }}
             className="border border-border bg-transparent px-2 py-1 text-[10px] uppercase tracking-wider"
           >
             <option value="">— collection —</option>
             {tree.collections.map((c) => (
-              <option key={c.slug} value={c.slug}>{c.label}</option>
+              <option key={c.slug} value={c.slug}>
+                {c.label}
+              </option>
             ))}
           </select>
           <select
@@ -326,16 +364,23 @@ function TaxonomyStudio() {
           >
             <option value="">— category —</option>
             {categoriesFor(bulkCollection).map((c) => (
-              <option key={c.slug} value={c.slug}>{c.label}</option>
+              <option key={c.slug} value={c.slug}>
+                {c.label}
+              </option>
             ))}
           </select>
           <button
             disabled={!bulkCollection || !bulkCategory || busy}
             onClick={() =>
               run(
-                () => assignTaxonomy({
-                  data: { ids: [...selected], collection_slug: bulkCollection, category_slug: bulkCategory },
-                }),
+                () =>
+                  assignTaxonomy({
+                    data: {
+                      ids: [...selected],
+                      collection_slug: bulkCollection,
+                      category_slug: bulkCategory,
+                    },
+                  }),
                 `Assigned ${selected.size}`,
               )
             }

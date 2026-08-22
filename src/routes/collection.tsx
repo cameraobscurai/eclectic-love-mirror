@@ -11,10 +11,7 @@ import {
   type CollectionProduct,
   type CatalogPayload,
 } from "@/lib/phase3-catalog";
-import {
-  type BrowseGroupId,
-  getProductBrowseGroup,
-} from "@/lib/collection-browse-groups";
+import { type BrowseGroupId, getProductBrowseGroup } from "@/lib/collection-browse-groups";
 
 import {
   PARENT_ORDER,
@@ -32,7 +29,6 @@ import { ProductTile } from "@/components/collection/ProductTile";
 // InquiryTray globalized in __root.tsx
 import { SubcategoryRail } from "@/components/collection/SubcategoryRail";
 import { CollectionWall } from "@/components/collection/CollectionWall";
-
 
 import { CategoryTonalGrid } from "@/components/collection/CategoryTonalGrid";
 // Art-directed Hive hero: square plate for desktop aside (object-cover so the
@@ -52,7 +48,6 @@ import { usePublishQuickViewCatalog } from "@/components/collection/quick-view-c
 // The Quick View modal chunk is owned by QuickViewHost (mounted in
 // __root.tsx). ProductTile still preloads it on hover/focus so the chunk is
 // warm by the time the click resolves.
-
 
 const INITIAL_BATCH = 60;
 const BATCH_INCREMENT = 60;
@@ -81,7 +76,6 @@ const searchSchema = z.object({
   layout: fallback(z.enum(LAYOUTS), "grid").default("grid"),
   view: fallback(z.string(), "").default(""),
 });
-
 
 const LEGACY_GROUP_ALIASES: Record<string, { parent: ParentId | ""; sub: string }> = {
   seating: { parent: "lounge-seating", sub: "all" },
@@ -118,7 +112,6 @@ const suggestionGroupLabel: React.CSSProperties = {
   margin: "0 0 8px",
 };
 
-
 export const Route = createFileRoute("/collection")({
   head: () => ({
     meta: [
@@ -128,7 +121,11 @@ export const Route = createFileRoute("/collection")({
         content:
           "Browse 600+ event rental pieces — seating, tables, bars, lighting, tableware, rugs, and bespoke decor for weddings and brand events in Denver.",
       },
-      { name: "keywords", content: "event furniture rental denver, wedding rentals denver, lounge furniture rental colorado, bar rental denver, tableware rental denver" },
+      {
+        name: "keywords",
+        content:
+          "event furniture rental denver, wedding rentals denver, lounge furniture rental colorado, bar rental denver, tableware rental denver",
+      },
       { property: "og:title", content: "Event Rentals — Hive Signature Collection" },
       {
         property: "og:description",
@@ -136,8 +133,16 @@ export const Route = createFileRoute("/collection")({
           "600+ pieces of curated event furniture, lighting, and tableware available for rental in Denver and beyond.",
       },
       { property: "og:url", content: "https://eclectichive.com/collection" },
-      { property: "og:image", content: "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/inventory/3146/f0aaf4ee6c705ee2.png" },
-      { name: "twitter:image", content: "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/inventory/3146/f0aaf4ee6c705ee2.png" },
+      {
+        property: "og:image",
+        content:
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/inventory/3146/f0aaf4ee6c705ee2.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/inventory/3146/f0aaf4ee6c705ee2.png",
+      },
     ],
     // Note: previously we preloaded CATEGORY_COVERS here. That preload now
     // now lives in the collection grid so it only runs when the
@@ -178,10 +183,19 @@ export const Route = createFileRoute("/collection")({
   notFoundComponent: () => (
     <main className="min-h-screen bg-background text-foreground flex items-center justify-center px-6">
       <div className="max-w-lg text-center">
-        <p className="text-[10px] tracking-[0.28em] uppercase text-muted-foreground mb-4">404 — Not Found</p>
-        <h1 className="font-display text-3xl md:text-4xl tracking-wide uppercase mb-6">This Page Is Not In The Archive</h1>
-        <p className="text-sm tracking-[0.16em] uppercase text-muted-foreground mb-8">The link may be retired or mistyped.</p>
-        <a href="/collection" className="inline-block border border-foreground/40 px-6 py-3 text-[11px] tracking-[0.24em] uppercase hover:bg-foreground hover:text-background transition-colors">
+        <p className="text-[10px] tracking-[0.28em] uppercase text-muted-foreground mb-4">
+          404 — Not Found
+        </p>
+        <h1 className="font-display text-3xl md:text-4xl tracking-wide uppercase mb-6">
+          This Page Is Not In The Archive
+        </h1>
+        <p className="text-sm tracking-[0.16em] uppercase text-muted-foreground mb-8">
+          The link may be retired or mistyped.
+        </p>
+        <a
+          href="/collection"
+          className="inline-block border border-foreground/40 px-6 py-3 text-[11px] tracking-[0.24em] uppercase hover:bg-foreground hover:text-background transition-colors"
+        >
           Browse The Collection
         </a>
       </div>
@@ -199,12 +213,16 @@ function CollectionPage() {
   // — the alternative blocks LCP on a paginated DB round-trip.
   useEffect(() => {
     let alive = true;
-    getCollectionCatalog().then((full) => {
-      if (alive) setData(full);
-    }).catch(() => {
-      /* overlay failure is non-fatal — base catalog is already on screen */
-    });
-    return () => { alive = false; };
+    getCollectionCatalog()
+      .then((full) => {
+        if (alive) setData(full);
+      })
+      .catch(() => {
+        /* overlay failure is non-fatal — base catalog is already on screen */
+      });
+    return () => {
+      alive = false;
+    };
   }, []);
   const { products, total } = data;
   const search = Route.useSearch() as CollectionSearch;
@@ -336,7 +354,6 @@ function CollectionPage() {
   // happens to return the same reference for back-to-back updates.
   // Grid fade removed — caused product cards to read as greyed out.
 
-
   useEffect(() => {
     const t = setTimeout(() => {
       if (qLocal !== q) {
@@ -443,13 +460,9 @@ function CollectionPage() {
     // when the user is scoped to one parent.
     const hasQuery = q.trim().length > 0;
     if (hasQuery || !activeParent) return searchFiltered;
-    const parentFiltered = searchFiltered.filter(
-      (p) => productParent(p) === activeParent,
-    );
+    const parentFiltered = searchFiltered.filter((p) => productParent(p) === activeParent);
     if (activeSubcategory === "all") return parentFiltered;
-    return parentFiltered.filter((p) =>
-      productMatchesSub(p, activeParent, activeSubcategory),
-    );
+    return parentFiltered.filter((p) => productMatchesSub(p, activeParent, activeSubcategory));
   }, [searchFiltered, activeParent, activeSubcategory, q]);
 
   const filtered = useMemo(() => {
@@ -484,8 +497,6 @@ function CollectionPage() {
   // was worse than the broken image.
   const visibleProducts = filtered;
 
-
-
   // ---------- Filter rail data: stable order + responsive counts ----------
   // Counts respond to the committed search-filtered set. Powers the rail's
   // per-row count badge.
@@ -511,11 +522,23 @@ function CollectionPage() {
     // Order is locked here — the grid honors it row-by-row.
     const OVERVIEW_TILE_ORDER: BrowseGroupId[] = [
       // Row 1
-      "sofas", "chairs", "benches-ottomans", "cocktail-tables", "side-tables",
+      "sofas",
+      "chairs",
+      "benches-ottomans",
+      "cocktail-tables",
+      "side-tables",
       // Row 2
-      "coffee-tables", "dining", "bar", "lighting", "storage",
+      "coffee-tables",
+      "dining",
+      "bar",
+      "lighting",
+      "storage",
       // Row 3
-      "pillows", "throws", "tableware", "styling", "rugs",
+      "pillows",
+      "throws",
+      "tableware",
+      "styling",
+      "rugs",
     ];
     const buckets = new Map<BrowseGroupId, CollectionProduct[]>();
     for (const id of OVERVIEW_TILE_ORDER) buckets.set(id, []);
@@ -552,9 +575,7 @@ function CollectionPage() {
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            setVisibleCount((c) =>
-              Math.min(c + BATCH_INCREMENT, visibleProducts.length),
-            );
+            setVisibleCount((c) => Math.min(c + BATCH_INCREMENT, visibleProducts.length));
             break;
           }
         }
@@ -572,8 +593,7 @@ function CollectionPage() {
   // Watch on visibleBatch.length re-scans bounds when the grid mutates
   // (filter / sort / Load More). Mutation observer inside the hook covers
   // the in-between cases (tiles entering via near-viewport gating).
-  const { activeId: spyActiveId } =
-    useScrollSpy({ watch: visibleBatch.length });
+  const { activeId: spyActiveId } = useScrollSpy({ watch: visibleBatch.length });
   const spyActiveGroup = (spyActiveId as BrowseGroupId | null) ?? null;
 
   // ---------- Results anchor ----------
@@ -601,13 +621,11 @@ function CollectionPage() {
     if (!view) return;
     const hit = products.find((p) => p.id === view || p.slug === view);
     navigate({
-      search: (prev: CollectionSearch) =>
-        ({ ...prev, view: "", peek: hit?.slug ?? view }) as never,
+      search: (prev: CollectionSearch) => ({ ...prev, view: "", peek: hit?.slug ?? view }) as never,
       replace: true,
       resetScroll: false,
     });
   }, [view, products, navigate]);
-
 
   const hasActiveFilters = !!(activeParent || q);
   const resetAll = () => {
@@ -657,7 +675,12 @@ function CollectionPage() {
   // Selecting a subcategory updates `subcategory` and clears `view`.
   const selectSubcategory = (sub: string) => {
     navigate({
-      search: (prev: CollectionSearch) => ({ ...prev, subcategory: sub, view: "", peek: undefined }),
+      search: (prev: CollectionSearch) => ({
+        ...prev,
+        subcategory: sub,
+        view: "",
+        peek: undefined,
+      }),
       replace: true,
       resetScroll: false,
     });
@@ -704,10 +727,7 @@ function CollectionPage() {
     if (!el || typeof ResizeObserver === "undefined") return undefined;
     const apply = () => {
       const h = Math.ceil(el.getBoundingClientRect().height);
-      document.documentElement.style.setProperty(
-        "--collection-heading-h",
-        `${h}px`,
-      );
+      document.documentElement.style.setProperty("--collection-heading-h", `${h}px`);
     };
     apply();
     const ro = new ResizeObserver(apply);
@@ -776,12 +796,20 @@ function CollectionPage() {
     <main
       data-collection-main
       data-collection-overview={showOverview ? "" : undefined}
-      className={showOverview ? "text-charcoal" : layout === "wall" && activeParent ? "min-h-screen text-charcoal" : "min-h-screen text-charcoal pb-32"}
-      style={{
-        background: "var(--paper)",
-        "--collection-mobile-h-h": "clamp(180px, 26dvh, 240px)",
-        ...(showOverview ? { minHeight: "var(--app-vh, 100dvh)" } : null),
-      } as React.CSSProperties}
+      className={
+        showOverview
+          ? "text-charcoal"
+          : layout === "wall" && activeParent
+            ? "min-h-screen text-charcoal"
+            : "min-h-screen text-charcoal pb-32"
+      }
+      style={
+        {
+          background: "var(--paper)",
+          "--collection-mobile-h-h": "clamp(180px, 26dvh, 240px)",
+          ...(showOverview ? { minHeight: "var(--app-vh, 100dvh)" } : null),
+        } as React.CSSProperties
+      }
     >
       {/* Heading removed visually — the left "the HIVE" plate IS the page title.
           Semantic H1 retained for SEO + a11y (off-screen, no layout shift). */}
@@ -793,7 +821,6 @@ function CollectionPage() {
       </h1>
       <div style={{ height: "var(--nav-h)" }} aria-hidden />
 
-
       {/* ============================================================
           UTILITY BAR — only shown when a category is active OR the user
           has a search query. On the overview screen it's hidden entirely
@@ -801,186 +828,183 @@ function CollectionPage() {
           No longer sticky — scrolls with the page as a normal block.
           ============================================================ */}
       {(activeParent || q.trim()) && (
-      <div
-        ref={utilityBarRef}
-        className="sticky z-30"
-        style={{
-          top: "var(--nav-h)",
-          background: utilityScrolled
-            ? "rgba(255,255,255,0.78)"
-            : "var(--paper)",
-          backdropFilter: utilityScrolled ? "blur(16px) saturate(140%)" : "none",
-          WebkitBackdropFilter: utilityScrolled ? "blur(16px) saturate(140%)" : "none",
-          borderTop: "1px solid var(--archive-rule)",
-          borderBottom: "1px solid var(--archive-rule)",
-          transition: "background 0.3s ease, backdrop-filter 0.3s ease",
-        }}
-      >
-        <div className="px-4 sm:px-6 lg:px-8">
-          <div
-            className="mx-auto flex items-center justify-between gap-2 sm:gap-4 py-1.5 sm:py-2 flex-wrap sm:flex-nowrap"
-            style={{
-              maxWidth: "var(--archive-canvas-max)",
-              minHeight: "var(--archive-utility-h)",
-            }}
-          >
-            {/* LEFT: mobile filters trigger + result meta. The Filters
+        <div
+          ref={utilityBarRef}
+          className="sticky z-30"
+          style={{
+            top: "var(--nav-h)",
+            background: utilityScrolled ? "rgba(255,255,255,0.78)" : "var(--paper)",
+            backdropFilter: utilityScrolled ? "blur(16px) saturate(140%)" : "none",
+            WebkitBackdropFilter: utilityScrolled ? "blur(16px) saturate(140%)" : "none",
+            borderTop: "1px solid var(--archive-rule)",
+            borderBottom: "1px solid var(--archive-rule)",
+            transition: "background 0.3s ease, backdrop-filter 0.3s ease",
+          }}
+        >
+          <div className="px-4 sm:px-6 lg:px-8">
+            <div
+              className="mx-auto flex items-center justify-between gap-2 sm:gap-4 py-1.5 sm:py-2 flex-wrap sm:flex-nowrap"
+              style={{
+                maxWidth: "var(--archive-canvas-max)",
+                minHeight: "var(--archive-utility-h)",
+              }}
+            >
+              {/* LEFT: mobile filters trigger + result meta. The Filters
                 trigger is hidden on the category overview because browsing-
                 by-category IS the filter — the trigger would open a sheet
                 of the same rail that the user is already looking at. */}
-            <div className="flex items-center gap-3 min-w-0">
-              {!showOverview && (
-                <button
-                  ref={filtersTriggerRef}
-                  onClick={() => setSheetOpen(true)}
-                  className="lg:hidden inline-flex items-center gap-2 h-11 px-3 border border-charcoal/15 text-[11px] uppercase tracking-[0.2em] hover:bg-charcoal hover:text-white focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
-                  aria-label="Open filters"
-                  aria-haspopup="dialog"
+              <div className="flex items-center gap-3 min-w-0">
+                {!showOverview && (
+                  <button
+                    ref={filtersTriggerRef}
+                    onClick={() => setSheetOpen(true)}
+                    className="lg:hidden inline-flex items-center gap-2 h-11 px-3 border border-charcoal/15 text-[11px] uppercase tracking-[0.2em] hover:bg-charcoal hover:text-white focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
+                    aria-label="Open filters"
+                    aria-haspopup="dialog"
+                  >
+                    <SlidersHorizontal className="w-3.5 h-3.5" />
+                    Filters
+                    {hasActiveFilters && (
+                      <span
+                        aria-hidden
+                        className="ml-1 inline-block w-1.5 h-1.5 rounded-full bg-current"
+                      />
+                    )}
+                  </button>
+                )}
+
+                <p
+                  key={`${activeParent}-${q}-${sort}`}
+                  className="text-[11px] uppercase tracking-[0.22em] text-charcoal/60 hidden sm:flex items-center h-10 truncate"
+                  aria-live="polite"
                 >
-                  <SlidersHorizontal className="w-3.5 h-3.5" />
-                  Filters
-                  {hasActiveFilters && (
-                    <span
-                      aria-hidden
-                      className="ml-1 inline-block w-1.5 h-1.5 rounded-full bg-current"
-                    />
-                  )}
-                </button>
-              )}
+                  {resultMeta}
+                </p>
+              </div>
 
-              <p
-                key={`${activeParent}-${q}-${sort}`}
-                className="text-[11px] uppercase tracking-[0.22em] text-charcoal/60 hidden sm:flex items-center h-10 truncate"
-                aria-live="polite"
-              >
-                {resultMeta}
-              </p>
-            </div>
-
-            {/* RIGHT: search · sort · density.
+              {/* RIGHT: search · sort · density.
                 Hidden on the category overview — these controls operate on
                 a product list that isn't shown there, so they're noise. */}
-            {!showOverview && (
-            <div className="flex items-center justify-end gap-2 sm:gap-3 min-w-0 flex-1">
-              <label htmlFor="collection-search" className="sr-only">
-                Search pieces
-              </label>
-              <input
-                id="collection-search"
-                type="text"
-                inputMode="search"
-                placeholder="Search"
-                value={qLocal}
-                onChange={(e) => setQLocal(e.target.value)}
-                className="h-10 min-w-0 flex-1 sm:flex-none bg-transparent border-b border-charcoal/20 px-1 text-sm placeholder:text-charcoal/40 focus:outline-none focus:border-charcoal transition-colors"
-                style={{ width: "auto", maxWidth: "280px" }}
-              />
+              {!showOverview && (
+                <div className="flex items-center justify-end gap-2 sm:gap-3 min-w-0 flex-1">
+                  <label htmlFor="collection-search" className="sr-only">
+                    Search pieces
+                  </label>
+                  <input
+                    id="collection-search"
+                    type="text"
+                    inputMode="search"
+                    placeholder="Search"
+                    value={qLocal}
+                    onChange={(e) => setQLocal(e.target.value)}
+                    className="h-10 min-w-0 flex-1 sm:flex-none bg-transparent border-b border-charcoal/20 px-1 text-sm placeholder:text-charcoal/40 focus:outline-none focus:border-charcoal transition-colors"
+                    style={{ width: "auto", maxWidth: "280px" }}
+                  />
 
-              <span
-                className="hidden sm:inline-flex items-center h-10 whitespace-nowrap text-[10px] uppercase tracking-[0.22em] text-charcoal/55"
-                aria-hidden
-              >
-                Sort
-              </span>
-              <div
-                role="group"
-                aria-label="Sort"
-                className="inline-flex items-center h-10 gap-4"
-              >
-                {([
-                  { id: "type", label: "Type" },
-                  { id: "az", label: "A–Z" },
-                  { id: "tonal", label: "Tonal" },
-                ] as { id: SortKey; label: string }[]).map((opt) => {
-                  const active = sort === opt.id;
-                  return (
+                  <span
+                    className="hidden sm:inline-flex items-center h-10 whitespace-nowrap text-[10px] uppercase tracking-[0.22em] text-charcoal/55"
+                    aria-hidden
+                  >
+                    Sort
+                  </span>
+                  <div
+                    role="group"
+                    aria-label="Sort"
+                    className="inline-flex items-center h-10 gap-4"
+                  >
+                    {(
+                      [
+                        { id: "type", label: "Type" },
+                        { id: "az", label: "A–Z" },
+                        { id: "tonal", label: "Tonal" },
+                      ] as { id: SortKey; label: string }[]
+                    ).map((opt) => {
+                      const active = sort === opt.id;
+                      return (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          onClick={() =>
+                            navigate({
+                              search: (prev: CollectionSearch) => ({
+                                ...prev,
+                                sort: opt.id,
+                              }),
+                              replace: true,
+                              resetScroll: false,
+                            })
+                          }
+                          aria-pressed={active}
+                          className={[
+                            "text-[10px] uppercase tracking-[0.22em] py-1 transition-colors",
+                            "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
+                            active
+                              ? "text-charcoal border-b border-charcoal"
+                              : "text-charcoal/55 hover:text-charcoal border-b border-transparent",
+                          ].join(" ")}
+                        >
+                          {opt.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div
+                    className="hidden lg:flex items-center border border-charcoal/10"
+                    role="group"
+                    aria-label="View"
+                  >
                     <button
-                      key={opt.id}
-                      type="button"
-                      onClick={() =>
-                        navigate({
-                          search: (prev: CollectionSearch) => ({
-                            ...prev,
-                            sort: opt.id,
-                          }),
-                          replace: true,
-                          resetScroll: false,
-                        })
-                      }
-                      aria-pressed={active}
+                      onClick={() => setLayout("grid")}
                       className={[
-                        "text-[10px] uppercase tracking-[0.22em] py-1 transition-colors",
-                        "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
-                        active
-                          ? "text-charcoal border-b border-charcoal"
-                          : "text-charcoal/55 hover:text-charcoal border-b border-transparent",
+                        "h-10 w-10 inline-flex items-center justify-center transition-colors",
+                        "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+                        layout === "grid"
+                          ? "text-charcoal bg-charcoal/[0.04]"
+                          : "text-charcoal/40 hover:text-charcoal/80",
                       ].join(" ")}
+                      aria-label="3-up grid"
+                      aria-pressed={layout === "grid"}
+                      title="Grid — 3 columns, large tiles"
                     >
-                      {opt.label}
+                      <DensityIconLarge />
                     </button>
-                  );
-                })}
-              </div>
-
-              <div
-                className="hidden lg:flex items-center border border-charcoal/10"
-                role="group"
-                aria-label="View"
-              >
-                <button
-                  onClick={() => setLayout("grid")}
-                  className={[
-                    "h-10 w-10 inline-flex items-center justify-center transition-colors",
-                    "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
-                    layout === "grid"
-                      ? "text-charcoal bg-charcoal/[0.04]"
-                      : "text-charcoal/40 hover:text-charcoal/80",
-                  ].join(" ")}
-                  aria-label="3-up grid"
-                  aria-pressed={layout === "grid"}
-                  title="Grid — 3 columns, large tiles"
-                >
-                  <DensityIconLarge />
-                </button>
-                <button
-                  onClick={() => setLayout("wall")}
-                  className={[
-                    "h-10 w-10 inline-flex items-center justify-center transition-colors border-l border-charcoal/10",
-                    "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
-                    layout === "wall"
-                      ? "text-charcoal bg-charcoal/[0.04]"
-                      : "text-charcoal/40 hover:text-charcoal/80",
-                  ].join(" ")}
-                  aria-label="Wall view"
-                  aria-pressed={layout === "wall"}
-                  title="Wall — full viewport, every piece at once"
-                >
-                  <WallIcon />
-                </button>
-              </div>
+                    <button
+                      onClick={() => setLayout("wall")}
+                      className={[
+                        "h-10 w-10 inline-flex items-center justify-center transition-colors border-l border-charcoal/10",
+                        "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+                        layout === "wall"
+                          ? "text-charcoal bg-charcoal/[0.04]"
+                          : "text-charcoal/40 hover:text-charcoal/80",
+                      ].join(" ")}
+                      aria-label="Wall view"
+                      aria-pressed={layout === "wall"}
+                      title="Wall — full viewport, every piece at once"
+                    >
+                      <WallIcon />
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
-            )}
-          </div>
 
-          {/* Contextual subcategory rail — taxonomy only, never inventory.
+            {/* Contextual subcategory rail — taxonomy only, never inventory.
               Renders [All, ...PARENT_SUBS[activeParent]] for the active parent.
               The flattened 18-row rail (BROWSE_GROUP_ORDER.map) is gone. */}
-          {activeParent && (
-            <div className="px-0 pb-3">
-              <div
-                className="mx-auto"
-                style={{ maxWidth: "var(--archive-canvas-max)" }}
-              >
-                <SubcategoryRail
-                  parent={activeParent}
-                  active={activeSubcategory}
-                  onSelect={selectSubcategory}
-                />
+            {activeParent && (
+              <div className="px-0 pb-3">
+                <div className="mx-auto" style={{ maxWidth: "var(--archive-canvas-max)" }}>
+                  <SubcategoryRail
+                    parent={activeParent}
+                    active={activeSubcategory}
+                    onSelect={selectSubcategory}
+                  />
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
       )}
 
       {/* ============================================================
@@ -989,11 +1013,21 @@ function CollectionPage() {
           Right: overview gallery OR category hero + grid.
           ============================================================ */}
       <section
-        className={showOverview ? "px-0 pt-0" : layout === "wall" ? "px-0 pt-0" : "px-6 pt-6 lg:px-12 lg:pt-8"}
+        className={
+          showOverview
+            ? "px-0 pt-0"
+            : layout === "wall"
+              ? "px-0 pt-0"
+              : "px-6 pt-6 lg:px-12 lg:pt-8"
+        }
       >
         <div
           className={showOverview || layout === "wall" ? "" : "mx-auto"}
-          style={showOverview || layout === "wall" ? undefined : { maxWidth: "var(--archive-canvas-max)" }}
+          style={
+            showOverview || layout === "wall"
+              ? undefined
+              : { maxWidth: "var(--archive-canvas-max)" }
+          }
         >
           <div className={showOverview ? "collection-overview-layout" : "grid grid-cols-1"}>
             {showOverview && (
@@ -1038,162 +1072,171 @@ function CollectionPage() {
 
             {/* ===== RIGHT: main pane ===== */}
             <AnimatePresence mode="wait">
-            <motion.div
-              key={showOverview ? "overview" : "results"}
-              className={showOverview ? "collection-overview-pane min-w-0 flex flex-col" : "min-w-0 flex-1 flex flex-col lg:min-h-0 lg:overflow-hidden"}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: reduced ? 0 : 0.36, ease: [0.22, 0.61, 0.36, 1] }}
-              style={{ background: "var(--paper)" }}
-            >
-              {showOverview ? (
-                <>
-                  {/* Mobile/tablet: H identity returns as a fixed-height masthead;
+              <motion.div
+                key={showOverview ? "overview" : "results"}
+                className={
+                  showOverview
+                    ? "collection-overview-pane min-w-0 flex flex-col"
+                    : "min-w-0 flex-1 flex flex-col lg:min-h-0 lg:overflow-hidden"
+                }
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: reduced ? 0 : 0.36, ease: [0.22, 0.61, 0.36, 1] }}
+                style={{ background: "var(--paper)" }}
+              >
+                {showOverview ? (
+                  <>
+                    {/* Mobile/tablet: H identity returns as a fixed-height masthead;
                       the category grid takes the remaining viewport below it. */}
-                  <div
-                    className="lg:hidden flex items-center justify-center flex-shrink-0 overflow-hidden"
-                    style={{
-                      height: "var(--collection-mobile-h-h)",
-                      background: "var(--paper)",
-                    }}
-                  >
-                    <picture className="block w-full h-full">
-                      {hiveSignatureHeroMobile.sources.avif && (
-                        <source
-                          type="image/avif"
-                          srcSet={hiveSignatureHeroMobile.sources.avif}
-                          sizes="100vw"
-                        />
-                      )}
-                      {hiveSignatureHeroMobile.sources.webp && (
-                        <source
-                          type="image/webp"
-                          srcSet={hiveSignatureHeroMobile.sources.webp}
-                          sizes="100vw"
-                        />
-                      )}
-                      <img
-                        src={hiveSignatureHeroMobile.img.src}
-                        width={hiveSignatureHeroMobile.img.w}
-                        height={hiveSignatureHeroMobile.img.h}
-                        alt="The Hive — Signature Collection"
-                        decoding="async"
-                        loading="eager"
-                        {...({ fetchPriority: "high" } as Record<string, string>)}
-                        draggable={false}
-                        className="block w-full h-full object-contain"
-                        style={{ objectPosition: "center" }}
-                      />
-                    </picture>
-                  </div>
-                  <div
-                    className="collection-overview-grid-shell flex-1 min-h-0"
-                  >
-
-                    <CategoryTonalGrid
-                      groups={overviewGroups}
-                      onSelectCategory={(id: BrowseGroupId) => selectFromTile(id)}
-                    />
-                  </div>
-                </>
-              ) : layout === "wall" ? (
-                <div
-                  className="relative w-full"
-                    style={{ height: "calc(var(--app-vh, 100dvh) - var(--nav-h) - var(--collection-bar-h, var(--archive-utility-h)))" }}
-                >
-                  {visibleProducts.length === 0 ? (
-                    <div className="py-32 px-6">
-                      <p className="text-[15px] leading-relaxed text-charcoal/70">
-                        No pieces match the current filters.
-                      </p>
-                    </div>
-                  ) : (
-                    <CollectionWall
-                      products={visibleProducts}
-                      onOpen={(id) => openQuickView(id)}
-                      cap={600}
-                    />
-                  )}
-                </div>
-              ) : (
-                <>
-                  <div
-                    style={{
-                      paddingTop: "clamp(2.5rem, 5vw, 5rem)",
-                      paddingBottom: "2rem",
-                    }}
-                  >
                     <div
-                      ref={resultsTopRef}
-                      id="results-top"
-                      aria-hidden
+                      className="lg:hidden flex items-center justify-center flex-shrink-0 overflow-hidden"
                       style={{
-                        scrollMarginTop:
-                          "calc(var(--nav-h) + var(--archive-utility-h))",
+                        height: "var(--collection-mobile-h-h)",
+                        background: "var(--paper)",
                       }}
-                    />
-
+                    >
+                      <picture className="block w-full h-full">
+                        {hiveSignatureHeroMobile.sources.avif && (
+                          <source
+                            type="image/avif"
+                            srcSet={hiveSignatureHeroMobile.sources.avif}
+                            sizes="100vw"
+                          />
+                        )}
+                        {hiveSignatureHeroMobile.sources.webp && (
+                          <source
+                            type="image/webp"
+                            srcSet={hiveSignatureHeroMobile.sources.webp}
+                            sizes="100vw"
+                          />
+                        )}
+                        <img
+                          src={hiveSignatureHeroMobile.img.src}
+                          width={hiveSignatureHeroMobile.img.w}
+                          height={hiveSignatureHeroMobile.img.h}
+                          alt="The Hive — Signature Collection"
+                          decoding="async"
+                          loading="eager"
+                          {...({ fetchPriority: "high" } as Record<string, string>)}
+                          draggable={false}
+                          className="block w-full h-full object-contain"
+                          style={{ objectPosition: "center" }}
+                        />
+                      </picture>
+                    </div>
+                    <div className="collection-overview-grid-shell flex-1 min-h-0">
+                      <CategoryTonalGrid
+                        groups={overviewGroups}
+                        onSelectCategory={(id: BrowseGroupId) => selectFromTile(id)}
+                      />
+                    </div>
+                  </>
+                ) : layout === "wall" ? (
+                  <div
+                    className="relative w-full"
+                    style={{
+                      height:
+                        "calc(var(--app-vh, 100dvh) - var(--nav-h) - var(--collection-bar-h, var(--archive-utility-h)))",
+                    }}
+                  >
                     {visibleProducts.length === 0 ? (
-                      <div className="py-32">
+                      <div className="py-32 px-6">
                         <p className="text-[15px] leading-relaxed text-charcoal/70">
                           No pieces match the current filters.
                         </p>
-                        <button
-                          onClick={resetAll}
-                          className="mt-6 text-[10px] uppercase tracking-[0.22em] text-charcoal/55 hover:text-charcoal underline underline-offset-4 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
-                        >
-                          Clear All
-                        </button>
                       </div>
                     ) : (
-                      <>
-                        <div
-                          className="collection-results-container"
-                          data-media-debug={mediaDebug || undefined}
-                        >
-                          <AnimatePresence mode="wait">
-                          <motion.ul
-                            key={`grid-${activeParent}-${activeSubcategory}-${sort}`}
-                            className="collection-product-grid"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1, transition: { duration: reduced ? 0 : 0.3, ease: [0.22, 0.61, 0.36, 1] } }}
-                            exit={{ opacity: 0, transition: { duration: reduced ? 0 : 0.18, ease: [0.4, 0, 0.6, 1] } }}
-                          >
-                            {(() => {
-                              return visibleBatch.map((p, i) => (
-                                <ProductTile
-                                  key={p.id}
-                                  product={p}
-                                  index={i}
-                                  onOpen={() => openQuickView(p.slug ?? p.id)}
-                                  alignToSharedBaseline={true}
-                                />
-                              ));
-                            })()}
-                          </motion.ul>
-                          </AnimatePresence>
-                        </div>
-
-
-                        {hasMore && (
-                          <div
-                            ref={loadMoreSentinelRef}
-                            aria-hidden
-                            className="h-10 w-full"
-                          />
-                        )}
-                      </>
+                      <CollectionWall
+                        products={visibleProducts}
+                        onOpen={(id) => openQuickView(id)}
+                        cap={600}
+                      />
                     )}
                   </div>
-                </>
-              )}
-            </motion.div>
+                ) : (
+                  <>
+                    <div
+                      style={{
+                        paddingTop: "clamp(2.5rem, 5vw, 5rem)",
+                        paddingBottom: "2rem",
+                      }}
+                    >
+                      <div
+                        ref={resultsTopRef}
+                        id="results-top"
+                        aria-hidden
+                        style={{
+                          scrollMarginTop: "calc(var(--nav-h) + var(--archive-utility-h))",
+                        }}
+                      />
+
+                      {visibleProducts.length === 0 ? (
+                        <div className="py-32">
+                          <p className="text-[15px] leading-relaxed text-charcoal/70">
+                            No pieces match the current filters.
+                          </p>
+                          <button
+                            onClick={resetAll}
+                            className="mt-6 text-[10px] uppercase tracking-[0.22em] text-charcoal/55 hover:text-charcoal underline underline-offset-4 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
+                          >
+                            Clear All
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          <div
+                            className="collection-results-container"
+                            data-media-debug={mediaDebug || undefined}
+                          >
+                            <AnimatePresence mode="wait">
+                              <motion.ul
+                                key={`grid-${activeParent}-${activeSubcategory}-${sort}`}
+                                className="collection-product-grid"
+                                initial={{ opacity: 0 }}
+                                animate={{
+                                  opacity: 1,
+                                  transition: {
+                                    duration: reduced ? 0 : 0.3,
+                                    ease: [0.22, 0.61, 0.36, 1],
+                                  },
+                                }}
+                                exit={{
+                                  opacity: 0,
+                                  transition: {
+                                    duration: reduced ? 0 : 0.18,
+                                    ease: [0.4, 0, 0.6, 1],
+                                  },
+                                }}
+                              >
+                                {(() => {
+                                  return visibleBatch.map((p, i) => (
+                                    <ProductTile
+                                      key={p.id}
+                                      product={p}
+                                      index={i}
+                                      onOpen={() => openQuickView(p.slug ?? p.id)}
+                                      alignToSharedBaseline={true}
+                                    />
+                                  ));
+                                })()}
+                              </motion.ul>
+                            </AnimatePresence>
+                          </div>
+
+                          {hasMore && (
+                            <div ref={loadMoreSentinelRef} aria-hidden className="h-10 w-full" />
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </>
+                )}
+              </motion.div>
             </AnimatePresence>
           </div>
         </div>
       </section>
-
 
       {/* Mobile filter bottom-sheet — rendered OUTSIDE <main> so inert on
           <main> never accidentally inerts the sheet itself. */}
@@ -1217,9 +1260,7 @@ function CollectionPage() {
               animate={reduced ? { opacity: 1 } : { y: 0 }}
               exit={reduced ? { opacity: 0 } : { y: "100%" }}
               transition={
-                reduced
-                  ? { duration: 0 }
-                  : { type: "spring", stiffness: 320, damping: 34 }
+                reduced ? { duration: 0 } : { type: "spring", stiffness: 320, damping: 34 }
               }
               drag={reduced ? false : "y"}
               dragConstraints={{ top: 0, bottom: 0 }}
@@ -1235,17 +1276,12 @@ function CollectionPage() {
               aria-label="Filters"
             >
               {/* Drag handle */}
-              <div
-                className="pt-2.5 pb-1 flex justify-center"
-                aria-hidden
-              >
+              <div className="pt-2.5 pb-1 flex justify-center" aria-hidden>
                 <div className="h-1 w-10 bg-charcoal/15 rounded-full" />
               </div>
 
               <div className="flex items-center justify-between px-6 pt-2 pb-3 border-b border-charcoal/10">
-                <p className="text-[11px] uppercase tracking-[0.25em] text-charcoal/70">
-                  Filters
-                </p>
+                <p className="text-[11px] uppercase tracking-[0.25em] text-charcoal/70">Filters</p>
                 <button
                   ref={sheetCloseRef}
                   onClick={() => setSheetOpen(false)}
@@ -1311,15 +1347,13 @@ function CollectionPage() {
                   onClick={() => setSheetOpen(false)}
                   className="w-full h-12 bg-charcoal text-white text-[11px] uppercase tracking-[0.2em] hover:bg-charcoal/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
                 >
-                  Show {visibleProducts.length}{" "}
-                  {visibleProducts.length === 1 ? "piece" : "pieces"}
+                  Show {visibleProducts.length} {visibleProducts.length === 1 ? "piece" : "pieces"}
                 </button>
               </div>
             </motion.div>
           </>
         )}
       </AnimatePresence>
-
 
       {/* InquiryTray is now globalized in __root.tsx */}
 
@@ -1328,321 +1362,212 @@ function CollectionPage() {
           Opens a full-viewport frosted search modal.
           ============================================================ */}
       {!showOverview && (
-      <button
-        onClick={() => setSearchOpen(true)}
-        aria-label="Search the collection"
-        style={{
-          position: "fixed",
-          bottom: "clamp(24px, 3vh, 40px)",
-          right: "clamp(24px, 3vw, 40px)",
-          width: "48px",
-          height: "48px",
-          borderRadius: "50%",
-          background: "rgba(26,26,26,0.92)",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-          border: "1px solid rgba(255,255,255,0.08)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          cursor: "pointer",
-          zIndex: 40,
-          boxShadow: "0 4px 24px rgba(0,0,0,0.18)",
-        }}
-      >
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <circle cx="6.5" cy="6.5" r="4.5" stroke="rgba(245,242,237,0.85)" strokeWidth="1.2" />
-          <line x1="10.5" y1="10.5" x2="14" y2="14" stroke="rgba(245,242,237,0.85)" strokeWidth="1.2" strokeLinecap="round" />
-        </svg>
-      </button>
-      )}
-
-      {searchOpen && (() => {
-        // ---- Live suggestion engine (recomputed each render while open) ----
-        const raw = modalQuery.trim().toLowerCase();
-        // Categories suggested in the modal are the 10 PARENTS, never the
-        // legacy 18 BrowseGroupIds — that would re-introduce the flattened
-        // taxonomy through the back door.
-        const matchedCategories = raw
-          ? PARENT_ORDER.filter((id) =>
-              PARENT_LABELS[id].toLowerCase().includes(raw),
-            ).slice(0, 4)
-          : [];
-        const matchedProducts = raw
-          ? products
-              .filter((p) => p.title.toLowerCase().includes(raw))
-              .slice(0, 8)
-          : [];
-
-        const DEBOUNCE_MS = 140;
-        const scheduleCommit = (fn: () => void) => {
-          if (modalCommitTimerRef.current !== null) {
-            window.clearTimeout(modalCommitTimerRef.current);
-          }
-          modalCommitTimerRef.current = window.setTimeout(() => {
-            modalCommitTimerRef.current = null;
-            fn();
-          }, DEBOUNCE_MS);
-        };
-        const commitQuery = (text: string) => {
-          const next = text.trim();
-          if (!next) return;
-          setSearchOpen(false);
-          setModalQuery("");
-          scheduleCommit(() => {
-            setQLocal(next);
-            navigate({
-              search: (prev: CollectionSearch) => ({
-                ...prev,
-                group: "",
-                subcategory: "all",
-                q: next,
-                view: "",
-                peek: undefined,
-              }),
-              replace: true,
-              resetScroll: false,
-            });
-          });
-        };
-        const commitCategory = (id: ParentId) => {
-          setSearchOpen(false);
-          setModalQuery("");
-          scheduleCommit(() => {
-            setQLocal("");
-            navigate({
-              search: (prev: CollectionSearch) => ({
-                ...prev,
-                group: id,
-                subcategory: "all",
-                q: "",
-                view: "",
-                peek: undefined,
-              }),
-              replace: true,
-              resetScroll: false,
-            });
-          });
-        };
-
-        return (
-        <div
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setSearchOpen(false);
-          }}
+        <button
+          onClick={() => setSearchOpen(true)}
+          aria-label="Search the collection"
           style={{
             position: "fixed",
-            inset: 0,
-            zIndex: 50,
-            background: "rgba(255,255,255,0.92)",
-            backdropFilter: "blur(20px)",
-            WebkitBackdropFilter: "blur(20px)",
+            bottom: "clamp(24px, 3vh, 40px)",
+            right: "clamp(24px, 3vw, 40px)",
+            width: "48px",
+            height: "48px",
+            borderRadius: "50%",
+            background: "rgba(26,26,26,0.92)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+            border: "1px solid rgba(255,255,255,0.08)",
             display: "flex",
-            flexDirection: "column",
             alignItems: "center",
-            // Tight on phones, spacious on desktop. Side padding shrinks
-            // hard on narrow screens so the input + ESC button always fit.
-            padding:
-              "clamp(56px, 10vh, 140px) clamp(14px, 6vw, 120px) clamp(20px, 4vh, 40px)",
-            overflowY: "auto",
+            justifyContent: "center",
+            cursor: "pointer",
+            zIndex: 40,
+            boxShadow: "0 4px 24px rgba(0,0,0,0.18)",
           }}
         >
-          <div
-            style={{
-              width: "100%",
-              maxWidth: "640px",
-              borderBottom: "1px solid rgba(26,26,26,0.15)",
-              display: "flex",
-              alignItems: "center",
-              gap: "clamp(8px, 2vw, 14px)",
-              paddingBottom: "12px",
-            }}
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              style={{ opacity: 0.35, flexShrink: 0 }}
-            >
-              <circle cx="6.5" cy="6.5" r="4.5" stroke="#1a1a1a" strokeWidth="1.2" />
-              <line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#1a1a1a" strokeWidth="1.2" strokeLinecap="round" />
-            </svg>
-            <input
-              autoFocus
-              value={modalQuery}
-              onChange={(e) => setModalQuery(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && modalQuery.trim()) {
-                  commitQuery(modalQuery);
-                }
-              }}
-              placeholder="Search the archive"
-              style={{
-                flex: 1,
-                minWidth: 0,
-                border: "none",
-                outline: "none",
-                background: "transparent",
-                fontFamily: "var(--font-display)",
-                // Smaller on phones so input + ESC fit without scaling.
-                fontSize: "clamp(18px, 5vw, 36px)",
-                color: "#1a1a1a",
-                letterSpacing: "-0.01em",
-              }}
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <circle cx="6.5" cy="6.5" r="4.5" stroke="rgba(245,242,237,0.85)" strokeWidth="1.2" />
+            <line
+              x1="10.5"
+              y1="10.5"
+              x2="14"
+              y2="14"
+              stroke="rgba(245,242,237,0.85)"
+              strokeWidth="1.2"
+              strokeLinecap="round"
             />
-            <button
-              onClick={() => setSearchOpen(false)}
-              aria-label="Close search"
+          </svg>
+        </button>
+      )}
+
+      {searchOpen &&
+        (() => {
+          // ---- Live suggestion engine (recomputed each render while open) ----
+          const raw = modalQuery.trim().toLowerCase();
+          // Categories suggested in the modal are the 10 PARENTS, never the
+          // legacy 18 BrowseGroupIds — that would re-introduce the flattened
+          // taxonomy through the back door.
+          const matchedCategories = raw
+            ? PARENT_ORDER.filter((id) => PARENT_LABELS[id].toLowerCase().includes(raw)).slice(0, 4)
+            : [];
+          const matchedProducts = raw
+            ? products.filter((p) => p.title.toLowerCase().includes(raw)).slice(0, 8)
+            : [];
+
+          const DEBOUNCE_MS = 140;
+          const scheduleCommit = (fn: () => void) => {
+            if (modalCommitTimerRef.current !== null) {
+              window.clearTimeout(modalCommitTimerRef.current);
+            }
+            modalCommitTimerRef.current = window.setTimeout(() => {
+              modalCommitTimerRef.current = null;
+              fn();
+            }, DEBOUNCE_MS);
+          };
+          const commitQuery = (text: string) => {
+            const next = text.trim();
+            if (!next) return;
+            setSearchOpen(false);
+            setModalQuery("");
+            scheduleCommit(() => {
+              setQLocal(next);
+              navigate({
+                search: (prev: CollectionSearch) => ({
+                  ...prev,
+                  group: "",
+                  subcategory: "all",
+                  q: next,
+                  view: "",
+                  peek: undefined,
+                }),
+                replace: true,
+                resetScroll: false,
+              });
+            });
+          };
+          const commitCategory = (id: ParentId) => {
+            setSearchOpen(false);
+            setModalQuery("");
+            scheduleCommit(() => {
+              setQLocal("");
+              navigate({
+                search: (prev: CollectionSearch) => ({
+                  ...prev,
+                  group: id,
+                  subcategory: "all",
+                  q: "",
+                  view: "",
+                  peek: undefined,
+                }),
+                replace: true,
+                resetScroll: false,
+              });
+            });
+          };
+
+          return (
+            <div
+              onClick={(e) => {
+                if (e.target === e.currentTarget) setSearchOpen(false);
+              }}
               style={{
-                fontFamily: "var(--font-sans)",
-                fontSize: "9px",
-                letterSpacing: "0.22em",
-                textTransform: "uppercase",
-                color: "rgba(26,26,26,0.55)",
-                background: "none",
-                border: "1px solid rgba(26,26,26,0.18)",
-                cursor: "pointer",
-                flexShrink: 0,
-                padding: "5px 8px",
-                lineHeight: 1,
+                position: "fixed",
+                inset: 0,
+                zIndex: 50,
+                background: "rgba(255,255,255,0.92)",
+                backdropFilter: "blur(20px)",
+                WebkitBackdropFilter: "blur(20px)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                // Tight on phones, spacious on desktop. Side padding shrinks
+                // hard on narrow screens so the input + ESC button always fit.
+                padding: "clamp(56px, 10vh, 140px) clamp(14px, 6vw, 120px) clamp(20px, 4vh, 40px)",
+                overflowY: "auto",
               }}
             >
-              ESC
-            </button>
-          </div>
-
-          {/* Suggestions / footer area */}
-          <div
-            style={{
-              width: "100%",
-              maxWidth: "640px",
-              marginTop: "clamp(18px, 3vh, 28px)",
-            }}
-          >
-            {raw.length === 0 ? (
-              <div>
-                <p
+              <div
+                style={{
+                  width: "100%",
+                  maxWidth: "640px",
+                  borderBottom: "1px solid rgba(26,26,26,0.15)",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "clamp(8px, 2vw, 14px)",
+                  paddingBottom: "12px",
+                }}
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  style={{ opacity: 0.35, flexShrink: 0 }}
+                >
+                  <circle cx="6.5" cy="6.5" r="4.5" stroke="#1a1a1a" strokeWidth="1.2" />
+                  <line
+                    x1="10.5"
+                    y1="10.5"
+                    x2="14"
+                    y2="14"
+                    stroke="#1a1a1a"
+                    strokeWidth="1.2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <input
+                  autoFocus
+                  value={modalQuery}
+                  onChange={(e) => setModalQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && modalQuery.trim()) {
+                      commitQuery(modalQuery);
+                    }
+                  }}
+                  placeholder="Search the archive"
+                  style={{
+                    flex: 1,
+                    minWidth: 0,
+                    border: "none",
+                    outline: "none",
+                    background: "transparent",
+                    fontFamily: "var(--font-display)",
+                    // Smaller on phones so input + ESC fit without scaling.
+                    fontSize: "clamp(18px, 5vw, 36px)",
+                    color: "#1a1a1a",
+                    letterSpacing: "-0.01em",
+                  }}
+                />
+                <button
+                  onClick={() => setSearchOpen(false)}
+                  aria-label="Close search"
                   style={{
                     fontFamily: "var(--font-sans)",
-                    fontSize: "10px",
+                    fontSize: "9px",
                     letterSpacing: "0.22em",
                     textTransform: "uppercase",
-                    color: "rgba(26,26,26,0.32)",
-                    margin: "0 0 14px",
+                    color: "rgba(26,26,26,0.55)",
+                    background: "none",
+                    border: "1px solid rgba(26,26,26,0.18)",
+                    cursor: "pointer",
+                    flexShrink: 0,
+                    padding: "5px 8px",
+                    lineHeight: 1,
                   }}
                 >
-                  {total} pieces across {overviewGroups.length} categories
-                </p>
-                <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                  {PARENT_ORDER.slice(0, 6).map((id) => {
-                    const label = PARENT_LABELS[id];
-                    return (
-                      <li key={id}>
-                        <button
-                          type="button"
-                          onClick={() => commitCategory(id)}
-                          style={suggestionRowStyle}
-                        >
-                          <span
-                            style={{
-                              fontSize: "9px",
-                              letterSpacing: "0.22em",
-                              textTransform: "uppercase",
-                              color: "rgba(26,26,26,0.4)",
-                              minWidth: 70,
-                            }}
-                          >
-                            Category
-                          </span>
-                          <span
-                            style={{
-                              fontFamily: "var(--font-display)",
-                              fontSize: "clamp(15px, 2vw, 18px)",
-                              color: "#1a1a1a",
-                            }}
-                          >
-                            {label}
-                          </span>
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
+                  ESC
+                </button>
               </div>
-            ) : (
-              <div>
-                {matchedCategories.length === 0 && matchedProducts.length === 0 ? (
-                  <p
-                    style={{
-                      fontFamily: "var(--font-sans)",
-                      fontSize: "11px",
-                      color: "rgba(26,26,26,0.55)",
-                      margin: 0,
-                    }}
-                  >
-                    No matches. Press Enter to search anyway.
-                  </p>
-                ) : (
-                  <>
-                    {matchedCategories.length > 0 && (
-                      <div style={{ marginBottom: 18 }}>
-                        <p style={suggestionGroupLabel}>Categories</p>
-                        <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                          {matchedCategories.map((id) => {
-                            const label = PARENT_LABELS[id];
-                            return (
-                              <li key={id}>
-                                <button
-                                  type="button"
-                                  onClick={() => commitCategory(id)}
-                                  style={suggestionRowStyle}
-                                >
-                                  <span
-                                    style={{
-                                      fontFamily: "var(--font-display)",
-                                      fontSize: "clamp(15px, 2vw, 18px)",
-                                      color: "#1a1a1a",
-                                    }}
-                                  >
-                                    {label}
-                                  </span>
-                                </button>
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      </div>
-                    )}
-                    {matchedProducts.length > 0 && (
-                      <div>
-                        <p style={suggestionGroupLabel}>Pieces</p>
-                        <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                          {matchedProducts.map((p) => (
-                            <li key={p.id}>
-                              <button
-                                type="button"
-                                onClick={() => commitQuery(p.title)}
-                                style={suggestionRowStyle}
-                              >
-                                <span
-                                  style={{
-                                    fontFamily: "var(--font-display)",
-                                    fontSize: "clamp(14px, 1.8vw, 16px)",
-                                    color: "#1a1a1a",
-                                    textAlign: "left",
-                                    textTransform: "uppercase",
-                                    letterSpacing: "0.06em",
-                                  }}
-                                >
-                                  {p.title}
-                                </span>
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+
+              {/* Suggestions / footer area */}
+              <div
+                style={{
+                  width: "100%",
+                  maxWidth: "640px",
+                  marginTop: "clamp(18px, 3vh, 28px)",
+                }}
+              >
+                {raw.length === 0 ? (
+                  <div>
                     <p
                       style={{
                         fontFamily: "var(--font-sans)",
@@ -1650,76 +1575,197 @@ function CollectionPage() {
                         letterSpacing: "0.22em",
                         textTransform: "uppercase",
                         color: "rgba(26,26,26,0.32)",
-                        margin: "18px 0 0",
+                        margin: "0 0 14px",
                       }}
                     >
-                      Press Enter to search all {total} pieces
+                      {total} pieces across {overviewGroups.length} categories
                     </p>
-                  </>
+                    <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                      {PARENT_ORDER.slice(0, 6).map((id) => {
+                        const label = PARENT_LABELS[id];
+                        return (
+                          <li key={id}>
+                            <button
+                              type="button"
+                              onClick={() => commitCategory(id)}
+                              style={suggestionRowStyle}
+                            >
+                              <span
+                                style={{
+                                  fontSize: "9px",
+                                  letterSpacing: "0.22em",
+                                  textTransform: "uppercase",
+                                  color: "rgba(26,26,26,0.4)",
+                                  minWidth: 70,
+                                }}
+                              >
+                                Category
+                              </span>
+                              <span
+                                style={{
+                                  fontFamily: "var(--font-display)",
+                                  fontSize: "clamp(15px, 2vw, 18px)",
+                                  color: "#1a1a1a",
+                                }}
+                              >
+                                {label}
+                              </span>
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                ) : (
+                  <div>
+                    {matchedCategories.length === 0 && matchedProducts.length === 0 ? (
+                      <p
+                        style={{
+                          fontFamily: "var(--font-sans)",
+                          fontSize: "11px",
+                          color: "rgba(26,26,26,0.55)",
+                          margin: 0,
+                        }}
+                      >
+                        No matches. Press Enter to search anyway.
+                      </p>
+                    ) : (
+                      <>
+                        {matchedCategories.length > 0 && (
+                          <div style={{ marginBottom: 18 }}>
+                            <p style={suggestionGroupLabel}>Categories</p>
+                            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                              {matchedCategories.map((id) => {
+                                const label = PARENT_LABELS[id];
+                                return (
+                                  <li key={id}>
+                                    <button
+                                      type="button"
+                                      onClick={() => commitCategory(id)}
+                                      style={suggestionRowStyle}
+                                    >
+                                      <span
+                                        style={{
+                                          fontFamily: "var(--font-display)",
+                                          fontSize: "clamp(15px, 2vw, 18px)",
+                                          color: "#1a1a1a",
+                                        }}
+                                      >
+                                        {label}
+                                      </span>
+                                    </button>
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          </div>
+                        )}
+                        {matchedProducts.length > 0 && (
+                          <div>
+                            <p style={suggestionGroupLabel}>Pieces</p>
+                            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                              {matchedProducts.map((p) => (
+                                <li key={p.id}>
+                                  <button
+                                    type="button"
+                                    onClick={() => commitQuery(p.title)}
+                                    style={suggestionRowStyle}
+                                  >
+                                    <span
+                                      style={{
+                                        fontFamily: "var(--font-display)",
+                                        fontSize: "clamp(14px, 1.8vw, 16px)",
+                                        color: "#1a1a1a",
+                                        textAlign: "left",
+                                        textTransform: "uppercase",
+                                        letterSpacing: "0.06em",
+                                      }}
+                                    >
+                                      {p.title}
+                                    </span>
+                                  </button>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        <p
+                          style={{
+                            fontFamily: "var(--font-sans)",
+                            fontSize: "10px",
+                            letterSpacing: "0.22em",
+                            textTransform: "uppercase",
+                            color: "rgba(26,26,26,0.32)",
+                            margin: "18px 0 0",
+                          }}
+                        >
+                          Press Enter to search all {total} pieces
+                        </p>
+                      </>
+                    )}
+                  </div>
                 )}
               </div>
-            )}
-          </div>
 
-          {/* ----------------------------------------------------------------
+              {/* ----------------------------------------------------------------
               Scope indicator — pinned to the bottom of the modal panel,
               always visible. The modal's search applies to ALL inventory
               regardless of which section the user launched from. The inline
               utility-bar input stays section-scoped, so this label exists
               specifically to set that expectation.
               ---------------------------------------------------------------- */}
-          <div
-            style={{
-              marginTop: "auto",
-              paddingTop: "clamp(20px, 4vh, 32px)",
-              width: "100%",
-              maxWidth: "640px",
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-            }}
-          >
-            <span
-              aria-hidden
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: "50%",
-                background: "rgba(26,26,26,0.55)",
-                flexShrink: 0,
-              }}
-            />
-            <span
-              style={{
-                fontFamily: "var(--font-sans)",
-                fontSize: "9px",
-                letterSpacing: "0.24em",
-                textTransform: "uppercase",
-                color: "rgba(26,26,26,0.55)",
-                lineHeight: 1.4,
-              }}
-            >
-              Searching all {total} pieces · {overviewGroups.length} categories
-            </span>
-            {activeParent && (
-              <span
+              <div
                 style={{
-                  fontFamily: "var(--font-sans)",
-                  fontSize: "9px",
-                  letterSpacing: "0.22em",
-                  textTransform: "uppercase",
-                  color: "rgba(26,26,26,0.35)",
-                  marginLeft: "auto",
+                  marginTop: "auto",
+                  paddingTop: "clamp(20px, 4vh, 32px)",
+                  width: "100%",
+                  maxWidth: "640px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
                 }}
-                title="The bar inside a category stays section-scoped. The modal does not."
               >
-                Bar: {PARENT_LABELS[activeParent]} only
-              </span>
-            )}
-          </div>
-        </div>
-        );
-      })()}
+                <span
+                  aria-hidden
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: "50%",
+                    background: "rgba(26,26,26,0.55)",
+                    flexShrink: 0,
+                  }}
+                />
+                <span
+                  style={{
+                    fontFamily: "var(--font-sans)",
+                    fontSize: "9px",
+                    letterSpacing: "0.24em",
+                    textTransform: "uppercase",
+                    color: "rgba(26,26,26,0.55)",
+                    lineHeight: 1.4,
+                  }}
+                >
+                  Searching all {total} pieces · {overviewGroups.length} categories
+                </span>
+                {activeParent && (
+                  <span
+                    style={{
+                      fontFamily: "var(--font-sans)",
+                      fontSize: "9px",
+                      letterSpacing: "0.22em",
+                      textTransform: "uppercase",
+                      color: "rgba(26,26,26,0.35)",
+                      marginLeft: "auto",
+                    }}
+                    title="The bar inside a category stays section-scoped. The modal does not."
+                  >
+                    Bar: {PARENT_LABELS[activeParent]} only
+                  </span>
+                )}
+              </div>
+            </div>
+          );
+        })()}
     </main>
   );
 }

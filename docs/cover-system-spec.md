@@ -31,13 +31,13 @@ zero solving, zero canvas in the browser.
 3. **Measurement fragility.** Alpha-less images (upscaler output, JPEG-era
    scans) fall to the color-threshold path; corner-median must clear 210/255 or
    background tolerance goes to zero, bbox becomes the whole frame, and the
-   grid size-normalizes the *photograph*, not the product.
+   grid size-normalizes the _photograph_, not the product.
 4. **No closed ops loop.** 635 products, 0 focal points set. Failures have no
    queue, so they persist publicly.
 
-Receipt: *2026-08-11 — render-time normalization with clamped scale cannot span
+Receipt: _2026-08-11 — render-time normalization with clamped scale cannot span
 multi-era input variance; normalization must move to ingest where scale is
-unbounded (resampled from source) and output is verifiable.*
+unbounded (resampled from source) and output is verifiable._
 
 ## Architecture
 
@@ -51,7 +51,7 @@ alter table inventory_items add column if not exists cover_framed_meta jsonb;
 ```
 
 `cover_framed_url` is the ONLY thing the public grid reads. `images[0]`
-remains the source of truth for the *source* photo; the derivative is a cache
+remains the source of truth for the _source_ photo; the derivative is a cache
 of composition, regenerable at any time.
 
 ### 2. Framing worker (Node script first, Edge Function later)
@@ -69,7 +69,7 @@ For each product (input = live cover per the overlay-merge precedence):
 3. **Compose** onto a fixed 1500×1200 (5:4 — must equal PRODUCT_TILE_FRAME_ASPECT exactly; see R5 in the Phase 1 plan) transparent canvas using the
    existing category rules (port `solveFit` + the `categoryFit.ts` table into
    the worker verbatim — the math is good; the runtime was the problem).
-   Scale is applied by resampling the *source* crop, so there is no clamp:
+   Scale is applied by resampling the _source_ crop, so there is no clamp:
    a 40%-fill photo and a 90%-fill photo both land exactly on target.
    Bottom-anchored categories share one baseline (anchorY per rule).
 4. **Flatten** onto the site background (#ffffff) or keep alpha — keep alpha;
@@ -87,7 +87,7 @@ For each product (input = live cover per the overlay-merge precedence):
 
 ### 3. Verifier (PASS/FAIL, runs inside the worker, blocks the write)
 
-Assert on the *output* derivative, not the input:
+Assert on the _output_ derivative, not the input:
 
 - V1 Silhouette bbox coverage of canvas within `primaryTarget ± 6%` on the
   rule's primary axis.
@@ -107,6 +107,7 @@ rms_id. This is the number that replaces "how many are fucked."
 
 Reuse the FocalEditor surface. For each `NEEDS_SOURCE_FIX` / verifier-FAIL
 row, the admin either:
+
 - drags a manual bbox → worker regenerates with method `manual` (this replaces
   focal points entirely — focal was a render-time patch for a problem that no
   longer exists at render time), or
@@ -132,6 +133,7 @@ embarrassment.
 ### 6. Migration order
 
 Per category, mirroring the count-book gating instinct:
+
 1. Run `cover-audit.mjs` → baseline counts (before picture, keep the CSV).
 2. Run the framing worker for the category, review-queue the FAILs.
 3. Visual check: contact sheet of derivatives (worker emits one per run —
@@ -168,7 +170,7 @@ most forgiving and currently closest to acceptable).
 ## Acceptance criteria (what "done" looks like)
 
 - `cover-audit.mjs` re-run against the live site reports 0 BROKEN in migrated
-  categories (MEASURE_FAIL / CLAMP_* / WOULD_CLIP all zero; AT_RISK flags may
+  categories (MEASURE*FAIL / CLAMP*\* / WOULD_CLIP all zero; AT_RISK flags may
   remain as advisories).
 - Any two products in the same category, screenshotted side by side, have
   silhouette primary-axis sizes within 12% of each other unless a widthMax /

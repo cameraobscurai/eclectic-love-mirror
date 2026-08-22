@@ -65,13 +65,7 @@ export function BoardDeck({ board, preview = false }: BoardDeckProps) {
       )}
       <div ref={rootRef} className="board-deck">
         {pages.map((page, idx) => (
-          <PageRenderer
-            key={idx}
-            page={page}
-            pageNum={idx + 1}
-            total={total}
-            meta={meta}
-          />
+          <PageRenderer key={idx} page={page} pageNum={idx + 1} total={total} meta={meta} />
         ))}
       </div>
     </div>
@@ -112,13 +106,12 @@ function PageRenderer({
   total: number;
   meta: DeckMeta;
 }) {
-  const isDark = page.kind === "cover" || page.kind === "closing" || page.kind === "section-divider";
+  const isDark =
+    page.kind === "cover" || page.kind === "closing" || page.kind === "section-divider";
   return (
     <section
       data-board-page={pageNum}
-      className={`relative w-full ${
-        isDark ? "bg-charcoal text-cream" : "bg-cream text-charcoal"
-      }`}
+      className={`relative w-full ${isDark ? "bg-charcoal text-cream" : "bg-cream text-charcoal"}`}
       style={{ minHeight: "100vh", pageBreakAfter: "always" }}
     >
       {page.kind === "cover" && <CoverPage page={page} meta={meta} />}
@@ -129,31 +122,19 @@ function PageRenderer({
       {page.kind === "section-divider" && <SectionDividerPage page={page} />}
       {page.kind === "production" && <ProductionPage page={page} />}
       {page.kind === "closing" && <ClosingPage page={page} meta={meta} />}
-      {page.kind !== "cover" && (
-        <PageChrome pageNum={pageNum} total={total} meta={meta} />
-      )}
+      {page.kind !== "cover" && <PageChrome pageNum={pageNum} total={total} meta={meta} />}
     </section>
   );
 }
 
 // ---- Cover ---------------------------------------------------------------
 
-function CoverPage({
-  page,
-  meta,
-}: {
-  page: Extract<DeckPage, { kind: "cover" }>;
-  meta: DeckMeta;
-}) {
+function CoverPage({ page, meta }: { page: Extract<DeckPage, { kind: "cover" }>; meta: DeckMeta }) {
   const bg = page.cover?.image_url ?? null;
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {bg && (
-        <img
-          src={bg}
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover opacity-70"
-        />
+        <img src={bg} alt="" className="absolute inset-0 w-full h-full object-cover opacity-70" />
       )}
       <div className="absolute inset-0 bg-gradient-to-b from-charcoal/30 via-transparent to-charcoal/60" />
       <div className="absolute top-6 left-5 right-5 lg:top-12 lg:left-12 lg:right-12 flex items-start justify-between text-[9px] lg:text-[10px] uppercase tracking-[0.3em] lg:tracking-[0.4em] text-cream/80">
@@ -222,7 +203,6 @@ function MoodHeroPage({
 function StatementPage({ page }: { page: Extract<DeckPage, { kind: "statement" }> }) {
   return (
     <div className="px-5 sm:px-6 lg:px-16 min-h-screen flex flex-col items-center justify-center text-center">
-
       <p className="text-[10px] uppercase tracking-[0.4em] text-charcoal/45 mb-10">
         {page.eyebrow}
       </p>
@@ -241,9 +221,7 @@ function StatementPage({ page }: { page: Extract<DeckPage, { kind: "statement" }
 function PalettePage({ page }: { page: Extract<DeckPage, { kind: "palette" }> }) {
   return (
     <div className="px-5 sm:px-6 lg:px-16 pt-20 pb-20 lg:pt-24 lg:pb-24 min-h-screen">
-      <p className="text-[10px] uppercase tracking-[0.4em] text-charcoal/45 mb-3">
-        Color Palette
-      </p>
+      <p className="text-[10px] uppercase tracking-[0.4em] text-charcoal/45 mb-3">Color Palette</p>
       <h2
         className="font-display tracking-tight mb-10 lg:mb-12 capitalize"
         style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)" }}
@@ -259,10 +237,7 @@ function PalettePage({ page }: { page: Extract<DeckPage, { kind: "palette" }> })
       >
         {page.swatches.map((s: PaletteSwatch, i) => (
           <div key={i} className="space-y-3">
-            <div
-              className="aspect-[3/4] border border-charcoal/10"
-              style={{ background: s.hex }}
-            />
+            <div className="aspect-[3/4] border border-charcoal/10" style={{ background: s.hex }} />
             <div className="text-[10px] uppercase tracking-[0.28em] text-charcoal/75">
               {s.name ?? `Tone ${String(i + 1).padStart(2, "0")}`}
             </div>
@@ -281,10 +256,7 @@ function PalettePage({ page }: { page: Extract<DeckPage, { kind: "palette" }> })
 function TonesPage({ page }: { page: Extract<DeckPage, { kind: "tones" }> }) {
   return (
     <div className="px-5 sm:px-6 lg:px-16 min-h-screen flex flex-col items-center justify-center text-center">
-
-      <p className="text-[10px] uppercase tracking-[0.4em] text-charcoal/45 mb-10">
-        Tone
-      </p>
+      <p className="text-[10px] uppercase tracking-[0.4em] text-charcoal/45 mb-10">Tone</p>
       <p
         className="font-display italic max-w-3xl leading-[1.1]"
         style={{ fontSize: "clamp(2rem, 4.5vw, 3.5rem)" }}
@@ -297,11 +269,7 @@ function TonesPage({ page }: { page: Extract<DeckPage, { kind: "tones" }> }) {
 
 // ---- Section divider -----------------------------------------------------
 
-function SectionDividerPage({
-  page,
-}: {
-  page: Extract<DeckPage, { kind: "section-divider" }>;
-}) {
+function SectionDividerPage({ page }: { page: Extract<DeckPage, { kind: "section-divider" }> }) {
   return (
     <div className="relative w-full h-screen overflow-hidden flex items-center justify-center">
       <div className="absolute inset-0 grid grid-cols-3 md:grid-cols-4 gap-px opacity-40">
@@ -379,11 +347,17 @@ function ProductionPage({ page }: { page: Extract<DeckPage, { kind: "production"
   );
 }
 
-
 // ---- Closing -------------------------------------------------------------
 
-function ClosingPage({ page, meta }: { page: Extract<DeckPage, { kind: "closing" }>; meta: DeckMeta }) {
-  const sender = meta.preparedBy && meta.preparedBy !== "The Studio" ? meta.preparedBy : "the studio";
+function ClosingPage({
+  page,
+  meta,
+}: {
+  page: Extract<DeckPage, { kind: "closing" }>;
+  meta: DeckMeta;
+}) {
+  const sender =
+    meta.preparedBy && meta.preparedBy !== "The Studio" ? meta.preparedBy : "the studio";
   return (
     <div className="px-5 sm:px-6 lg:px-16 min-h-screen flex flex-col items-center justify-center text-center">
       <div
@@ -392,9 +366,7 @@ function ClosingPage({ page, meta }: { page: Extract<DeckPage, { kind: "closing"
       >
         Eclectic Hive
       </div>
-      <p className="mt-8 text-[10px] uppercase tracking-[0.4em] text-cream/55">
-        {page.body}
-      </p>
+      <p className="mt-8 text-[10px] uppercase tracking-[0.4em] text-cream/55">{page.body}</p>
       <a
         href="mailto:hello@eclectichive.com"
         className="mt-16 text-[10px] uppercase tracking-[0.4em] text-cream/80 border border-cream/30 px-6 py-3 hover:bg-cream hover:text-charcoal transition-colors"

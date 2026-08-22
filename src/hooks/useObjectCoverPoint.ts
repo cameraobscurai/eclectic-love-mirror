@@ -14,7 +14,7 @@ import { useEffect, useState, type RefObject } from "react";
 export function useObjectCoverPoint(
   imgRef: RefObject<HTMLImageElement | null>,
   xRatio: number,
-  yRatio: number
+  yRatio: number,
 ): { x: number; y: number } | null {
   const [point, setPoint] = useState<{ x: number; y: number } | null>(null);
 

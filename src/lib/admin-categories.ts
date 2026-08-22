@@ -26,9 +26,7 @@ export const ADMIN_CATEGORY_LABELS: Record<string, string> = Object.fromEntries(
 /** Canonical list first, then any legacy values still present in the DB. */
 export function mergeCategoryOptions(existing: string[] = []) {
   const seen = new Set(ADMIN_CATEGORIES.map((c) => c.slug));
-  const extras = existing
-    .filter((c) => c && !seen.has(c))
-    .map((c) => ({ slug: c, label: c }));
+  const extras = existing.filter((c) => c && !seen.has(c)).map((c) => ({ slug: c, label: c }));
   return [...ADMIN_CATEGORIES, ...extras];
 }
 

@@ -2,21 +2,21 @@
 
 2026-08-12T08:40:56.366Z · rule fs2-2026-08-12 · APPLIED
 
-| Outcome | Count |
-| --- | --- |
-| tiles | 40 |
-| framed (verify PASS) | 38 |
-| unchanged (hash match) | 0 |
-| queued (verify FAIL) | 2 |
-| skipped | 0 |
-| uploads deduped (R1 409) | 0 |
+| Outcome                  | Count |
+| ------------------------ | ----- |
+| tiles                    | 40    |
+| framed (verify PASS)     | 38    |
+| unchanged (hash match)   | 0     |
+| queued (verify FAIL)     | 2     |
+| skipped                  | 0     |
+| uploads deduped (R1 409) | 0     |
 
 ## Advisories
 
 - SRC_UPSCALED: 37
 
 **What SRC_UPSCALED measures (settled 2026-08-12, verified not remembered):**
-it is a *resample-ratio* advisory, not a source-path one. `frame-render`
+it is a _resample-ratio_ advisory, not a source-path one. `frame-render`
 computes `resampleFactor = drawW / raw.w` and the verifier raises it when the
 composition enlarges the source more than 1.25x
 (`src/lib/frame-engine.ts`, `resampleFactor > 1.25`). It never inspects the URL.

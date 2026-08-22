@@ -27,10 +27,7 @@ import { requireAdminOrRedirect } from "@/lib/admin-guard";
 export const Route = createFileRoute("/admin/insights")({
   beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
   head: () => ({
-    meta: [
-      { title: "Insights · Eclectic Hive" },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
+    meta: [{ title: "Insights · Eclectic Hive" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   component: InsightsPage,
 });
@@ -96,17 +93,12 @@ function InsightsPage() {
   const { kpis, inquiries, top_items, dead_stock, category_demand } = data;
   const wowDelta = kpis.inquiries_this_week - kpis.inquiries_last_week;
   const wowPct =
-    kpis.inquiries_last_week > 0
-      ? Math.round((wowDelta / kpis.inquiries_last_week) * 100)
-      : null;
+    kpis.inquiries_last_week > 0 ? Math.round((wowDelta / kpis.inquiries_last_week) * 100) : null;
 
   return (
     <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal">
       <div className="px-6 lg:px-12 pt-10 pb-24 max-w-[1500px] mx-auto">
-        <header
-          className="border-b pb-8 mb-10"
-          style={{ borderColor: "var(--archive-rule)" }}
-        >
+        <header className="border-b pb-8 mb-10" style={{ borderColor: "var(--archive-rule)" }}>
           <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
             ADMIN · INSIGHTS
           </p>
@@ -132,12 +124,20 @@ function InsightsPage() {
           <Kpi
             label="Open pipeline"
             value={kpis.open_count}
-            hint={kpis.pipeline_value ? `$${kpis.pipeline_value.toLocaleString()} quoted` : "no quotes yet"}
+            hint={
+              kpis.pipeline_value
+                ? `$${kpis.pipeline_value.toLocaleString()} quoted`
+                : "no quotes yet"
+            }
           />
           <Kpi
             label="Booked"
             value={kpis.booked_count}
-            hint={kpis.booked_value_total ? `$${kpis.booked_value_total.toLocaleString()} closed` : "all-time"}
+            hint={
+              kpis.booked_value_total
+                ? `$${kpis.booked_value_total.toLocaleString()} closed`
+                : "all-time"
+            }
           />
           <Kpi
             label="Last 30 days"
@@ -150,17 +150,11 @@ function InsightsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           {/* LEFT — inquiry inbox */}
           <section className="lg:col-span-7 space-y-10">
-            <Panel
-              eyebrow="Inquiries · last 30 days"
-              title="Volume"
-            >
+            <Panel eyebrow="Inquiries · last 30 days" title="Volume">
               <Sparkline data={kpis.daily.map((d) => d.count)} />
             </Panel>
 
-            <Panel
-              eyebrow={`Inbox · ${inquiries.length} most recent`}
-              title="Conversations"
-            >
+            <Panel eyebrow={`Inbox · ${inquiries.length} most recent`} title="Conversations">
               <InquiryInbox inquiries={inquiries} onChanged={refresh} />
             </Panel>
           </section>
@@ -206,8 +200,8 @@ function InsightsPage() {
             <Panel eyebrow="Demand · most-requested pieces" title="Top items">
               {top_items.length === 0 ? (
                 <p className="text-sm text-charcoal/55">
-                  No item names found in inquiries yet. As inquiries arrive that mention
-                  catalog pieces by name, they'll surface here.
+                  No item names found in inquiries yet. As inquiries arrive that mention catalog
+                  pieces by name, they'll surface here.
                 </p>
               ) : (
                 <ul className="space-y-3">
@@ -228,7 +222,9 @@ function InsightsPage() {
               }
             >
               {dead_stock.length === 0 ? (
-                <p className="text-sm text-charcoal/55">Every public piece has been mentioned. 👏</p>
+                <p className="text-sm text-charcoal/55">
+                  Every public piece has been mentioned. 👏
+                </p>
               ) : (
                 <ul className="space-y-3 max-h-[420px] overflow-y-auto pr-2">
                   {dead_stock.map((it) => (
@@ -280,10 +276,10 @@ function InquiryInbox({
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [deleting, setDeleting] = useState(false);
 
-
   const visible = useMemo(() => {
     if (filter === "all") return inquiries;
-    if (filter === "open") return inquiries.filter((r) => r.status === "new" || r.status === "quoted");
+    if (filter === "open")
+      return inquiries.filter((r) => r.status === "new" || r.status === "quoted");
     return inquiries.filter((r) => r.status === filter);
   }, [inquiries, filter]);
 
@@ -317,29 +313,25 @@ function InquiryInbox({
       await removeMany({ data: { ids } });
       setSelected(new Set());
       onChanged();
-      toast.success(
-        `Deleted ${ids.length} inquir${ids.length === 1 ? "y" : "ies"}`,
-        {
-          duration: 30_000,
-          action: {
-            label: "UNDO",
-            onClick: async () => {
-              try {
-                await restoreMany({ data: { ids } });
-                onChanged();
-                toast.success("Restored");
-              } catch {
-                toast.error("Restore failed");
-              }
-            },
+      toast.success(`Deleted ${ids.length} inquir${ids.length === 1 ? "y" : "ies"}`, {
+        duration: 30_000,
+        action: {
+          label: "UNDO",
+          onClick: async () => {
+            try {
+              await restoreMany({ data: { ids } });
+              onChanged();
+              toast.success("Restored");
+            } catch {
+              toast.error("Restore failed");
+            }
           },
         },
-      );
+      });
     } finally {
       setDeleting(false);
     }
   }
-
 
   return (
     <div className="space-y-4">
@@ -409,7 +401,6 @@ function InquiryInbox({
 // outcome editor (status / quote / notes).
 // ---------------------------------------------------------------------------
 
-
 function InquiryRow({
   row,
   onSaved,
@@ -422,9 +413,9 @@ function InquiryRow({
   onToggleSelect: () => void;
 }) {
   const mailtoHref = `mailto:${row.email}?subject=${encodeURIComponent(
-    `RE: ${row.subject || "Inquiry"} — Eclectic Hive`
+    `RE: ${row.subject || "Inquiry"} — Eclectic Hive`,
   )}&body=${encodeURIComponent(
-    `Hi ${row.name.split(" ")[0]},\n\n\n\n--- Original Inquiry ---\n${row.message}`
+    `Hi ${row.name.split(" ")[0]},\n\n\n\n--- Original Inquiry ---\n${row.message}`,
   )}`;
   const updateOutcome = useServerFn(updateInquiryOutcome);
 
@@ -471,7 +462,10 @@ function InquiryRow({
   }
 
   return (
-    <div className="group border-b py-4 flex items-start gap-3" style={{ borderColor: "var(--archive-rule)" }}>
+    <div
+      className="group border-b py-4 flex items-start gap-3"
+      style={{ borderColor: "var(--archive-rule)" }}
+    >
       <input
         type="checkbox"
         checked={selected}
@@ -481,159 +475,165 @@ function InquiryRow({
         className="mt-2 accent-charcoal shrink-0"
       />
       <div className="flex-1 min-w-0">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="w-full text-left flex items-baseline justify-between gap-4"
-      >
-        <div className="min-w-0 flex-1">
-          <p className="font-display text-lg leading-tight truncate">{row.name}</p>
-          <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-charcoal/50 truncate">
-            <a 
-              href={mailtoHref}
-              onClick={(e) => e.stopPropagation()}
-              className="hover:text-charcoal underline underline-offset-2 decoration-charcoal/20"
-            >
-              {row.email}
-            </a>
-            {row.subject ? <> · {row.subject}</> : null}
-          </p>
-        </div>
-        <div className="flex items-center gap-3 shrink-0">
-          <StatusPill status={row.status} />
-          {row.quote_value !== null && (
-            <span className="text-[11px] tabular-nums text-charcoal/65 uppercase tracking-[0.14em]">
-              ${row.quote_value.toLocaleString()}
-            </span>
-          )}
-          <span className="text-[10px] uppercase tracking-[0.22em] text-charcoal/40 tabular-nums">
-            {formatDate(row.created_at)}
-          </span>
-          <Link
-            to="/admin/studio"
-            search={{ inquiry: row.id }}
-            preload="intent"
-            onClick={(e) => e.stopPropagation()}
-            className="text-[10px] uppercase tracking-[0.2em] text-charcoal/55 hover:text-charcoal underline-offset-4 hover:underline"
-          >
-            Studio →
-          </Link>
-        </div>
-      </button>
-
-      {open && (
-        <div className="mt-5 grid grid-cols-1 md:grid-cols-12 gap-6">
-          <div className="md:col-span-7">
-            <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 mb-2">
-              Message
-            </p>
-            <p className="mt-3 text-[11px] uppercase tracking-[0.16em] text-charcoal/55">
-              Reply · <a className="underline" href={mailtoHref}>Send Email</a>
-            </p>
-            <pre className="font-sans text-sm leading-relaxed text-charcoal/80 whitespace-pre-wrap">
-              {row.message}
-            </pre>
-            {row.phone && (
-              <p className="mt-3 text-[11px] uppercase tracking-[0.16em] text-charcoal/55">
-                Phone · <a className="underline" href={`tel:${row.phone}`}>{row.phone}</a>
-              </p>
-            )}
-            {row.mentioned_items.length > 0 && (
-              <div className="mt-5">
-                <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 mb-2">
-                  Mentioned pieces ({row.mentioned_items.length})
-                </p>
-                <ul className="flex flex-wrap gap-2">
-                  {row.mentioned_items.map((m) => (
-                    <li
-                      key={m.id}
-                      className="text-[11px] uppercase tracking-[0.14em] text-charcoal/75 border border-charcoal/15 px-2 py-1"
-                    >
-                      {m.title}
-                      <span className="ml-2 text-charcoal/40">{m.category}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-
-          <div className="md:col-span-5 space-y-4">
-            <div>
-              <label className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45">
-                Status
-              </label>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {(Object.keys(STATUS_LABEL) as InquiryStatus[]).map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => setStatus(s)}
-                    className={`text-[11px] uppercase tracking-[0.16em] px-3 py-1.5 border transition-colors ${
-                      status === s
-                        ? "bg-charcoal text-cream border-charcoal"
-                        : "border-charcoal/20 text-charcoal/65 hover:border-charcoal/50"
-                    }`}
-                  >
-                    {STATUS_LABEL[s]}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45">
-                Quote value (USD)
-              </label>
-              <input
-                type="number"
-                inputMode="decimal"
-                min={0}
-                step={100}
-                value={quote}
-                onChange={(e) => setQuote(e.target.value)}
-                placeholder="—"
-                className="mt-2 w-full bg-transparent border-b border-charcoal/25 py-2 text-sm tabular-nums focus:outline-none focus:border-charcoal"
-              />
-            </div>
-
-            <div>
-              <label className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45">
-                Internal notes
-              </label>
-              <textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                rows={3}
-                placeholder="Why booked / lost / ghosted…"
-                className="mt-2 w-full bg-transparent border border-charcoal/15 p-2 text-sm leading-relaxed focus:outline-none focus:border-charcoal/50"
-              />
-            </div>
-
-            <div className="flex items-center justify-between gap-3 pt-2">
-              <span className="text-[10px] uppercase tracking-[0.22em] text-charcoal/40">
-                {savedAt
-                  ? "Saved"
-                  : row.outcome_updated_at
-                    ? `Last update ${formatDate(row.outcome_updated_at)}`
-                    : ""}
-              </span>
-              <button
-                type="button"
-                disabled={!dirty || saving}
-                onClick={save}
-                className={`text-[11px] uppercase tracking-[0.18em] px-4 py-2 border transition-colors ${
-                  dirty && !saving
-                    ? "bg-charcoal text-cream border-charcoal hover:bg-charcoal/85"
-                    : "border-charcoal/15 text-charcoal/35 cursor-not-allowed"
-                }`}
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          className="w-full text-left flex items-baseline justify-between gap-4"
+        >
+          <div className="min-w-0 flex-1">
+            <p className="font-display text-lg leading-tight truncate">{row.name}</p>
+            <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-charcoal/50 truncate">
+              <a
+                href={mailtoHref}
+                onClick={(e) => e.stopPropagation()}
+                className="hover:text-charcoal underline underline-offset-2 decoration-charcoal/20"
               >
-                {saving ? "Saving…" : "Save outcome"}
-              </button>
+                {row.email}
+              </a>
+              {row.subject ? <> · {row.subject}</> : null}
+            </p>
+          </div>
+          <div className="flex items-center gap-3 shrink-0">
+            <StatusPill status={row.status} />
+            {row.quote_value !== null && (
+              <span className="text-[11px] tabular-nums text-charcoal/65 uppercase tracking-[0.14em]">
+                ${row.quote_value.toLocaleString()}
+              </span>
+            )}
+            <span className="text-[10px] uppercase tracking-[0.22em] text-charcoal/40 tabular-nums">
+              {formatDate(row.created_at)}
+            </span>
+            <Link
+              to="/admin/studio"
+              search={{ inquiry: row.id }}
+              preload="intent"
+              onClick={(e) => e.stopPropagation()}
+              className="text-[10px] uppercase tracking-[0.2em] text-charcoal/55 hover:text-charcoal underline-offset-4 hover:underline"
+            >
+              Studio →
+            </Link>
+          </div>
+        </button>
+
+        {open && (
+          <div className="mt-5 grid grid-cols-1 md:grid-cols-12 gap-6">
+            <div className="md:col-span-7">
+              <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 mb-2">
+                Message
+              </p>
+              <p className="mt-3 text-[11px] uppercase tracking-[0.16em] text-charcoal/55">
+                Reply ·{" "}
+                <a className="underline" href={mailtoHref}>
+                  Send Email
+                </a>
+              </p>
+              <pre className="font-sans text-sm leading-relaxed text-charcoal/80 whitespace-pre-wrap">
+                {row.message}
+              </pre>
+              {row.phone && (
+                <p className="mt-3 text-[11px] uppercase tracking-[0.16em] text-charcoal/55">
+                  Phone ·{" "}
+                  <a className="underline" href={`tel:${row.phone}`}>
+                    {row.phone}
+                  </a>
+                </p>
+              )}
+              {row.mentioned_items.length > 0 && (
+                <div className="mt-5">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 mb-2">
+                    Mentioned pieces ({row.mentioned_items.length})
+                  </p>
+                  <ul className="flex flex-wrap gap-2">
+                    {row.mentioned_items.map((m) => (
+                      <li
+                        key={m.id}
+                        className="text-[11px] uppercase tracking-[0.14em] text-charcoal/75 border border-charcoal/15 px-2 py-1"
+                      >
+                        {m.title}
+                        <span className="ml-2 text-charcoal/40">{m.category}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            <div className="md:col-span-5 space-y-4">
+              <div>
+                <label className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45">
+                  Status
+                </label>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {(Object.keys(STATUS_LABEL) as InquiryStatus[]).map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => setStatus(s)}
+                      className={`text-[11px] uppercase tracking-[0.16em] px-3 py-1.5 border transition-colors ${
+                        status === s
+                          ? "bg-charcoal text-cream border-charcoal"
+                          : "border-charcoal/20 text-charcoal/65 hover:border-charcoal/50"
+                      }`}
+                    >
+                      {STATUS_LABEL[s]}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45">
+                  Quote value (USD)
+                </label>
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  min={0}
+                  step={100}
+                  value={quote}
+                  onChange={(e) => setQuote(e.target.value)}
+                  placeholder="—"
+                  className="mt-2 w-full bg-transparent border-b border-charcoal/25 py-2 text-sm tabular-nums focus:outline-none focus:border-charcoal"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45">
+                  Internal notes
+                </label>
+                <textarea
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  rows={3}
+                  placeholder="Why booked / lost / ghosted…"
+                  className="mt-2 w-full bg-transparent border border-charcoal/15 p-2 text-sm leading-relaxed focus:outline-none focus:border-charcoal/50"
+                />
+              </div>
+
+              <div className="flex items-center justify-between gap-3 pt-2">
+                <span className="text-[10px] uppercase tracking-[0.22em] text-charcoal/40">
+                  {savedAt
+                    ? "Saved"
+                    : row.outcome_updated_at
+                      ? `Last update ${formatDate(row.outcome_updated_at)}`
+                      : ""}
+                </span>
+                <button
+                  type="button"
+                  disabled={!dirty || saving}
+                  onClick={save}
+                  className={`text-[11px] uppercase tracking-[0.18em] px-4 py-2 border transition-colors ${
+                    dirty && !saving
+                      ? "bg-charcoal text-cream border-charcoal hover:bg-charcoal/85"
+                      : "border-charcoal/15 text-charcoal/35 cursor-not-allowed"
+                  }`}
+                >
+                  {saving ? "Saving…" : "Save outcome"}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
       </div>
     </div>
   );
@@ -642,16 +642,25 @@ function InquiryRow({
 function StatusPill({ status }: { status: InquiryStatus }) {
   return (
     <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-charcoal/70">
-      <span
-        className="w-1.5 h-1.5 rounded-full"
-        style={{ background: STATUS_DOT[status] }}
-      />
+      <span className="w-1.5 h-1.5 rounded-full" style={{ background: STATUS_DOT[status] }} />
       {STATUS_LABEL[status]}
     </span>
   );
 }
 
-function ItemRow({ it, hideCount }: { it: { id: string; title: string; category: string; mention_count: number; image_url: string | null }; hideCount?: boolean }) {
+function ItemRow({
+  it,
+  hideCount,
+}: {
+  it: {
+    id: string;
+    title: string;
+    category: string;
+    mention_count: number;
+    image_url: string | null;
+  };
+  hideCount?: boolean;
+}) {
   return (
     <li className="flex items-center gap-3">
       <div className="w-12 h-12 bg-charcoal/5 shrink-0 overflow-hidden">
@@ -731,10 +740,17 @@ function Sparkline({ data }: { data: number[] }) {
     const y = h - pad - (v / max) * (h - pad * 2);
     return [x, y] as const;
   });
-  const linePath = pts.map(([x, y], i) => `${i === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)}`).join(" ");
+  const linePath = pts
+    .map(([x, y], i) => `${i === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)}`)
+    .join(" ");
   const areaPath = `${linePath} L ${pts[pts.length - 1]?.[0] ?? 0} ${h - pad} L ${pts[0]?.[0] ?? 0} ${h - pad} Z`;
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-32" preserveAspectRatio="none" aria-hidden="true">
+    <svg
+      viewBox={`0 0 ${w} ${h}`}
+      className="w-full h-32"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
       <path d={areaPath} fill="color-mix(in oklab, var(--sand) 35%, transparent)" />
       <path d={linePath} fill="none" stroke="var(--charcoal)" strokeWidth={1.2} />
       {pts.map(([x, y], i) =>

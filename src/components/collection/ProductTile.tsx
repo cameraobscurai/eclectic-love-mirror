@@ -14,7 +14,6 @@ import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 import { resolveProductFit, withScaleNudge } from "./productFit";
 import { framedCoverSrc600, framedCoverSrcSet } from "@/lib/cover-framed";
 
-
 interface ProductTileProps {
   product: CollectionProduct;
   index: number;
@@ -26,9 +25,6 @@ interface ProductTileProps {
 const EAGER_RENDER_COUNT = 18;
 const EAGER_LOAD_COUNT = 12;
 const HIGH_FETCH_COUNT = 4;
-
-
-
 
 let quickViewWarmed = false;
 const preloadQuickView = () => {
@@ -74,17 +70,14 @@ export function ProductTile({
   const rawUrl = product.primaryImage?.url ?? null;
   const nudge = overrides?.scaleNudge ?? 1;
   const fitRule =
-    nudge === 1
-      ? resolveProductFit(product)
-      : withScaleNudge(resolveProductFit(product), nudge);
+    nudge === 1 ? resolveProductFit(product) : withScaleNudge(resolveProductFit(product), nudge);
 
   // Fallback chain: on CDN-transform error, retry with the raw URL so
   // transient render-transform failures never leave a question-mark tile.
   const [useRaw, setUseRaw] = useState(false);
   const imageSrc = rawUrl ? (useRaw ? rawUrl : withCdnWidth(rawUrl, 600)) : "";
-  const imageSrcSet = rawUrl && !useRaw
-    ? buildCdnSrcSet(rawUrl, [400, 600, 900]) || undefined
-    : undefined;
+  const imageSrcSet =
+    rawUrl && !useRaw ? buildCdnSrcSet(rawUrl, [400, 600, 900]) || undefined : undefined;
 
   return (
     <li
@@ -98,105 +91,101 @@ export function ProductTile({
       }}
     >
       <div className="relative group/tile">
-
         {showInternals ? (
           <>
-          <button
-            onClick={onOpen}
-            onMouseEnter={preloadQuickView}
-            onFocus={preloadQuickView}
-            onTouchStart={preloadQuickView}
-            aria-label={`Open ${product.title}`}
-            className="group block w-full text-left bg-white active:scale-[0.985] focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-4 focus-visible:ring-offset-white transition-transform duration-150"
-          >
-            {/* Media frame */}
-            <div
-              className="product-tile-media relative w-full bg-white overflow-hidden"
-              data-fit-anchor={fitRule.anchor}
-              style={{
-                aspectRatio: tileAspect,
-                ["--fit-anchor-y" as string]: `${(fitRule.anchorY * 100).toFixed(1)}%`,
-
-                ["--fit-center-x" as string]: "50%",
-                ["--fit-secondary-max" as string]: "70%",
-              }}
+            <button
+              onClick={onOpen}
+              onMouseEnter={preloadQuickView}
+              onFocus={preloadQuickView}
+              onTouchStart={preloadQuickView}
+              aria-label={`Open ${product.title}`}
+              className="group block w-full text-left bg-white active:scale-[0.985] focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-4 focus-visible:ring-offset-white transition-transform duration-150"
             >
-              {/* Skeleton overlay */}
+              {/* Media frame */}
               <div
-                aria-hidden
-                className="absolute inset-0"
+                className="product-tile-media relative w-full bg-white overflow-hidden"
+                data-fit-anchor={fitRule.anchor}
                 style={{
-                  background: "#f5f3ef",
-                  opacity: loaded || !product.primaryImage ? 0 : 1,
-                  transition: "opacity 240ms ease-out",
+                  aspectRatio: tileAspect,
+                  ["--fit-anchor-y" as string]: `${(fitRule.anchorY * 100).toFixed(1)}%`,
+
+                  ["--fit-center-x" as string]: "50%",
+                  ["--fit-secondary-max" as string]: "70%",
                 }}
-              />
-              {/* Debug: secondary-cap band (visible only under ?debug=media). */}
-              <div aria-hidden className="product-tile-media__cap" />
-
-              {framedUrl ? (
-                <img
-                  ref={captureLoadedImage}
-                  src={framedCoverSrc600(framedUrl)}
-                  srcSet={framedCoverSrcSet(framedUrl)}
-                  sizes="(min-width: 1024px) calc((min(100vw, 1600px) - 8rem) / 3), (min-width: 640px) 33vw, 50vw"
-                  alt={product.primaryImage?.altText ?? product.title}
-                  width={1500}
-                  height={1200}
-                  loading={index < EAGER_LOAD_COUNT ? "eager" : "lazy"}
-                  decoding="async"
-                  {...({
-                    fetchPriority: index < HIGH_FETCH_COUNT ? "high" : "auto",
-                  } as Record<string, string>)}
-                  onLoad={markLoaded}
-                  className="absolute inset-0 h-full w-full object-contain"
-                />
-              ) : product.primaryImage ? (
-                <NormalizedProductImage
-                  ref={captureLoadedImage}
-                  src={imageSrc}
-                  frameAspect={frameAspect}
-                  fit={fitRule}
-                  eager={index < HIGH_FETCH_COUNT}
-                  visualOffsetY={overrides?.visualOffsetY ?? 0}
-
-                  focalX={product.coverFocalX ?? null}
-                  focalY={product.coverFocalY ?? null}
-                  srcSet={imageSrcSet}
-                  sizes="(min-width: 1024px) calc((min(100vw, 1600px) - 8rem) / 3), (min-width: 640px) 33vw, 50vw"
-                  alt={product.primaryImage.altText ?? product.title}
-                  width={600}
-                  height={800}
-                  loading={index < EAGER_LOAD_COUNT ? "eager" : "lazy"}
-                  decoding="async"
-                  {...({
-                    fetchPriority: index < HIGH_FETCH_COUNT ? "high" : "auto",
-                  } as Record<string, string>)}
-                  onLoad={markLoaded}
-                  onError={() => {
-                    if (!useRaw) setUseRaw(true);
-                    else onImageFailed?.(product.id);
-                  }}
-                  className={`absolute inset-0 h-full w-full ${PRODUCT_TILE_IMAGE_CLASS} will-change-transform group-hover:scale-[1.015]`}
+              >
+                {/* Skeleton overlay */}
+                <div
+                  aria-hidden
+                  className="absolute inset-0"
                   style={{
-                    transition: "transform 380ms ease-out",
+                    background: "#f5f3ef",
+                    opacity: loaded || !product.primaryImage ? 0 : 1,
+                    transition: "opacity 240ms ease-out",
                   }}
                 />
-              ) : null}
-            </div>
+                {/* Debug: secondary-cap band (visible only under ?debug=media). */}
+                <div aria-hidden className="product-tile-media__cap" />
 
+                {framedUrl ? (
+                  <img
+                    ref={captureLoadedImage}
+                    src={framedCoverSrc600(framedUrl)}
+                    srcSet={framedCoverSrcSet(framedUrl)}
+                    sizes="(min-width: 1024px) calc((min(100vw, 1600px) - 8rem) / 3), (min-width: 640px) 33vw, 50vw"
+                    alt={product.primaryImage?.altText ?? product.title}
+                    width={1500}
+                    height={1200}
+                    loading={index < EAGER_LOAD_COUNT ? "eager" : "lazy"}
+                    decoding="async"
+                    {...({
+                      fetchPriority: index < HIGH_FETCH_COUNT ? "high" : "auto",
+                    } as Record<string, string>)}
+                    onLoad={markLoaded}
+                    className="absolute inset-0 h-full w-full object-contain"
+                  />
+                ) : product.primaryImage ? (
+                  <NormalizedProductImage
+                    ref={captureLoadedImage}
+                    src={imageSrc}
+                    frameAspect={frameAspect}
+                    fit={fitRule}
+                    eager={index < HIGH_FETCH_COUNT}
+                    visualOffsetY={overrides?.visualOffsetY ?? 0}
+                    focalX={product.coverFocalX ?? null}
+                    focalY={product.coverFocalY ?? null}
+                    srcSet={imageSrcSet}
+                    sizes="(min-width: 1024px) calc((min(100vw, 1600px) - 8rem) / 3), (min-width: 640px) 33vw, 50vw"
+                    alt={product.primaryImage.altText ?? product.title}
+                    width={600}
+                    height={800}
+                    loading={index < EAGER_LOAD_COUNT ? "eager" : "lazy"}
+                    decoding="async"
+                    {...({
+                      fetchPriority: index < HIGH_FETCH_COUNT ? "high" : "auto",
+                    } as Record<string, string>)}
+                    onLoad={markLoaded}
+                    onError={() => {
+                      if (!useRaw) setUseRaw(true);
+                      else onImageFailed?.(product.id);
+                    }}
+                    className={`absolute inset-0 h-full w-full ${PRODUCT_TILE_IMAGE_CLASS} will-change-transform group-hover:scale-[1.015]`}
+                    style={{
+                      transition: "transform 380ms ease-out",
+                    }}
+                  />
+                ) : null}
+              </div>
 
-            {/* Unified caption — reserves 2 lines of height at all breakpoints
+              {/* Unified caption — reserves 2 lines of height at all breakpoints
                 so tiles don't jump vertically when the title text hydrates or
                 wraps. Must stay in sync with the placeholder branch below. */}
-            <div className="product-tile-caption mt-2.5 md:mt-3.5 pb-2 text-center transition-colors duration-300">
-               <p className="text-[10px] md:text-[11px] lg:text-[12px] leading-snug text-charcoal/80 uppercase tracking-[0.08em] line-clamp-2 [min-height:calc(2*1.375em)] group-hover:text-charcoal transition-colors">
-                {product.title}
-              </p>
-            </div>
-          </button>
+              <div className="product-tile-caption mt-2.5 md:mt-3.5 pb-2 text-center transition-colors duration-300">
+                <p className="text-[10px] md:text-[11px] lg:text-[12px] leading-snug text-charcoal/80 uppercase tracking-[0.08em] line-clamp-2 [min-height:calc(2*1.375em)] group-hover:text-charcoal transition-colors">
+                  {product.title}
+                </p>
+              </div>
+            </button>
           </>
-
         ) : (
           <div aria-hidden className="block w-full bg-white">
             <div className="w-full bg-white" style={{ aspectRatio: tileAspect }} />

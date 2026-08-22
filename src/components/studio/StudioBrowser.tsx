@@ -3,11 +3,16 @@
 // catalog by color tags). Clicked tiles pin/unpin via useInquiry().
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Search, Image as ImageIcon, Grid as GridIcon, X, Check, Loader2, Upload } from "lucide-react";
 import {
-  getCollectionCatalog,
-  type CollectionProduct,
-} from "@/lib/phase3-catalog";
+  Search,
+  Image as ImageIcon,
+  Grid as GridIcon,
+  X,
+  Check,
+  Loader2,
+  Upload,
+} from "lucide-react";
+import { getCollectionCatalog, type CollectionProduct } from "@/lib/phase3-catalog";
 import { rankByColorMatch } from "@/lib/visual-match";
 import { analyzeMoodboard, type ColorInfo } from "@/lib/color-engine";
 import { useInquiry } from "@/hooks/use-inquiry";
@@ -73,7 +78,9 @@ export function StudioBrowser({ seedPalette }: Props) {
         })),
       );
     });
-    return () => { alive = false; };
+    return () => {
+      alive = false;
+    };
   }, []);
 
   // Browse + Text filtering
@@ -129,9 +136,27 @@ export function StudioBrowser({ seedPalette }: Props) {
     <div>
       {/* Mode tabs */}
       <div className="flex gap-1 border-b border-charcoal/15 mb-5">
-        <TabBtn active={mode === "browse"} onClick={() => setMode("browse")} icon={<GridIcon className="h-3 w-3" />}>Browse</TabBtn>
-        <TabBtn active={mode === "text"} onClick={() => setMode("text")} icon={<Search className="h-3 w-3" />}>Search</TabBtn>
-        <TabBtn active={mode === "visual"} onClick={() => setMode("visual")} icon={<ImageIcon className="h-3 w-3" />}>Visual</TabBtn>
+        <TabBtn
+          active={mode === "browse"}
+          onClick={() => setMode("browse")}
+          icon={<GridIcon className="h-3 w-3" />}
+        >
+          Browse
+        </TabBtn>
+        <TabBtn
+          active={mode === "text"}
+          onClick={() => setMode("text")}
+          icon={<Search className="h-3 w-3" />}
+        >
+          Search
+        </TabBtn>
+        <TabBtn
+          active={mode === "visual"}
+          onClick={() => setMode("visual")}
+          icon={<ImageIcon className="h-3 w-3" />}
+        >
+          Visual
+        </TabBtn>
       </div>
 
       {/* Mode-specific controls */}
@@ -141,7 +166,11 @@ export function StudioBrowser({ seedPalette }: Props) {
             All · {products.length}
           </CatPill>
           {facets.map((f) => (
-            <CatPill key={f.slug} active={activeCat === f.slug} onClick={() => setActiveCat(f.slug)}>
+            <CatPill
+              key={f.slug}
+              active={activeCat === f.slug}
+              onClick={() => setActiveCat(f.slug)}
+            >
               {f.display} · {f.count}
             </CatPill>
           ))}
@@ -161,9 +190,15 @@ export function StudioBrowser({ seedPalette }: Props) {
             />
           </div>
           <div className="mt-3 flex flex-wrap gap-1.5">
-            <CatPill active={!activeCat} onClick={() => setActiveCat(null)}>All</CatPill>
+            <CatPill active={!activeCat} onClick={() => setActiveCat(null)}>
+              All
+            </CatPill>
             {facets.map((f) => (
-              <CatPill key={f.slug} active={activeCat === f.slug} onClick={() => setActiveCat(f.slug)}>
+              <CatPill
+                key={f.slug}
+                active={activeCat === f.slug}
+                onClick={() => setActiveCat(f.slug)}
+              >
                 {f.display}
               </CatPill>
             ))}
@@ -180,7 +215,11 @@ export function StudioBrowser({ seedPalette }: Props) {
                 type="file"
                 accept="image/*"
                 className="hidden"
-                onChange={(e) => { const f = e.target.files?.[0]; if (f) onVisualUpload(f); e.target.value = ""; }}
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) onVisualUpload(f);
+                  e.target.value = "";
+                }}
               />
               <button
                 type="button"
@@ -188,7 +227,11 @@ export function StudioBrowser({ seedPalette }: Props) {
                 disabled={analyzing}
                 className="inline-flex items-center gap-2 px-4 py-2.5 border border-charcoal/30 text-[10px] uppercase tracking-[0.22em] hover:bg-charcoal hover:text-cream transition-colors disabled:opacity-40"
               >
-                {analyzing ? <Loader2 className="h-3 w-3 animate-spin" /> : <Upload className="h-3 w-3" />}
+                {analyzing ? (
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                ) : (
+                  <Upload className="h-3 w-3" />
+                )}
                 {analyzing ? "Reading…" : visualHexes ? "Upload Another" : "Upload Image"}
               </button>
               {seedPalette && seedPalette.length > 0 && (
@@ -197,7 +240,9 @@ export function StudioBrowser({ seedPalette }: Props) {
                 </p>
               )}
               {analyzeError && (
-                <p className="mt-2 text-[10px] uppercase tracking-[0.18em] text-red-700/80">{analyzeError}</p>
+                <p className="mt-2 text-[10px] uppercase tracking-[0.18em] text-red-700/80">
+                  {analyzeError}
+                </p>
               )}
             </div>
 
@@ -208,8 +253,13 @@ export function StudioBrowser({ seedPalette }: Props) {
                 </p>
                 {visualHexes.map((hex) => (
                   <div key={hex} className="text-center">
-                    <div className="h-8 w-8 border border-charcoal/15" style={{ background: hex }} />
-                    <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-charcoal/45 tabular-nums">{hex}</p>
+                    <div
+                      className="h-8 w-8 border border-charcoal/15"
+                      style={{ background: hex }}
+                    />
+                    <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-charcoal/45 tabular-nums">
+                      {hex}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -267,7 +317,9 @@ function BrowserTile({
         aria-pressed={pinned}
         className="group block w-full text-left"
       >
-        <div className={`relative aspect-square bg-white overflow-hidden border transition-colors ${pinned ? "border-charcoal" : "border-charcoal/10 hover:border-charcoal/40"}`}>
+        <div
+          className={`relative aspect-square bg-white overflow-hidden border transition-colors ${pinned ? "border-charcoal" : "border-charcoal/10 hover:border-charcoal/40"}`}
+        >
           {src ? (
             <img
               src={withCdnWidth(src, 400)}
@@ -279,7 +331,9 @@ function BrowserTile({
           ) : (
             <div className="absolute inset-0 bg-charcoal/[0.03]" />
           )}
-          <div className={`absolute top-1.5 right-1.5 h-5 w-5 grid place-items-center transition-all ${pinned ? "bg-charcoal text-cream" : "bg-cream/90 text-charcoal opacity-0 group-hover:opacity-100"}`}>
+          <div
+            className={`absolute top-1.5 right-1.5 h-5 w-5 grid place-items-center transition-all ${pinned ? "bg-charcoal text-cream" : "bg-cream/90 text-charcoal opacity-0 group-hover:opacity-100"}`}
+          >
             {pinned ? <Check className="h-3 w-3" /> : <X className="h-3 w-3 rotate-45" />}
           </div>
         </div>
@@ -291,19 +345,38 @@ function BrowserTile({
   );
 }
 
-function TabBtn({ active, onClick, icon, children }: { active: boolean; onClick: () => void; icon: React.ReactNode; children: React.ReactNode }) {
+function TabBtn({
+  active,
+  onClick,
+  icon,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}) {
   return (
     <button
       type="button"
       onClick={onClick}
       className={`inline-flex items-center gap-2 px-4 py-2.5 text-[10px] uppercase tracking-[0.22em] border-b-2 -mb-px transition-colors ${active ? "border-charcoal text-charcoal" : "border-transparent text-charcoal/45 hover:text-charcoal"}`}
     >
-      {icon}{children}
+      {icon}
+      {children}
     </button>
   );
 }
 
-function CatPill({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+function CatPill({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <button
       type="button"

@@ -7,26 +7,45 @@ import { requireStaffOrAdmin } from "@/integrations/supabase/admin-middleware";
 // Staff can edit merchandising/inventory fields; admin adds URL + SEO + injection.
 // rms_id is in NEITHER list — set by import, never editable via drawer.
 const STAFF_EDITABLE_FIELDS = [
-  "title", "description", "price", "status", "category", "subcategory_slug",
-  "width_cm", "height_cm", "depth_cm", "weight_kg", "materials", "origin",
+  "title",
+  "description",
+  "price",
+  "status",
+  "category",
+  "subcategory_slug",
+  "width_cm",
+  "height_cm",
+  "depth_cm",
+  "weight_kg",
+  "materials",
+  "origin",
   "images",
-  "quantity", "quantity_label", "dimensions_raw",
-  "public_ready", "hidden_note",
-  "editorial_order", "manual_order",
+  "quantity",
+  "quantity_label",
+  "dimensions_raw",
+  "public_ready",
+  "hidden_note",
+  "editorial_order",
+  "manual_order",
   // upscaled_cover_url is RETIRED — the AI upscaler baked opaque backdrops and
   // invented shadows into cutout photos. Nothing reads it; nothing may write it.
   "card_background_url",
 
-  "cover_focal_x", "cover_focal_y",
+  "cover_focal_x",
+  "cover_focal_y",
 ] as const;
 
 const ADMIN_ONLY_FIELDS = [
-  "slug", "meta_title", "meta_description", "og_image", "manual_injection",
+  "slug",
+  "meta_title",
+  "meta_description",
+  "og_image",
+  "manual_injection",
 ] as const;
 
 const EDITABLE_FIELDS = [...STAFF_EDITABLE_FIELDS, ...ADMIN_ONLY_FIELDS] as const;
 
-type EditableField = typeof EDITABLE_FIELDS[number];
+type EditableField = (typeof EDITABLE_FIELDS)[number];
 type PatchInput = Partial<Record<EditableField, unknown>>;
 
 // PostgREST .or() treats `,` `.` `(` `)` as syntax tokens for unquoted values.
@@ -40,21 +59,23 @@ function quotePostgrestFilterValue(raw: string): string {
 
 export const listProducts = createServerFn({ method: "POST" })
   .middleware([requireStaffOrAdmin])
-  .inputValidator((d: {
-    search?: string;
-    /** DECLARED taxonomy (Adrienne's vocabulary): inventory_items.collection_slug */
-    collection?: string;
-    /** DECLARED taxonomy: inventory_items.category_slug */
-    categorySlug?: string;
-    /** Legacy free-text `category` column — retained for old links only. */
-    category?: string;
-    subcategory?: string;
-    publicReady?: "yes" | "no" | "all";
-    rmsIds?: string[];
-    sort?: "title" | "collection" | "category" | "updated";
-    limit?: number;
-    offset?: number;
-  }) => d)
+  .inputValidator(
+    (d: {
+      search?: string;
+      /** DECLARED taxonomy (Adrienne's vocabulary): inventory_items.collection_slug */
+      collection?: string;
+      /** DECLARED taxonomy: inventory_items.category_slug */
+      categorySlug?: string;
+      /** Legacy free-text `category` column — retained for old links only. */
+      category?: string;
+      subcategory?: string;
+      publicReady?: "yes" | "no" | "all";
+      rmsIds?: string[];
+      sort?: "title" | "collection" | "category" | "updated";
+      limit?: number;
+      offset?: number;
+    }) => d,
+  )
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const limit = Math.min(data.limit ?? 50, 200);
@@ -67,7 +88,10 @@ export const listProducts = createServerFn({ method: "POST" })
 
     let q = supabase
       .from("inventory_items")
-      .select("id, rms_id, title, slug, category, subcategory_slug, collection_slug, category_slug, status, quantity, quantity_label, public_ready, images, updated_at, editorial_order", { count: "exact" });
+      .select(
+        "id, rms_id, title, slug, category, subcategory_slug, collection_slug, category_slug, status, quantity, quantity_label, public_ready, images, updated_at, editorial_order",
+        { count: "exact" },
+      );
 
     // Sort is explicit and STABLE. Default is alphabetical by title so the
     // list never reshuffles just because a row was touched — editing a piece
@@ -75,13 +99,15 @@ export const listProducts = createServerFn({ method: "POST" })
     // Collection / Category sort the DECLARED columns, not the legacy ones.
     switch (data.sort ?? "title") {
       case "collection":
-        q = q.order("collection_slug", { ascending: true, nullsFirst: false })
-             .order("category_slug", { ascending: true, nullsFirst: false })
-             .order("title", { ascending: true });
+        q = q
+          .order("collection_slug", { ascending: true, nullsFirst: false })
+          .order("category_slug", { ascending: true, nullsFirst: false })
+          .order("title", { ascending: true });
         break;
       case "category":
-        q = q.order("category_slug", { ascending: true, nullsFirst: false })
-             .order("title", { ascending: true });
+        q = q
+          .order("category_slug", { ascending: true, nullsFirst: false })
+          .order("title", { ascending: true });
         break;
       case "updated":
         q = q.order("updated_at", { ascending: false }).order("rms_id", { ascending: true });
@@ -128,9 +154,10 @@ export const updateProduct = createServerFn({ method: "POST" })
   .inputValidator((d: { id: string; patch: PatchInput }) => d)
   .handler(async ({ data, context }) => {
     const role = (context as { role?: "admin" | "staff" | "user" }).role ?? "staff";
-    const allowed = role === "admin"
-      ? new Set<string>([...STAFF_EDITABLE_FIELDS, ...ADMIN_ONLY_FIELDS])
-      : new Set<string>(STAFF_EDITABLE_FIELDS);
+    const allowed =
+      role === "admin"
+        ? new Set<string>([...STAFF_EDITABLE_FIELDS, ...ADMIN_ONLY_FIELDS])
+        : new Set<string>(STAFF_EDITABLE_FIELDS);
 
     const patch: Record<string, unknown> = {};
     for (const [k, v] of Object.entries(data.patch)) {
@@ -148,7 +175,6 @@ export const updateProduct = createServerFn({ method: "POST" })
       patch.title = t;
     }
     if ("price" in patch && patch.price != null) {
-
       const p = Number(patch.price);
       if (!Number.isFinite(p) || p < 0) {
         throw new Response("Price must be a non-negative number.", { status: 400 });
@@ -258,9 +284,7 @@ export const deleteProduct = createServerFn({ method: "POST" })
 export const listDeletedRmsIds = createServerFn({ method: "POST" })
   .middleware([requireStaffOrAdmin])
   .handler(async ({ context }) => {
-    const { data, error } = await context.supabase
-      .from("deleted_items")
-      .select("rms_id, item_id");
+    const { data, error } = await context.supabase.from("deleted_items").select("rms_id, item_id");
     if (error) throw new Response(error.message, { status: 500 });
     const ids: string[] = [];
     for (const r of (data ?? []) as Array<{ rms_id: string | null; item_id: string }>) {
@@ -269,4 +293,3 @@ export const listDeletedRmsIds = createServerFn({ method: "POST" })
     }
     return { ids };
   });
-

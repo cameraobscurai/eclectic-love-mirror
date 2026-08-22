@@ -84,7 +84,9 @@ export function useStyleBoard(inquiryId: string) {
       for (const p of products) m.set(String(p.id), p);
       setCatalog(m);
     });
-    return () => { alive = false; };
+    return () => {
+      alive = false;
+    };
   }, []);
 
   // Load workspace (inquiry + board).
@@ -92,7 +94,10 @@ export function useStyleBoard(inquiryId: string) {
     let alive = true;
     (async () => {
       try {
-        const ws = (await getStudioWorkspace({ data: { inquiryId } })) as { inquiry: StudioInquiry; board: import("@/lib/studio.functions").StyleBoardRow | null };
+        const ws = (await getStudioWorkspace({ data: { inquiryId } })) as {
+          inquiry: StudioInquiry;
+          board: import("@/lib/studio.functions").StyleBoardRow | null;
+        };
         if (!alive) return;
         const board = ws.board;
         let pinned: string[];
@@ -104,15 +109,17 @@ export function useStyleBoard(inquiryId: string) {
           const fromSnaps = snaps
             .map((s) => String((s.id ?? s.rms_id ?? "") as string))
             .filter(Boolean);
-          const fromMeta = ((ws.inquiry.metadata?.rms_ids as string[] | undefined) ?? [])
-            .map(String);
+          const fromMeta = ((ws.inquiry.metadata?.rms_ids as string[] | undefined) ?? []).map(
+            String,
+          );
           pinned = Array.from(new Set([...fromSnaps, ...fromMeta]));
         }
         let inspo: InspoTile[] = (board?.inspo_images ?? []) as InspoTile[];
         // If no board yet, seed inspo from the inquiry's uploaded paths.
         if (!board) {
-          const seedPaths = ((ws.inquiry.metadata?.inspo_paths as string[] | undefined) ?? [])
-            .filter((p): p is string => typeof p === "string" && p.length > 0);
+          const seedPaths = (
+            (ws.inquiry.metadata?.inspo_paths as string[] | undefined) ?? []
+          ).filter((p): p is string => typeof p === "string" && p.length > 0);
           if (seedPaths.length) {
             inspo = seedPaths.map((p) => {
               const name = p.split("/").pop() ?? "inspiration";
@@ -123,7 +130,9 @@ export function useStyleBoard(inquiryId: string) {
         // Hydrate signed URLs for any inspo tiles.
         let hydrated = inspo;
         if (inspo.length) {
-          const map = await getInspoSignedUrls({ data: { paths: inspo.map((i) => i.storage_path) } });
+          const map = await getInspoSignedUrls({
+            data: { paths: inspo.map((i) => i.storage_path) },
+          });
           hydrated = inspo.map((i) => ({ ...i, signed_url: map[i.storage_path] }));
         }
         setState((s) => ({
@@ -136,7 +145,7 @@ export function useStyleBoard(inquiryId: string) {
           pinned,
           pinNotes: (board?.pin_notes as Record<string, string>) ?? {},
           palette: (board?.palette as ColorInfo[]) ?? [],
-          tones: ((board?.tones as unknown) as ToneAnalysis) ?? null,
+          tones: (board?.tones as unknown as ToneAnalysis) ?? null,
           insights: (board?.insights as DesignInsight[]) ?? [],
           curatorNotes: board?.curator_notes ?? "",
           // Hash-only storage: a reload can never recover the raw token.
@@ -149,30 +158,38 @@ export function useStyleBoard(inquiryId: string) {
         setState((s) => ({ ...s, ready: true, error: (e as Error).message }));
       }
     })();
-    return () => { alive = false; };
+    return () => {
+      alive = false;
+    };
   }, [inquiryId]);
 
-  const addInspoFiles = useCallback(async (files: FileList | File[]) => {
-    const arr = Array.from(files).filter((f) => f.type.startsWith("image/")).slice(0, 12);
-    const added: InspoTile[] = [];
-    for (const f of arr) {
-      const ext = (f.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
-      const { uploadUrl, storage_path } = await signInspoUploadUrl({ data: { inquiryId, ext } });
-      const put = await fetch(uploadUrl, {
-        method: "PUT",
-        headers: { "Content-Type": f.type, "x-upsert": "false" },
-        body: f,
-      });
-      if (!put.ok) throw new Error(`Upload failed: ${put.status}`);
-      added.push({
-        id: crypto.randomUUID(),
-        name: f.name,
-        storage_path,
-        signed_url: URL.createObjectURL(f), // immediate preview; we'll re-hydrate via signed URL on next load
-      });
-    }
-    setState((s) => ({ ...s, inspo: [...s.inspo, ...added].slice(0, 12), dirty: true }));
-  }, [inquiryId]);
+  const addInspoFiles = useCallback(
+    async (files: FileList | File[]) => {
+      const arr = Array.from(files)
+        .filter((f) => f.type.startsWith("image/"))
+        .slice(0, 12);
+      const added: InspoTile[] = [];
+      for (const f of arr) {
+        const ext =
+          (f.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+        const { uploadUrl, storage_path } = await signInspoUploadUrl({ data: { inquiryId, ext } });
+        const put = await fetch(uploadUrl, {
+          method: "PUT",
+          headers: { "Content-Type": f.type, "x-upsert": "false" },
+          body: f,
+        });
+        if (!put.ok) throw new Error(`Upload failed: ${put.status}`);
+        added.push({
+          id: crypto.randomUUID(),
+          name: f.name,
+          storage_path,
+          signed_url: URL.createObjectURL(f), // immediate preview; we'll re-hydrate via signed URL on next load
+        });
+      }
+      setState((s) => ({ ...s, inspo: [...s.inspo, ...added].slice(0, 12), dirty: true }));
+    },
+    [inquiryId],
+  );
 
   const removeInspo = useCallback(async (id: string) => {
     let removedPath: string | null = null;
@@ -182,14 +199,18 @@ export function useStyleBoard(inquiryId: string) {
       return { ...s, inspo: s.inspo.filter((x) => x.id !== id), dirty: true };
     });
     if (removedPath) {
-      try { await deleteInspoFile({ data: { path: removedPath } }); } catch { /* swallow */ }
+      try {
+        await deleteInspoFile({ data: { path: removedPath } });
+      } catch {
+        /* swallow */
+      }
     }
   }, []);
 
   const pin = useCallback((rmsId: string) => {
-    setState((s) => s.pinned.includes(rmsId)
-      ? s
-      : { ...s, pinned: [...s.pinned, rmsId], dirty: true });
+    setState((s) =>
+      s.pinned.includes(rmsId) ? s : { ...s, pinned: [...s.pinned, rmsId], dirty: true },
+    );
   }, []);
 
   const unpin = useCallback((rmsId: string) => {
@@ -219,11 +240,13 @@ export function useStyleBoard(inquiryId: string) {
     try {
       // Re-sign inspo URLs for stable, non-blob sources (canvas needs CORS-safe URLs).
       const paths = state.inspo.map((i) => i.storage_path);
-      const signedMap = paths.length
-        ? await getInspoSignedUrls({ data: { paths } })
-        : {};
+      const signedMap = paths.length ? await getInspoSignedUrls({ data: { paths } }) : {};
       const inspoImgs = state.inspo
-        .map((i) => ({ id: i.id, name: i.name, url: signedMap[i.storage_path] || i.signed_url || "" }))
+        .map((i) => ({
+          id: i.id,
+          name: i.name,
+          url: signedMap[i.storage_path] || i.signed_url || "",
+        }))
         .filter((x) => x.url);
 
       const catImgs = state.pinned
@@ -236,7 +259,11 @@ export function useStyleBoard(inquiryId: string) {
 
       const all = [...inspoImgs, ...catImgs];
       if (!all.length) {
-        setState((s) => ({ ...s, analyzing: false, error: "Add inspiration images or pin pieces first" }));
+        setState((s) => ({
+          ...s,
+          analyzing: false,
+          error: "Add inspiration images or pin pieces first",
+        }));
         return null;
       }
       if (!canvasRef.current) canvasRef.current = document.createElement("canvas");
@@ -260,43 +287,57 @@ export function useStyleBoard(inquiryId: string) {
     }
   }, [state.inspo, state.pinned, catalog]);
 
-  const save = useCallback(async (
-    status?: BoardStatus,
-    overrides?: Partial<Pick<AnalysisOverride, "palette" | "tones" | "insights">>,
-  ) => {
-    setState((s) => ({ ...s, saving: true }));
-    try {
-      const palette = overrides?.palette ?? state.palette;
-      const tones = overrides?.tones ?? state.tones;
-      const insights = overrides?.insights ?? state.insights;
-      const row = (await saveStyleBoard({
-        data: {
-          inquiryId,
-          boardId: state.boardId,
-          status: status ?? state.status,
-          inspo: state.inspo.map(({ id, name, storage_path }) => ({ id, name, storage_path })),
-          pinned: state.pinned,
-          pinNotes: state.pinNotes,
-          palette: palette as unknown[],
-          tones: (tones ?? {}) as Record<string, unknown>,
-          insights: insights as unknown[],
-          curatorNotes: state.curatorNotes || null,
-        },
-      })) as import("@/lib/studio.functions").StyleBoardRow;
-      setState((s) => ({
-        ...s,
-        boardId: row.id,
-        status: row.status as BoardStatus,
-        shareToken: s.shareToken,
-        saving: false,
-        dirty: false,
-      }));
-      return row;
-    } catch (e) {
-      setState((s) => ({ ...s, saving: false, error: (e as Error).message }));
-      return null;
-    }
-  }, [inquiryId, state.boardId, state.status, state.inspo, state.pinned, state.pinNotes, state.palette, state.tones, state.insights, state.curatorNotes]);
+  const save = useCallback(
+    async (
+      status?: BoardStatus,
+      overrides?: Partial<Pick<AnalysisOverride, "palette" | "tones" | "insights">>,
+    ) => {
+      setState((s) => ({ ...s, saving: true }));
+      try {
+        const palette = overrides?.palette ?? state.palette;
+        const tones = overrides?.tones ?? state.tones;
+        const insights = overrides?.insights ?? state.insights;
+        const row = (await saveStyleBoard({
+          data: {
+            inquiryId,
+            boardId: state.boardId,
+            status: status ?? state.status,
+            inspo: state.inspo.map(({ id, name, storage_path }) => ({ id, name, storage_path })),
+            pinned: state.pinned,
+            pinNotes: state.pinNotes,
+            palette: palette as unknown[],
+            tones: (tones ?? {}) as Record<string, unknown>,
+            insights: insights as unknown[],
+            curatorNotes: state.curatorNotes || null,
+          },
+        })) as import("@/lib/studio.functions").StyleBoardRow;
+        setState((s) => ({
+          ...s,
+          boardId: row.id,
+          status: row.status as BoardStatus,
+          shareToken: s.shareToken,
+          saving: false,
+          dirty: false,
+        }));
+        return row;
+      } catch (e) {
+        setState((s) => ({ ...s, saving: false, error: (e as Error).message }));
+        return null;
+      }
+    },
+    [
+      inquiryId,
+      state.boardId,
+      state.status,
+      state.inspo,
+      state.pinned,
+      state.pinNotes,
+      state.palette,
+      state.tones,
+      state.insights,
+      state.curatorNotes,
+    ],
+  );
 
   const send = useCallback(async () => {
     setState((s) => ({ ...s, sending: true, error: null }));
@@ -313,7 +354,9 @@ export function useStyleBoard(inquiryId: string) {
       const saved = await save(undefined, overrides);
       const boardId = saved?.id ?? state.boardId;
       if (!boardId) throw new Error("Save first");
-      const row = (await markBoardSent({ data: { boardId } })) as import("@/lib/studio.functions").StyleBoardRow;
+      const row = (await markBoardSent({
+        data: { boardId },
+      })) as import("@/lib/studio.functions").StyleBoardRow;
       setState((s) => ({
         ...s,
         sending: false,
@@ -371,4 +414,3 @@ export function useStyleBoard(inquiryId: string) {
     regenerate,
   };
 }
-

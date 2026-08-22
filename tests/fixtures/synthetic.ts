@@ -45,13 +45,7 @@ function fill(data: Uint8Array, channels: number, color: number[]) {
   }
 }
 
-function paintRect(
-  data: Uint8Array,
-  w: number,
-  channels: number,
-  r: Rect,
-  color: number[],
-) {
+function paintRect(data: Uint8Array, w: number, channels: number, r: Rect, color: number[]) {
   for (let y = r.y; y < r.y + r.h; y++) {
     for (let x = r.x; x < r.x + r.w; x++) {
       const i = (y * w + x) * channels;

@@ -24,7 +24,10 @@ export function withCdnWidth(url: string | null | undefined, width: number): str
     // so multi-MB owner-uploaded PNGs (e.g. category covers) get served as
     // right-sized WebP instead of forcing the browser to decode the original.
     if (u.hostname.endsWith(".supabase.co") && u.pathname.includes("/storage/v1/object/public/")) {
-      u.pathname = u.pathname.replace("/storage/v1/object/public/", "/storage/v1/render/image/public/");
+      u.pathname = u.pathname.replace(
+        "/storage/v1/object/public/",
+        "/storage/v1/render/image/public/",
+      );
       u.searchParams.set("width", String(Math.round(width)));
       u.searchParams.set("resize", "contain");
       u.searchParams.set("quality", "80");
@@ -41,15 +44,10 @@ export function withCdnWidth(url: string | null | undefined, width: number): str
  * the URL isn't a Squarespace CDN URL we can resize, so callers can pass it
  * straight to <img srcSet={...}> without conditional logic.
  */
-export function buildCdnSrcSet(
-  url: string | null | undefined,
-  widths: number[],
-): string {
+export function buildCdnSrcSet(url: string | null | undefined, widths: number[]): string {
   if (!url) return "";
   const isSqs = url.includes("squarespace-cdn.com");
   const isSupabase = url.includes(".supabase.co/storage/v1/object/public/");
   if (!isSqs && !isSupabase) return "";
-  return widths
-    .map((w) => `${withCdnWidth(url, w)} ${w}w`)
-    .join(", ");
+  return widths.map((w) => `${withCdnWidth(url, w)} ${w}w`).join(", ");
 }

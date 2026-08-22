@@ -6,8 +6,6 @@ import { gallerySlug } from "@/lib/gallery-orders";
 import { prefetchImage } from "@/lib/prefetch-image";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-
-
 // ---------------------------------------------------------------------------
 // Portfolio Wall — secondary, lower-page gallery.
 //
@@ -33,7 +31,6 @@ const MOBILE_INITIAL = 10;
 const MOBILE_STEP = 10;
 const MAX_PER_PROJECT = 6;
 const EAGER_COUNT = 10;
-
 
 interface Plate {
   key: string;
@@ -193,7 +190,6 @@ export function PortfolioWall({ projects }: { projects: GalleryProject[] }) {
             ))}
         </div>
 
-
         {hasMore && (
           <div className="mt-12 flex justify-center">
             <button
@@ -209,4 +205,3 @@ export function PortfolioWall({ projects }: { projects: GalleryProject[] }) {
     </section>
   );
 }
-

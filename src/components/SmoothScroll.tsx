@@ -22,8 +22,7 @@ export const EASINGS = {
   // Softer, slightly faster — good for shorter pages.
   easeOutQuart: (t: number) => 1 - Math.pow(1 - t, 4),
   // Gentle s-curve, symmetrical.
-  easeInOutCubic: (t: number) =>
-    t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+  easeInOutCubic: (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
   // Linear — disables easing.
   linear: (t: number) => t,
 } as const;
@@ -61,8 +60,7 @@ export function SmoothScroll(overrides: Partial<SmoothScrollConfig> = {}) {
     const isTouch = window.matchMedia("(pointer: coarse)").matches;
     if (reduced || isTouch) return;
 
-    const easingFn =
-      typeof cfg.easing === "function" ? cfg.easing : EASINGS[cfg.easing];
+    const easingFn = typeof cfg.easing === "function" ? cfg.easing : EASINGS[cfg.easing];
 
     let rafId = 0;
     let lenisInstance: Lenis | null = null;

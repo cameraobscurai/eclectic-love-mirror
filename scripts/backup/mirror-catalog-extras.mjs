@@ -40,22 +40,36 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const sha1 = (s) => createHash("sha1").update(s).digest("hex");
 
 const isSqs = (u) => {
-  try { return SQS_HOSTS.has(new URL(u).host); } catch { return false; }
+  try {
+    return SQS_HOSTS.has(new URL(u).host);
+  } catch {
+    return false;
+  }
 };
 const keyFor = (url) => {
   const u = new URL(url);
-  const base = (basename(u.pathname).replace(/[^\w.\-]+/g, "_").slice(0, 80)) || "image.jpg";
+  const base =
+    basename(u.pathname)
+      .replace(/[^\w.\-]+/g, "_")
+      .slice(0, 80) || "image.jpg";
   return `squarespace/_extras/${sha1(url).slice(0, 12)}-${base}`;
 };
-const publicUrlFor = (key) =>
-  `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${key}`;
+const publicUrlFor = (key) => `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${key}`;
 
 // Collect every string URL from the JSON tree
 function collectUrls(node, out) {
   if (node == null) return;
-  if (typeof node === "string") { if (isSqs(node)) out.add(node); return; }
-  if (Array.isArray(node)) { for (const v of node) collectUrls(v, out); return; }
-  if (typeof node === "object") { for (const v of Object.values(node)) collectUrls(v, out); }
+  if (typeof node === "string") {
+    if (isSqs(node)) out.add(node);
+    return;
+  }
+  if (Array.isArray(node)) {
+    for (const v of node) collectUrls(v, out);
+    return;
+  }
+  if (typeof node === "object") {
+    for (const v of Object.values(node)) collectUrls(v, out);
+  }
 }
 function rewriteUrls(node, map) {
   if (node == null) return node;
@@ -71,7 +85,8 @@ function rewriteUrls(node, map) {
 
 async function bucketHas(key) {
   const { data } = await supabase.storage.from(BUCKET).list(dirname(key), {
-    limit: 1000, search: basename(key),
+    limit: 1000,
+    search: basename(key),
   });
   return (data || []).some((o) => o.name === basename(key));
 }
@@ -86,7 +101,11 @@ async function downloadOne(url, attempt = 1) {
     await sleep(Math.min(1500 * attempt, 6000));
     return downloadOne(url, attempt + 1);
   }
-  if (!res.ok) { const e = new Error(`HTTP ${res.status}`); e.status = res.status; throw e; }
+  if (!res.ok) {
+    const e = new Error(`HTTP ${res.status}`);
+    e.status = res.status;
+    throw e;
+  }
   const buf = Buffer.from(await res.arrayBuffer());
   return { buf, contentType: res.headers.get("content-type") || "image/jpeg" };
 }
@@ -96,15 +115,23 @@ async function processOne(url, results, fail) {
   const cold = join(COLD_ROOT, key);
   const publicUrl = publicUrlFor(key);
   let exists = false;
-  try { await stat(cold); exists = true; } catch {}
+  try {
+    await stat(cold);
+    exists = true;
+  } catch {}
   const remote = await bucketHas(key);
-  if (exists && remote) { results.set(url, publicUrl); return { skipped: true }; }
+  if (exists && remote) {
+    results.set(url, publicUrl);
+    return { skipped: true };
+  }
   try {
     const { buf, contentType } = await downloadOne(url);
     await mkdir(dirname(cold), { recursive: true });
     await writeFile(cold, buf);
     const { error } = await supabase.storage.from(BUCKET).upload(key, buf, {
-      contentType, upsert: true, cacheControl: "31536000",
+      contentType,
+      upsert: true,
+      cacheControl: "31536000",
     });
     if (error) throw error;
     results.set(url, publicUrl);
@@ -130,18 +157,25 @@ async function main() {
   collectUrls(json, set);
   const urls = [...set];
   console.log(`→ ${urls.length} squarespace URLs in catalog`);
-  if (!urls.length) { console.log("nothing to do"); return; }
+  if (!urls.length) {
+    console.log("nothing to do");
+    return;
+  }
 
   const map = new Map();
   const fail = [];
-  let ok = 0, skip = 0, done = 0;
+  let ok = 0,
+    skip = 0,
+    done = 0;
   await pool(urls, async (u) => {
     const r = await processOne(u, map, fail);
     if (r.ok) ok++;
     if (r.skipped) skip++;
     done++;
     if (done % 25 === 0 || done === urls.length) {
-      process.stdout.write(`\r  ${done}/${urls.length}  ok=${ok} skip=${skip} fail=${fail.length}  `);
+      process.stdout.write(
+        `\r  ${done}/${urls.length}  ok=${ok} skip=${skip} fail=${fail.length}  `,
+      );
     }
   });
   process.stdout.write("\n");
@@ -157,4 +191,7 @@ async function main() {
   console.log(`✓ rewrote ${CATALOG} — ${map.size} URLs replaced`);
 }
 
-main().catch((e) => { console.error("FATAL", e); process.exit(1); });
+main().catch((e) => {
+  console.error("FATAL", e);
+  process.exit(1);
+});

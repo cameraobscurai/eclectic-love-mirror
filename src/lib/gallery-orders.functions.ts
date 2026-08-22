@@ -30,17 +30,15 @@ export const saveGalleryOrder = createServerFn({ method: "POST" })
   .middleware([requireAdmin])
   .inputValidator((d: unknown) => saveInput.parse(d))
   .handler(async ({ data, context }) => {
-    const { error } = await supabaseAdmin
-      .from("gallery_orders")
-      .upsert(
-        {
-          gallery_slug: data.gallery_slug,
-          order_keys: data.order_keys,
-          updated_by: context.userId,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: "gallery_slug" },
-      );
+    const { error } = await supabaseAdmin.from("gallery_orders").upsert(
+      {
+        gallery_slug: data.gallery_slug,
+        order_keys: data.order_keys,
+        updated_by: context.userId,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "gallery_slug" },
+    );
     if (error) throw new Error(error.message);
     return { ok: true, count: data.order_keys.length, savedAt: Date.now() };
   });

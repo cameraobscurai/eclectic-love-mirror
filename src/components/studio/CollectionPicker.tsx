@@ -12,10 +12,7 @@ import {
   groupProductsByBrowseGroup,
   type BrowseGroupId,
 } from "@/lib/collection-browse-groups";
-import {
-  getCollectionCatalog,
-  type CollectionProduct,
-} from "@/lib/phase3-catalog";
+import { getCollectionCatalog, type CollectionProduct } from "@/lib/phase3-catalog";
 import { sortProductsForCollection } from "@/lib/collection-sort-intelligence";
 import { useInquiry } from "@/hooks/use-inquiry";
 import { withCdnWidth } from "@/lib/image-url";
@@ -27,7 +24,6 @@ const SORT_LABELS: Record<SortKey, string> = {
   az: "A–Z",
   tonal: "Tonal",
 };
-
 
 export function CollectionPicker() {
   const { has, toggle, ids } = useInquiry();
@@ -47,14 +43,10 @@ export function CollectionPicker() {
     };
   }, []);
 
-  const buckets = useMemo(
-    () => groupProductsByBrowseGroup(products),
-    [products],
-  );
+  const buckets = useMemo(() => groupProductsByBrowseGroup(products), [products]);
 
   const groups = useMemo(
-    () =>
-      Array.from(buckets.entries()).map(([id, products]) => ({ id, products })),
+    () => Array.from(buckets.entries()).map(([id, products]) => ({ id, products })),
     [buckets],
   );
 
@@ -97,7 +89,6 @@ export function CollectionPicker() {
     });
   }, [active, buckets, q, sort]);
 
-
   return (
     <div>
       {/* Pinned count + back row */}
@@ -139,9 +130,7 @@ export function CollectionPicker() {
         // Global search results — render product grid directly
         <div>
           <div className="flex items-baseline justify-between gap-4 mb-3">
-            <h3 className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55">
-              Results
-            </h3>
+            <h3 className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55">Results</h3>
             <span className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 tabular-nums">
               {globalSearchList.length}
             </span>
@@ -151,11 +140,7 @@ export function CollectionPicker() {
               No matches
             </div>
           ) : (
-            <ProductGrid
-              products={globalSearchList}
-              has={has}
-              toggle={toggle}
-            />
+            <ProductGrid products={globalSearchList} has={has} toggle={toggle} />
           )}
         </div>
       ) : !active ? (
@@ -165,10 +150,7 @@ export function CollectionPicker() {
         // shorter caused the bottom row to overflow into Step 3.
         // overflow-hidden is the safety net for any stray bleed.
         <div className="overflow-hidden">
-          <CategoryTonalGrid
-            groups={groups}
-            onSelectCategory={(id) => setActive(id)}
-          />
+          <CategoryTonalGrid groups={groups} onSelectCategory={(id) => setActive(id)} />
         </div>
       ) : (
         // Level 2 — products in the chosen category
@@ -178,18 +160,13 @@ export function CollectionPicker() {
               {BROWSE_GROUP_LABELS[active]}
             </h3>
             <span className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 tabular-nums">
-              {activeList.length}{q ? ` of ${buckets.get(active)?.length ?? 0}` : ""}
+              {activeList.length}
+              {q ? ` of ${buckets.get(active)?.length ?? 0}` : ""}
             </span>
           </div>
 
-          <div
-            role="group"
-            aria-label="Sort"
-            className="flex flex-wrap items-center gap-4 mb-3"
-          >
-            <span className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45">
-              Sort
-            </span>
+          <div role="group" aria-label="Sort" className="flex flex-wrap items-center gap-4 mb-3">
+            <span className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45">Sort</span>
             {SORTS.map((id) => {
               const isActive = sort === id;
               return (
@@ -217,7 +194,6 @@ export function CollectionPicker() {
             placeholder={`SEARCH ${BROWSE_GROUP_LABELS[active]}…`}
             className="w-full max-w-md bg-transparent border-b border-charcoal/20 px-1 py-2 mb-5 text-[11px] uppercase tracking-[0.22em] placeholder:text-charcoal/35 focus:outline-none focus:border-charcoal/60"
           />
-
 
           {activeList.length === 0 ? (
             <div className="py-16 text-center text-[11px] uppercase tracking-[0.22em] text-charcoal/40">
@@ -256,9 +232,7 @@ function ProductGrid({
             >
               <div
                 className={`relative aspect-square bg-white overflow-hidden border transition-colors ${
-                  pinned
-                    ? "border-charcoal"
-                    : "border-charcoal/10 hover:border-charcoal/40"
+                  pinned ? "border-charcoal" : "border-charcoal/10 hover:border-charcoal/40"
                 }`}
               >
                 {src ? (

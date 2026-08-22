@@ -47,13 +47,30 @@ export function StyleBoardCanvas({ inspo, pinned, catalog, onRemoveInspo, onUnpi
   );
 }
 
-function Tile({ src, label, name, onRemove }: { src: string; label: string; name: string; onRemove: () => void }) {
+function Tile({
+  src,
+  label,
+  name,
+  onRemove,
+}: {
+  src: string;
+  label: string;
+  name: string;
+  onRemove: () => void;
+}) {
   return (
     <div className="relative aspect-[4/3] bg-charcoal/5 border border-charcoal/10 group overflow-hidden">
       {src ? (
-        <img src={src} alt={name} loading="lazy" className="w-full h-full object-cover pointer-events-none" />
+        <img
+          src={src}
+          alt={name}
+          loading="lazy"
+          className="w-full h-full object-cover pointer-events-none"
+        />
       ) : (
-        <div className="w-full h-full grid place-items-center text-[10px] uppercase tracking-[0.22em] text-charcoal/40">No image</div>
+        <div className="w-full h-full grid place-items-center text-[10px] uppercase tracking-[0.22em] text-charcoal/40">
+          No image
+        </div>
       )}
       <span className="absolute top-1.5 left-1.5 px-1.5 py-0.5 bg-cream/90 text-[9px] uppercase tracking-[0.22em] text-charcoal/70">
         {label}

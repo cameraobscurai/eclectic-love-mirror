@@ -11,14 +11,7 @@ export type Sketch = {
 export const listSketches = createServerFn({ method: "GET" }).handler(
   async (): Promise<Sketch[]> => {
     const EXPIRES_IN = 60 * 60 * 24 * 7;
-    const EXCLUDED_BATCHES = new Set([
-      "12_50",
-      "12_51",
-      "12_52",
-      "12_55",
-      "12_56",
-      "12_57",
-    ]);
+    const EXCLUDED_BATCHES = new Set(["12_50", "12_51", "12_52", "12_55", "12_56", "12_57"]);
 
     const supabase = createClient(
       process.env.SUPABASE_URL!,
@@ -66,17 +59,13 @@ export const listSketches = createServerFn({ method: "GET" }).handler(
 
         const full = new URL(item.signedUrl, process.env.SUPABASE_URL!);
         const tile = new URL(
-          full.toString().replace(
-            "/storage/v1/object/sign/",
-            "/storage/v1/render/image/sign/",
-          ),
+          full.toString().replace("/storage/v1/object/sign/", "/storage/v1/render/image/sign/"),
         );
         tile.searchParams.set("width", "400");
         tile.searchParams.set("height", "400");
         tile.searchParams.set("resize", "cover");
         tile.searchParams.set("quality", "72");
         tile.searchParams.set("format", "webp");
-
 
         results.push({
           name: item.path,

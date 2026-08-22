@@ -27,11 +27,11 @@ resurrect a product. One glance at the meeting to confirm each was intentionally
 Every legacy column gets a drop date the day it stops being read. Undated
 deletions never happen.
 
-| Column | Status | Drop date | Guard until then |
-| --- | --- | --- | --- |
+| Column                               | Status                                                                                         | Drop date                                    | Guard until then                                                                                 |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | `inventory_items.upscaled_cover_url` | nulled on all 34 rows 2026-08-12; nothing reads it; both producers moved to `scripts/retired/` | **2026-08-21** (after the trust slice ships) | rules-check R9 fails CI on any write; `ALLOW_R1_OVERWRITE` blocks the retired scripts at runtime |
-| `inventory_items.category` | superseded by `collection_slug` / `category_slug`; legacy diagnostics only | **2026-08-21** | not written by the admin drawer |
-| `inventory_items.subcategory_slug` | superseded by `category_slug` | **2026-08-21** | not written by the admin drawer |
+| `inventory_items.category`           | superseded by `collection_slug` / `category_slug`; legacy diagnostics only                     | **2026-08-21**                               | not written by the admin drawer                                                                  |
+| `inventory_items.subcategory_slug`   | superseded by `category_slug`                                                                  | **2026-08-21**                               | not written by the admin drawer                                                                  |
 
 The upscaled PNGs stay in `squarespace-mirror/upscaled-covers/` as an archive.
 No image file is deleted — dropping the column removes the pointer, not the

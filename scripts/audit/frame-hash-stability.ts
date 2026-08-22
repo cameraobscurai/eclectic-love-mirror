@@ -64,6 +64,9 @@ check(
 // Below-the-fold sanity: the tile's 600w suffix swap must resolve to the
 // sibling this path scheme actually writes.
 const url = `https://x/storage/v1/object/public/squarespace-mirror/${framedCoverPath("1234", h1, 1200)}`;
-check("600w suffix swap matches the written 600 path", url.replace("-1200.webp", "-600.webp").endsWith(`${h1}-600.webp`));
+check(
+  "600w suffix swap matches the written 600 path",
+  url.replace("-1200.webp", "-600.webp").endsWith(`${h1}-600.webp`),
+);
 
 process.exit(failed ? 1 : 0);

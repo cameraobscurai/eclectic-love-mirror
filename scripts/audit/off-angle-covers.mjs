@@ -49,13 +49,19 @@ async function silhouetteAspect(url) {
     return null; // non-PNG (jpeg covers) — out of scope for this pass
   }
   const { width: w, height: h, data } = png;
-  let minX = w, minY = h, maxX = -1, maxY = -1;
+  let minX = w,
+    minY = h,
+    maxX = -1,
+    maxY = -1;
   let opaque = true;
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
       const i = (y * w + x) * 4;
       const a = data[i + 3];
-      if (a < 12) { opaque = false; continue; }
+      if (a < 12) {
+        opaque = false;
+        continue;
+      }
       if (a < 250) opaque = false;
       if (opaque) {
         // Light-background fallback for fully opaque sheets.
@@ -123,7 +129,12 @@ for (const [shelf, products] of shelves) {
       coverAspect: +aspect.toFixed(2),
       deviation: +off.toFixed(2),
       swapTo: best
-        ? { position: best.position, aspect: +best.aspect.toFixed(2), deviation: +best.off.toFixed(2), url: best.url }
+        ? {
+            position: best.position,
+            aspect: +best.aspect.toFixed(2),
+            deviation: +best.off.toFixed(2),
+            url: best.url,
+          }
         : null,
     });
   }
@@ -131,11 +142,22 @@ for (const [shelf, products] of shelves) {
 }
 
 findings.sort((a, b) => b.deviation - a.deviation);
-fs.writeFileSync(OUT, JSON.stringify({ generatedAt: new Date().toISOString(), deviation: DEVIATION, findings }, null, 2));
+fs.writeFileSync(
+  OUT,
+  JSON.stringify(
+    { generatedAt: new Date().toISOString(), deviation: DEVIATION, findings },
+    null,
+    2,
+  ),
+);
 
 console.log(`\n=== off-angle covers (>${(DEVIATION * 100).toFixed(0)}% off shelf median) ===`);
 for (const f of findings) {
-  const fix = f.swapTo ? `→ promote image ${f.swapTo.position} (${f.swapTo.aspect})` : "→ no better alternate; needs a reshoot";
-  console.log(`  ${f.shelf.padEnd(20)} ${f.title.slice(0, 42).padEnd(44)} ${f.coverAspect} vs ${f.shelfMedianAspect}  ${fix}`);
+  const fix = f.swapTo
+    ? `→ promote image ${f.swapTo.position} (${f.swapTo.aspect})`
+    : "→ no better alternate; needs a reshoot";
+  console.log(
+    `  ${f.shelf.padEnd(20)} ${f.title.slice(0, 42).padEnd(44)} ${f.coverAspect} vs ${f.shelfMedianAspect}  ${fix}`,
+  );
 }
 console.log(`\n${findings.length} flagged · written to ${path.relative(process.cwd(), OUT)}`);

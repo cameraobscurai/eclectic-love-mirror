@@ -59,7 +59,13 @@ export type RenderOutput = {
 
 const toRaw = async (buf: Buffer): Promise<RawImage & { buf: Buffer }> => {
   const { data, info } = await sharp(buf).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
-  return { data: new Uint8Array(data), w: info.width, h: info.height, channels: info.channels, buf };
+  return {
+    data: new Uint8Array(data),
+    w: info.width,
+    h: info.height,
+    channels: info.channels,
+    buf,
+  };
 };
 
 /** lanczos3 resize, split into two passes when shrinking past 0.5x. */

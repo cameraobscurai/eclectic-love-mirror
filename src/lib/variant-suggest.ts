@@ -15,21 +15,79 @@
 //      "Green Olive Velvet Lumbar Pillow" vs "Green Olive Velvet Pillow".
 
 const PIECE_WORDS = [
-  "fork", "knife", "spoon", "glass", "goblet", "cup", "mug", "plate", "bowl",
-  "platter", "charger", "tumbler", "coupe", "flute", "carafe", "bottle",
-  "pitcher", "tray", "decanter",
+  "fork",
+  "knife",
+  "spoon",
+  "glass",
+  "goblet",
+  "cup",
+  "mug",
+  "plate",
+  "bowl",
+  "platter",
+  "charger",
+  "tumbler",
+  "coupe",
+  "flute",
+  "carafe",
+  "bottle",
+  "pitcher",
+  "tray",
+  "decanter",
 ];
 const COLOR_WORDS = [
-  "black", "white", "grey", "gray", "cream", "ivory", "taupe", "sand", "green",
-  "olive", "blue", "red", "rust", "orange", "yellow", "pink", "purple", "brown",
-  "oatmeal", "natural",
+  "black",
+  "white",
+  "grey",
+  "gray",
+  "cream",
+  "ivory",
+  "taupe",
+  "sand",
+  "green",
+  "olive",
+  "blue",
+  "red",
+  "rust",
+  "orange",
+  "yellow",
+  "pink",
+  "purple",
+  "brown",
+  "oatmeal",
+  "natural",
 ];
 const FINISH_WORDS = [
-  "brass", "gold", "silver", "bronze", "copper", "chrome", "walnut", "oak",
-  "tortoise", "bone", "horn", "matte", "antique", "stainless", "linen",
-  "velvet", "leather", "marble",
+  "brass",
+  "gold",
+  "silver",
+  "bronze",
+  "copper",
+  "chrome",
+  "walnut",
+  "oak",
+  "tortoise",
+  "bone",
+  "horn",
+  "matte",
+  "antique",
+  "stainless",
+  "linen",
+  "velvet",
+  "leather",
+  "marble",
 ];
-const SIZE_WORDS = ["small", "medium", "large", "xl", "single", "double", "triple", "king", "queen"];
+const SIZE_WORDS = [
+  "small",
+  "medium",
+  "large",
+  "xl",
+  "single",
+  "double",
+  "triple",
+  "king",
+  "queen",
+];
 
 /** Label used when a member has no distinguishing words at all — the base SKU
  *  in a family where every sibling carries a suffix. */
@@ -66,7 +124,9 @@ export function suffixLength(titleWords: string[][], prefix: number): number {
   let n = 0;
   while (
     n < cap &&
-    titleWords.every((w) => sameWord(w[w.length - 1 - n], titleWords[0][titleWords[0].length - 1 - n]))
+    titleWords.every((w) =>
+      sameWord(w[w.length - 1 - n], titleWords[0][titleWords[0].length - 1 - n]),
+    )
   ) {
     n++;
   }
@@ -85,9 +145,15 @@ function clean(s: string): string {
 
 /** "Size" | "Finish" | "Color" | "Piece" | "Option" — what these vary on. */
 export function suggestAxis(labels: string[]): string {
-  const toks = labels.join(" ").toLowerCase().split(/[^a-z0-9"']+/).filter(Boolean);
+  const toks = labels
+    .join(" ")
+    .toLowerCase()
+    .split(/[^a-z0-9"']+/)
+    .filter(Boolean);
   const has = (list: string[]) => list.some((w) => toks.includes(w));
-  const sizey = labels.filter((l) => /\d|["']/.test(l) || SIZE_WORDS.some((w) => new RegExp(`\\b${w}\\b`, "i").test(l))).length;
+  const sizey = labels.filter(
+    (l) => /\d|["']/.test(l) || SIZE_WORDS.some((w) => new RegExp(`\\b${w}\\b`, "i").test(l)),
+  ).length;
   if (sizey >= Math.ceil(labels.length / 2)) return "Size";
   if (has(PIECE_WORDS)) return "Piece";
   if (has(COLOR_WORDS) && !has(FINISH_WORDS)) return "Color";
