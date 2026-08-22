@@ -66,10 +66,10 @@ For each product (input = live cover per the overlay-merge precedence):
      `min(bg) > 198`. Method `color`.
    - Else → **no derivative**. Flag `NEEDS_SOURCE_FIX`, enqueue for review.
      Never guess.
-3. **Compose** onto a fixed 1500×1200 (5:4 — must equal PRODUCT_TILE_FRAME_ASPECT exactly; see R5 in the Phase 1 plan) transparent canvas using the
+3. **Compose** onto a fixed 1500×1200 (5:4 — must equal PRODUCT*TILE_FRAME_ASPECT exactly; see R5 in the Phase 1 plan) transparent canvas using the
    existing category rules (port `solveFit` + the `categoryFit.ts` table into
    the worker verbatim — the math is good; the runtime was the problem).
-   Scale is applied by resampling the _source_ crop, so there is no clamp:
+   Scale is applied by resampling the \_source* crop, so there is no clamp:
    a 40%-fill photo and a 90%-fill photo both land exactly on target.
    Bottom-anchored categories share one baseline (anchorY per rule).
 4. **Flatten** onto the site background (#ffffff) or keep alpha — keep alpha;
