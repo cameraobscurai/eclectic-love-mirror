@@ -46,7 +46,7 @@ function ImageQA() {
     (async () => {
       const { data } = await supabase
         .from("inventory_items")
-        .select("id,rms_id,title,category,images,public_ready,hidden_note,card_background_url")
+        .select("id,rms_id,title,category,images,public_ready,hidden_note,card_background_url,updated_at")
         .neq("status", "draft")
         .order("category")
         .order("title")
