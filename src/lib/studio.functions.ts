@@ -480,6 +480,27 @@ export const revokeShareToken = createServerFn({ method: "POST" })
     return { boardId: row.id, revokedAt: (row as unknown as { share_token_revoked_at: string }).share_token_revoked_at };
   });
 
+// Regenerate a board's share link. The previous link stops working the
+// instant the hash is replaced. Returns the raw token ONCE — it is never
+// stored, so the admin must copy it now or regenerate again.
+export const regenerateShareToken = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .inputValidator((d) => z.object({ boardId: z.string().uuid() }).parse(d))
+  .handler(async ({ data }) => {
+    const token = generateShareTokenValue();
+    const { error } = await supabaseAdmin
+      .from("style_boards")
+      .update({
+        share_token_hash: await hashShareToken(token),
+        share_token_expires_at: new Date(
+          Date.now() + DEFAULT_SHARE_TOKEN_TTL_DAYS * 24 * 60 * 60 * 1000,
+        ).toISOString(),
+        share_token_revoked_at: null,
+      })
+      .eq("id", data.boardId);
+    if (error) throw error;
+    return { boardId: data.boardId, shareToken: token };
+  });
 
 
 // ---- Client email on first send ------------------------------------------
