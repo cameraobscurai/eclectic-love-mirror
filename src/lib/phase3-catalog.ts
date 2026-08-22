@@ -208,6 +208,34 @@ export async function getCollectionCatalogBase(): Promise<CatalogPayload> {
   return baseLoadPromise;
 }
 
+/**
+ * First-paint projection of the base catalog.
+ *
+ * The /collection loader's return value is serialized into the HTML document
+ * for hydration, so every byte here is downloaded twice — once as HTML, once
+ * as the JS chunk the client loads anyway. `images[]`, `variants[]`,
+ * `sourceUrl` and `description` are ~40% of the catalog and none of them are
+ * read during the grid's first render; they arrive with the full catalog
+ * post-mount, in the same effect that applies the admin overlay.
+ *
+ * Anything the grid paints on first render MUST stay in this projection, or
+ * SSR and the first client render disagree and React discards the tree.
+ */
+export async function getCollectionCatalogFirstPaint(): Promise<CatalogPayload> {
+  const base = await getCollectionCatalogBase();
+  const products = base.products.map((p) => {
+    const { images: _images, variants: _variants, sourceUrl: _src, description: _d, ...rest } = p;
+    return {
+      ...rest,
+      sourceUrl: "",
+      description: null,
+      images: [],
+      variants: [],
+    } as CollectionProduct;
+  });
+  return { products, facets: base.facets, total: base.total };
+}
+
 export async function getCollectionCatalog(): Promise<CatalogPayload> {
   if (cached && Date.now() - cachedAt < CATALOG_TTL_MS) return cached;
   if (cached) {
