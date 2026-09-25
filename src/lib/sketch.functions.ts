@@ -1,5 +1,4 @@
 import { createServerFn } from "@tanstack/react-start";
-import { createClient } from "@supabase/supabase-js";
 
 export type Sketch = {
   name: string;
@@ -13,16 +12,8 @@ export const listSketches = createServerFn({ method: "GET" }).handler(
     const EXPIRES_IN = 60 * 60 * 24 * 7;
     const EXCLUDED_BATCHES = new Set(["12_50", "12_51", "12_52", "12_55", "12_56", "12_57"]);
 
-    const supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_PUBLISHABLE_KEY!,
-      {
-        auth: {
-          persistSession: false,
-          autoRefreshToken: false,
-        },
-      },
-    );
+    // Private bucket: list + sign server-side only. Visitors get signed URLs.
+    const { supabaseAdmin: supabase } = await import("@/integrations/supabase/client.server");
 
     const { data: files, error } = await supabase.storage
       .from("assets")
