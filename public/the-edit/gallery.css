@@ -17,3 +17,14 @@ dialog{color:var(--ink);border:0;padding:0;background:var(--paper)}dialog::backd
 @media(max-width:700px){.details{scroll-margin-top:64px}.header .brand span{letter-spacing:1.1px;font-size:6px}}
 
 .department-image{position:relative}.department-image img{position:absolute;left:11%;top:11%;width:78%;height:78%;max-width:none;max-height:none;object-fit:contain}.hero-image{position:relative}.hero-image img,.hero-piece:nth-child(2) .hero-image img{position:absolute;left:4%;top:10%;width:92%;height:80%;max-width:none;max-height:none;object-fit:contain}
+/* Frosted depth — grid recedes behind glass, piece lifts forward */
+body>*:not(dialog){transition:transform .5s cubic-bezier(.22,1,.36,1),filter .5s cubic-bezier(.22,1,.36,1)}
+body:has(#focus[open])>*:not(dialog){transform:scale(.965);filter:saturate(.8)}
+#focus::backdrop{background:#1d231a1f;backdrop-filter:none}
+#focus{background:#efefe8b8;-webkit-backdrop-filter:blur(26px) saturate(1.25);backdrop-filter:blur(26px) saturate(1.25)}
+#focus[open]{animation:edit-glass-in .45s cubic-bezier(.22,1,.36,1)}
+@keyframes edit-glass-in{from{background:#efefe800;-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0)}}
+.focus-top{background:#f4f3eecc!important;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-bottom-color:#d5dacb99}
+.focus-stage>img{filter:drop-shadow(0 34px 38px #27332026) drop-shadow(0 6px 10px #27332014)}
+@media (max-width:700px){#focus{-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);background:#efefe8cc}}
+@media (prefers-reduced-motion:reduce){body>*:not(dialog){transition:none}#focus[open]{animation:none}}
