@@ -26,8 +26,19 @@ import { VitePWA } from "vite-plugin-pwa";
 //     A 5MB JPG is fine; the emitted variants are what ship.
 //
 // Presets keep call-sites short and consistent. Add new ones here, never inline.
+// envDefine disabled: some build-tool versions emit process.env fallback
+// expressions as define values, which esbuild rejects ("Invalid define value").
+// We inject only the VITE_* values as plain JSON literals instead.
+const viteEnvDefine = Object.fromEntries(
+  Object.entries(process.env)
+    .filter(([k, v]) => k.startsWith("VITE_") && typeof v === "string")
+    .map(([k, v]) => [`import.meta.env.${k}`, JSON.stringify(v)]),
+);
+
 export default defineConfig({
+  envDefine: false,
   vite: {
+    define: viteEnvDefine,
     plugins: [
       imagetools({
         defaultDirectives: (url) => {
