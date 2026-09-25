@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as UtInventoryRouteImport } from './routes/ut-inventory'
 import { Route as TheHive3RouteImport } from './routes/the-hive3'
 import { Route as TheHiveRouteImport } from './routes/the-hive'
+import { Route as TheEditRouteImport } from './routes/the-edit'
 import { Route as SketchRouteImport } from './routes/sketch'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
@@ -121,6 +122,11 @@ const TheHive3Route = TheHive3RouteImport.update({
 const TheHiveRoute = TheHiveRouteImport.update({
   id: '/the-hive',
   path: '/the-hive',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TheEditRoute = TheEditRouteImport.update({
+  id: '/the-edit',
+  path: '/the-edit',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SketchRoute = SketchRouteImport.update({
@@ -628,6 +634,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sketch': typeof SketchRoute
+  '/the-edit': typeof TheEditRoute
   '/the-hive': typeof TheHiveRoute
   '/the-hive3': typeof TheHive3Route
   '/ut-inventory': typeof UtInventoryRoute
@@ -727,6 +734,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sketch': typeof SketchRoute
+  '/the-edit': typeof TheEditRoute
   '/the-hive': typeof TheHiveRoute
   '/the-hive3': typeof TheHive3Route
   '/ut-inventory': typeof UtInventoryRoute
@@ -828,6 +836,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sketch': typeof SketchRoute
+  '/the-edit': typeof TheEditRoute
   '/the-hive': typeof TheHiveRoute
   '/the-hive3': typeof TheHive3Route
   '/ut-inventory': typeof UtInventoryRoute
@@ -930,6 +939,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sitemap.xml'
     | '/sketch'
+    | '/the-edit'
     | '/the-hive'
     | '/the-hive3'
     | '/ut-inventory'
@@ -1029,6 +1039,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sitemap.xml'
     | '/sketch'
+    | '/the-edit'
     | '/the-hive'
     | '/the-hive3'
     | '/ut-inventory'
@@ -1129,6 +1140,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sitemap.xml'
     | '/sketch'
+    | '/the-edit'
     | '/the-hive'
     | '/the-hive3'
     | '/ut-inventory'
@@ -1230,6 +1242,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SketchRoute: typeof SketchRoute
+  TheEditRoute: typeof TheEditRoute
   TheHiveRoute: typeof TheHiveRoute
   TheHive3Route: typeof TheHive3Route
   UtInventoryRoute: typeof UtInventoryRoute
@@ -1305,6 +1318,13 @@ declare module '@tanstack/react-router' {
       path: '/the-hive'
       fullPath: '/the-hive'
       preLoaderRoute: typeof TheHiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/the-edit': {
+      id: '/the-edit'
+      path: '/the-edit'
+      fullPath: '/the-edit'
+      preLoaderRoute: typeof TheEditRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sketch': {
@@ -2061,6 +2081,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SketchRoute: SketchRoute,
+  TheEditRoute: TheEditRoute,
   TheHiveRoute: TheHiveRoute,
   TheHive3Route: TheHive3Route,
   UtInventoryRoute: UtInventoryRoute,
