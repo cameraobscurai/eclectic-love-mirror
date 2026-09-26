@@ -9,7 +9,7 @@ export const Route = createFileRoute("/the-edit")({
         const url = new URL(request.url);
         // Cache buster: unique v= per deploy so browsers/CDN never serve a stale copy.
         const params = new URLSearchParams(url.search);
-        params.set("v", "20260925e");
+        params.set("v", "20260926a");
         return new Response(null, {
           status: 302,
           headers: {
