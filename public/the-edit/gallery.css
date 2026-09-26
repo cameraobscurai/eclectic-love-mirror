@@ -28,3 +28,7 @@ body:has(#focus[open])>*:not(dialog){transform:scale(.965);filter:saturate(.8)}
 .zoom-surface>img{filter:drop-shadow(0 34px 38px #27332026) drop-shadow(0 6px 10px #27332014)}
 @media (max-width:700px){#focus{-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);background:#efefe8cc}}
 @media (prefers-reduced-motion:reduce){body>*:not(dialog){transition:none}#focus[open]{animation:none}}
+
+/* contained product area: fixed breathing room so pieces never read as cropped */
+.zoom-surface{inset:clamp(28px,7%,72px) clamp(28px,10%,140px) clamp(20px,5%,48px)}
+@media (max-width:700px){.zoom-surface{inset:9% 7% 6%}}
