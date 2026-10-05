@@ -47,7 +47,12 @@ jobs:
         run: bun run lint
 
       - name: Production build
-        run: bun run build
+        run: |
+          # Unset absent overrides so Vite can load the committed public .env values.
+          for name in VITE_SUPABASE_URL VITE_SUPABASE_PUBLISHABLE_KEY VITE_SUPABASE_PROJECT_ID; do
+            if [ -z "${!name}" ]; then unset "$name"; fi
+          done
+          bun run build
 
   fit-and-console-health:
     runs-on: ubuntu-latest
@@ -83,6 +88,10 @@ jobs:
 
       - name: Start dev server
         run: |
+          # Empty GitHub secrets must not shadow the committed public .env values.
+          for name in VITE_SUPABASE_URL VITE_SUPABASE_PUBLISHABLE_KEY VITE_SUPABASE_PROJECT_ID; do
+            if [ -z "${!name}" ]; then unset "$name"; fi
+          done
           bun run dev > /tmp/dev-server.log 2>&1 &
           for i in $(seq 1 90); do
             curl -sf -o /dev/null http://localhost:8080/ && exit 0
