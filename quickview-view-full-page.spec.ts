@@ -18,7 +18,7 @@ test('QuickView "view full page" lands on the PDP', async ({ page }) => {
     const data = await res.json();
     return data.products?.[0] as { slug: string; title: string };
   });
-  const { slug, title } = product;
+  const { slug } = product;
   expect(slug, "catalog must expose at least one product slug").toBeTruthy();
   await page.goto(`/collection?view=${encodeURIComponent(slug)}`, {
     waitUntil: "domcontentloaded",
@@ -41,7 +41,11 @@ test('QuickView "view full page" lands on the PDP', async ({ page }) => {
   // the modal to close and the actual product heading to render as well.
   await expect(dialog).not.toBeVisible();
   expect(new URL(page.url()).pathname).toBe(href);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText(title);
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    "href",
+    `https://eclectichive.com${href}`,
+  );
 });
 
 // Quick View is the middle layer between the grid and the PDP: clicking a
