@@ -350,7 +350,7 @@ export function QuickViewModal({
         )}
         {/* TOP BAR — eyebrow left, nav right. Frosted strip with bottom hairline. */}
         <div
-          className="flex items-center justify-between max-md:gap-2 px-4 md:px-10 pt-4 md:pt-6 pb-2 md:pb-3"
+          className="flex items-center justify-between max-md:min-w-0 max-md:gap-2 px-4 md:px-10 pt-4 md:pt-6 pb-2 md:pb-3"
           style={glassBandLightNoTop}
         >
           <p className="text-[10px] uppercase tracking-[0.28em] text-charcoal/70 max-md:truncate">

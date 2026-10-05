@@ -116,8 +116,10 @@ for (const width of [320, 375, 390, 430, 767, 768, 1440]) {
 
     // Capture the narrow header for review without accepting new visual baselines.
     const header = close.locator("..").locator("..");
+    const screenshotPath = testInfo.outputPath(`quickview-header-${width}.png`);
+    await header.screenshot({ path: screenshotPath, animations: "disabled" });
     await testInfo.attach(`quickview-header-${width}`, {
-      body: await header.screenshot({ animations: "disabled" }),
+      path: screenshotPath,
       contentType: "image/png",
     });
     await close.click();
