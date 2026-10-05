@@ -67,8 +67,6 @@ describe("Benches + Ottomans combined filter", () => {
     for (const parent of PARENT_ORDER.filter((p) => p !== seating)) {
       expect(pick("benches-ottomans", parent)).toHaveLength(0);
     }
-    expect(
-      productMatchesSub(fake("dining", "benches"), "dining", "benches-ottomans"),
-    ).toBe(false);
+    expect(productMatchesSub(fake("dining", "benches"), "dining", "benches-ottomans")).toBe(false);
   });
 });
