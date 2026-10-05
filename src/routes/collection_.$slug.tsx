@@ -41,7 +41,7 @@ import { RelatedPieces } from "@/components/collection/RelatedPieces";
 import { ProductStage } from "@/components/pdp/ProductStage";
 import { ShareButton } from "@/components/pdp/ShareButton";
 import { ScaleRuleWidth, ScaleRuleHeight } from "@/components/collection/ScaleRule";
-import { parseDimensionsInches } from "@/components/collection/productPhysicalScale";
+import { parseDimensionsInches } from "@/lib/product-dimensions";
 import { useInquiry } from "@/hooks/use-inquiry";
 
 import {

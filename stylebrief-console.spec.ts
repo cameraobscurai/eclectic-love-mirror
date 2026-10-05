@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { test, expect, chromium, type ConsoleMessage } from "@playwright/test";
 
 const BASE_URL = "http://localhost:8080";
@@ -29,7 +30,7 @@ test.describe("/stylebrief console health", () => {
 
   test("no new console errors on /stylebrief", async () => {
     const browser = await chromium.launch({
-      executablePath: "/bin/chromium",
+      executablePath: existsSync("/bin/chromium") ? "/bin/chromium" : undefined,
       args: ["--no-sandbox"],
     });
     const page = await browser.newPage();

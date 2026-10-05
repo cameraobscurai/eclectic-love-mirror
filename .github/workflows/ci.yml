@@ -36,7 +36,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Typecheck
-        run: bunx tsgo --noEmit
+        run: bun run tsc --noEmit
 
       # Lint IS a gate now. The 12.9k-problem backlog was 12.8k prettier
       # findings, cleared in a single formatting-only pass; the residue is 100
@@ -47,7 +47,12 @@ jobs:
         run: bun run lint
 
       - name: Production build
-        run: bun run build
+        run: |
+          # Unset absent overrides so Vite can load the committed public .env values.
+          for name in VITE_SUPABASE_URL VITE_SUPABASE_PUBLISHABLE_KEY VITE_SUPABASE_PROJECT_ID; do
+            if [ -z "${!name}" ]; then unset "$name"; fi
+          done
+          bun run build
 
   fit-and-console-health:
     runs-on: ubuntu-latest
@@ -83,6 +88,10 @@ jobs:
 
       - name: Start dev server
         run: |
+          # Empty GitHub secrets must not shadow the committed public .env values.
+          for name in VITE_SUPABASE_URL VITE_SUPABASE_PUBLISHABLE_KEY VITE_SUPABASE_PROJECT_ID; do
+            if [ -z "${!name}" ]; then unset "$name"; fi
+          done
           bun run dev > /tmp/dev-server.log 2>&1 &
           for i in $(seq 1 90); do
             curl -sf -o /dev/null http://localhost:8080/ && exit 0
@@ -94,11 +103,14 @@ jobs:
       # against scripts/audit/tile-fit-baseline.json. To intentionally retune a
       # category, run `bun run fit:baseline` locally and commit the new baseline.
       - name: Fit + floor-anchor regression gate
+        id: fit
         run: bun run fit:check
 
       # Includes layout-visual.spec.ts — QuickView + PDP screenshot
       # regression. Re-baseline intentionally with `bun run visual:baseline`.
       - name: Console + network health + visual regression
+        # Collect visual evidence even when fit fails; the fit step still fails CI.
+        if: ${{ !cancelled() && (steps.fit.outcome == 'success' || steps.fit.outcome == 'failure') }}
         run: bunx playwright test
 
       - name: Upload visual diffs

@@ -350,10 +350,10 @@ export function QuickViewModal({
         )}
         {/* TOP BAR — eyebrow left, nav right. Frosted strip with bottom hairline. */}
         <div
-          className="flex items-center justify-between px-4 md:px-10 pt-4 md:pt-6 pb-2 md:pb-3"
+          className="flex items-center justify-between max-md:min-w-0 max-md:gap-2 px-4 md:px-10 pt-4 md:pt-6 pb-2 md:pb-3"
           style={glassBandLightNoTop}
         >
-          <p className="text-[10px] uppercase tracking-[0.28em] text-charcoal/70">
+          <p className="text-[10px] uppercase tracking-[0.28em] text-charcoal/70 max-md:truncate">
             {/* Name the surface: this is a peek, not the page. The only exit
                 to the full page is the outlined CTA in the footer. */}
             <span className="text-charcoal">QUICK VIEW</span>
@@ -361,27 +361,27 @@ export function QuickViewModal({
               <span className="text-charcoal/45"> · {product.displayCategory}</span>
             ) : null}
           </p>
-          <div className="flex items-center gap-1 text-charcoal">
+          <div className="flex items-center gap-1 text-charcoal max-md:shrink-0 max-md:gap-0">
             <button
               onClick={onPrev}
               disabled={!hasPrev}
               aria-label="Previous piece"
               aria-keyshortcuts="ArrowLeft"
-              className="group inline-flex items-center gap-2 h-11 px-3 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 disabled:cursor-not-allowed hover:text-charcoal/60 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 transition-colors"
+              className="group inline-flex items-center gap-2 h-11 px-3 max-md:w-11 max-md:shrink-0 max-md:justify-center max-md:gap-0 max-md:px-0 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 disabled:cursor-not-allowed hover:text-charcoal/60 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 transition-colors"
             >
-              <span aria-hidden>←</span> PREV
+              <span aria-hidden>←</span> <span className="max-md:hidden">PREV</span>
             </button>
-            <span aria-hidden className="h-4 w-px bg-charcoal/20 mx-1" />
+            <span aria-hidden className="h-4 w-px bg-charcoal/20 mx-1 max-md:hidden" />
             <button
               onClick={onNext}
               disabled={!hasNext}
               aria-label="Next piece"
               aria-keyshortcuts="ArrowRight"
-              className="group inline-flex items-center gap-2 h-11 px-3 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 disabled:cursor-not-allowed hover:text-charcoal/60 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 transition-colors"
+              className="group inline-flex items-center gap-2 h-11 px-3 max-md:w-11 max-md:shrink-0 max-md:justify-center max-md:gap-0 max-md:px-0 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 disabled:cursor-not-allowed hover:text-charcoal/60 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 transition-colors"
             >
-              NEXT <span aria-hidden>→</span>
+              <span className="max-md:hidden">NEXT</span> <span aria-hidden>→</span>
             </button>
-            <span aria-hidden className="h-4 w-px bg-charcoal/20 mx-1" />
+            <span aria-hidden className="h-4 w-px bg-charcoal/20 mx-1 max-md:hidden" />
             <button
               type="button"
               onClick={async () => {
@@ -406,7 +406,7 @@ export function QuickViewModal({
                 }
               }}
               aria-label="Share this piece"
-              className="h-11 px-3 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] hover:text-charcoal/60 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 transition-colors"
+              className="h-11 px-3 max-md:w-11 max-md:shrink-0 max-md:justify-center max-md:gap-0 max-md:px-0 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] hover:text-charcoal/60 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 transition-colors"
             >
               <svg
                 width="12"
@@ -421,15 +421,15 @@ export function QuickViewModal({
                 <path d="M12 15V3" />
                 <path d="m8 7 4-4 4 4" />
               </svg>
-              SHARE
+              <span className="max-md:hidden">SHARE</span>
             </button>
 
-            <span aria-hidden className="h-4 w-px bg-charcoal/20 mx-1" />
+            <span aria-hidden className="h-4 w-px bg-charcoal/20 mx-1 max-md:hidden" />
             <button
               ref={closeRef}
               onClick={onClose}
               aria-label="Close"
-              className="h-11 w-11 grid place-items-center text-xl leading-none hover:text-charcoal/60 transition-colors active:scale-90 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
+              className="h-11 w-11 max-md:shrink-0 grid place-items-center text-xl leading-none hover:text-charcoal/60 transition-colors active:scale-90 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
             >
               ×
             </button>

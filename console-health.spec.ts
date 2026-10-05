@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { test, expect, chromium, type ConsoleMessage } from "@playwright/test";
 
 // Broad console + network health check across critical routes.
@@ -37,7 +38,7 @@ test.describe("site-wide console + network health", () => {
   for (const route of ROUTES) {
     test(`no new console/network errors on ${route}`, async () => {
       const browser = await chromium.launch({
-        executablePath: "/bin/chromium",
+        executablePath: existsSync("/bin/chromium") ? "/bin/chromium" : undefined,
         args: ["--no-sandbox"],
       });
       const page = await browser.newPage();
