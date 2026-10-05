@@ -31,7 +31,7 @@ import { SubcategoryRail } from "@/components/collection/SubcategoryRail";
 import { CollectionWall } from "@/components/collection/CollectionWall";
 
 import { CategoryTonalGrid } from "@/components/collection/CategoryTonalGrid";
-// Art-directed Hive hero: square plate for desktop aside (object-contain so the
+// Art-directed Hive hero: portrait artwork for desktop aside (object-contain so the
 // embedded lettering — "the HIVE" and "SIGNATURE COLLECTION" — is never clipped
 // when the aside's aspect ratio shifts with viewport width),
 // wide composition for the mobile masthead (object-contain — the wide asset is
