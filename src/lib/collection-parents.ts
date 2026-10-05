@@ -153,10 +153,25 @@ export const GROUP_TO_PARENT: Record<BrowseGroupId, ParentId> = {
   "furs-pelts": "textiles",
 };
 
+/**
+ * UI-only combined filters: one rail selection that is the UNION of several
+ * declared categories. Membership is still the declared category_slug — no
+ * taxonomy rows, no title inference. Only reachable from tiles/URLs; the rail
+ * shows the chip only while it is the active selection.
+ */
+export const COMBINED_SUBS: Record<string, { parent: ParentId; label: string; members: string[] }> =
+  {
+    "benches-ottomans": {
+      parent: "lounge-seating",
+      label: "Benches + Ottomans",
+      members: ["benches", "ottomans"],
+    },
+  };
+
 export const TILE_TO_PARENT_SUB: Record<BrowseGroupId, { parent: ParentId; sub: string }> = {
   sofas: { parent: "lounge-seating", sub: "sofas-loveseats" },
   chairs: { parent: "lounge-seating", sub: "lounge-chairs" },
-  "benches-ottomans": { parent: "lounge-seating", sub: "all" },
+  "benches-ottomans": { parent: "lounge-seating", sub: "benches-ottomans" },
   "coffee-tables": { parent: "lounge-tables", sub: "coffee-tables" },
   "side-tables": { parent: "lounge-tables", sub: "side-tables" },
   "cocktail-tables": { parent: "cocktail-bar", sub: "cocktail-tables" },
@@ -196,6 +211,12 @@ export function productCategory(p: CollectionProduct): string | null {
 export function productMatchesSub(p: CollectionProduct, parent: ParentId, sub: string): boolean {
   if (productParent(p) !== parent) return false;
   if (sub === "all") return true;
+  const combined = COMBINED_SUBS[sub];
+  if (combined) {
+    if (combined.parent !== parent) return false;
+    const cat = productCategory(p);
+    return cat !== null && combined.members.includes(cat);
+  }
   return productCategory(p) === sub;
 }
 
