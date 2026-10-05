@@ -36,7 +36,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Typecheck
-        run: bunx tsgo --noEmit
+        run: bun run tsc --noEmit
 
       # Lint IS a gate now. The 12.9k-problem backlog was 12.8k prettier
       # findings, cleared in a single formatting-only pass; the residue is 100

@@ -277,7 +277,7 @@ Return JSON matching the schema.`;
     const { experimental_output: output } = await generateText({
       model: gateway("google/gemini-3-flash-preview"),
       prompt,
-      experimental_output: Output.object({
+      experimental_output: Output.object<BoardCopy>({
         schema: zod.object({
           project_title: zod.string(),
           section_word: zod.string(),
