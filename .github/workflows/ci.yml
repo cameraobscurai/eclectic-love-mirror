@@ -94,11 +94,14 @@ jobs:
       # against scripts/audit/tile-fit-baseline.json. To intentionally retune a
       # category, run `bun run fit:baseline` locally and commit the new baseline.
       - name: Fit + floor-anchor regression gate
+        id: fit
         run: bun run fit:check
 
       # Includes layout-visual.spec.ts — QuickView + PDP screenshot
       # regression. Re-baseline intentionally with `bun run visual:baseline`.
       - name: Console + network health + visual regression
+        # Collect visual evidence even when fit fails; the fit step still fails CI.
+        if: ${{ !cancelled() && (steps.fit.outcome == 'success' || steps.fit.outcome == 'failure') }}
         run: bunx playwright test
 
       - name: Upload visual diffs
