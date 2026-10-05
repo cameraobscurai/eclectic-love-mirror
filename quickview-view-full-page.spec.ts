@@ -76,3 +76,51 @@ test("tile click opens Quick View without leaving the collection page", async ({
   await expect(page).toHaveURL(archiveUrl);
   await expect(tile).toBeVisible();
 });
+
+// The mobile toolbar must fit without clipping the close control or shrinking
+// any of its touch targets. Exercise both sides of the desktop breakpoint.
+for (const width of [320, 375, 390, 430, 767, 768, 1440]) {
+  test(`Quick View header controls fit at ${width}px`, async ({ page }, testInfo) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/collection?view=amitola-led-corner-light", {
+      waitUntil: "domcontentloaded",
+    });
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible({ timeout: 20_000 });
+    await page.evaluate(() => document.fonts.ready);
+    const close = dialog.getByRole("button", { name: "Close", exact: true });
+
+    for (const name of ["Previous piece", "Next piece", "Share this piece", "Close"]) {
+      const button = dialog.getByRole("button", { name, exact: true });
+      await expect(button).toBeVisible();
+      await expect
+        .poll(async () => {
+          const box = await button.boundingBox();
+          const viewportWidth = await page.evaluate(() => document.documentElement.clientWidth);
+          return !!box && box.x >= 0 && box.x + box.width <= viewportWidth && box.y >= 0;
+        })
+        .toBe(true);
+      if (width < 768) {
+        const box = (await button.boundingBox())!;
+        expect(box.width).toBeGreaterThanOrEqual(44);
+        expect(box.height).toBeGreaterThanOrEqual(44);
+      }
+    }
+
+    if (width >= 768) {
+      for (const label of ["PREV", "NEXT", "SHARE"]) {
+        await expect(dialog.getByText(label, { exact: true })).toBeVisible();
+      }
+    }
+
+    // Capture the narrow header for review without accepting new visual baselines.
+    const header = close.locator("..").locator("..");
+    await testInfo.attach(`quickview-header-${width}`, {
+      body: await header.screenshot({ animations: "disabled" }),
+      contentType: "image/png",
+    });
+    await close.click();
+    await expect(dialog).not.toBeVisible();
+    await expect(page).toHaveURL(/\/collection$/);
+  });
+}
