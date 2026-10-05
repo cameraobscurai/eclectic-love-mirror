@@ -31,8 +31,9 @@ import { SubcategoryRail } from "@/components/collection/SubcategoryRail";
 import { CollectionWall } from "@/components/collection/CollectionWall";
 
 import { CategoryTonalGrid } from "@/components/collection/CategoryTonalGrid";
-// Art-directed Hive hero: square plate for desktop aside (object-cover so the
-// canvas's intentional white margin gets clipped instead of letterboxing the H),
+// Art-directed Hive hero: square plate for desktop aside (object-contain so the
+// embedded lettering — "the HIVE" and "SIGNATURE COLLECTION" — is never clipped
+// when the aside's aspect ratio shifts with viewport width),
 // wide composition for the mobile masthead (object-contain — the wide asset is
 // already a complete layout including its own breathing room). Both pipe through
 // vite-imagetools `?preset=editorial` → AVIF + WebP at 768/1280/1920w. Browser
@@ -1061,7 +1062,7 @@ function CollectionPage() {
                     loading="eager"
                     {...({ fetchPriority: "high" } as Record<string, string>)}
                     draggable={false}
-                    className="block h-full w-full object-cover"
+                    className="block h-full w-full object-contain"
                     style={{
                       objectPosition: "center",
                     }}
