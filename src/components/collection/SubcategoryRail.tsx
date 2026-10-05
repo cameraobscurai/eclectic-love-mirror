@@ -1,8 +1,8 @@
-import { PARENT_LABELS, PARENT_SUBS, type ParentId } from "@/lib/collection-parents";
+import { COMBINED_SUBS, PARENT_LABELS, PARENT_SUBS, type ParentId } from "@/lib/collection-parents";
 
 interface Props {
   parent: ParentId;
-  active: string; // sub id, or "all"
+  active: string; // sub id, combined sub id, or "all"
   onSelect: (sub: string) => void;
 }
 
@@ -10,12 +10,17 @@ interface Props {
  * Contextual horizontal rail rendered on the active product page.
  *
  * Renders [All, ...PARENT_SUBS[parent]] — taxonomy only, never inventory
- * counts. Quiet ALL CAPS, charcoal underline on the active sub. Replaces the
- * old 18-row flattened rail.
+ * counts. A UI-only combined selection (COMBINED_SUBS) gets its own chip,
+ * shown only while active, so "All" never lies about the current filter.
  */
 export function SubcategoryRail({ parent, active, onSelect }: Props) {
   const subs = PARENT_SUBS[parent];
-  const items = [{ id: "all", label: "All" }, ...subs];
+  const combined = COMBINED_SUBS[active];
+  const items = [
+    { id: "all", label: "All" },
+    ...subs,
+    ...(combined && combined.parent === parent ? [{ id: active, label: combined.label }] : []),
+  ];
 
   return (
     <nav
