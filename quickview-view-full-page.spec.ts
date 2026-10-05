@@ -81,6 +81,7 @@ test("tile click opens Quick View without leaving the collection page", async ({
 // any of its touch targets. Exercise both sides of the desktop breakpoint.
 for (const width of [320, 375, 390, 430, 767, 768, 1440]) {
   test(`Quick View header controls fit at ${width}px`, async ({ page }, testInfo) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/collection?view=amitola-led-corner-light", {
       waitUntil: "domcontentloaded",
@@ -121,6 +122,8 @@ for (const width of [320, 375, 390, 430, 767, 768, 1440]) {
     });
     await close.click();
     await expect(dialog).not.toBeVisible();
-    await expect(page).toHaveURL(/\/collection$/);
+    await expect(page).toHaveURL(
+      (url) => url.pathname === "/collection" && !url.searchParams.get("view"),
+    );
   });
 }
