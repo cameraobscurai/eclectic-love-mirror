@@ -117,7 +117,7 @@ export const PARENT_SUBS: Record<ParentId, SubOption[]> = {
   rugs: [{ id: "rugs", label: "Rugs" }],
   styling: [
     { id: "accents", label: "Accents" },
-    { id: "candlelighting", label: "Candlighting" },
+    { id: "candlelighting", label: "Candlelighting" },
     { id: "crates-baskets", label: "Crates + Baskets" },
   ],
   "large-decor": [
