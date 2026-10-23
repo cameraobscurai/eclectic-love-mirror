@@ -9,239 +9,109 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as UtInventoryRouteImport } from './routes/ut-inventory'
-import { Route as TheHive3RouteImport } from './routes/the-hive3'
-import { Route as TheHiveRouteImport } from './routes/the-hive'
-import { Route as TheEditRouteImport } from './routes/the-edit'
-import { Route as SketchRouteImport } from './routes/sketch'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as ProcessRouteImport } from './routes/process'
-import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as Portfolio1RouteImport } from './routes/portfolio-1'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as InventoryRouteImport } from './routes/inventory'
-import { Route as Gallery1RouteImport } from './routes/gallery-1'
-import { Route as GalleryRouteImport } from './routes/gallery'
-import { Route as FaqRouteImport } from './routes/faq'
-import { Route as EventGalleryRouteImport } from './routes/event-gallery'
-import { Route as EventCrewRouteImport } from './routes/event-crew'
-import { Route as EmailPreviewRouteImport } from './routes/email-preview'
-import { Route as DemoRouteImport } from './routes/demo'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as ComposeRouteImport } from './routes/compose'
-import { Route as Colorado1RouteImport } from './routes/colorado-1'
-import { Route as CollectionRouteImport } from './routes/collection'
-import { Route as CohomeRouteImport } from './routes/cohome'
-import { Route as CareersRouteImport } from './routes/careers'
-import { Route as AtelierRouteImport } from './routes/atelier'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as TablewareIndexRouteImport } from './routes/tableware.index'
-import { Route as StylingIndexRouteImport } from './routes/styling.index'
-import { Route as StylebriefIndexRouteImport } from './routes/stylebrief.index'
-import { Route as SeatingIndexRouteImport } from './routes/seating.index'
-import { Route as RugsIndexRouteImport } from './routes/rugs.index'
-import { Route as Lighting1IndexRouteImport } from './routes/lighting1.index'
-import { Route as LightingIndexRouteImport } from './routes/lighting.index'
-import { Route as BarsIndexRouteImport } from './routes/bars.index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AtelierRouteImport } from './routes/atelier'
+import { Route as CareersRouteImport } from './routes/careers'
+import { Route as CohomeRouteImport } from './routes/cohome'
+import { Route as CollectionRouteImport } from './routes/collection'
+import { Route as Colorado1RouteImport } from './routes/colorado-1'
+import { Route as ComposeRouteImport } from './routes/compose'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as DemoRouteImport } from './routes/demo'
+import { Route as EmailPreviewRouteImport } from './routes/email-preview'
+import { Route as EventCrewRouteImport } from './routes/event-crew'
+import { Route as EventGalleryRouteImport } from './routes/event-gallery'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as Gallery1RouteImport } from './routes/gallery-1'
+import { Route as InventoryRouteImport } from './routes/inventory'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as Portfolio1RouteImport } from './routes/portfolio-1'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ProcessRouteImport } from './routes/process'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SketchRouteImport } from './routes/sketch'
+import { Route as TheEditRouteImport } from './routes/the-edit'
+import { Route as TheHiveRouteImport } from './routes/the-hive'
+import { Route as TheHive3RouteImport } from './routes/the-hive3'
+import { Route as UtInventoryRouteImport } from './routes/ut-inventory'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as UtNewArrivalsSplatRouteImport } from './routes/ut-new-arrivals.$'
-import { Route as TextilesSplatRouteImport } from './routes/textiles.$'
-import { Route as TestVariantUploadSplatRouteImport } from './routes/test-variant-upload.$'
-import { Route as TablewareSplatRouteImport } from './routes/tableware.$'
-import { Route as Tables1SplatRouteImport } from './routes/tables1.$'
-import { Route as StylingSplatRouteImport } from './routes/styling.$'
-import { Route as StylebriefThreeRouteImport } from './routes/stylebrief.three'
-import { Route as StylebriefThanksRouteImport } from './routes/stylebrief.thanks'
-import { Route as StylebriefTokenRouteImport } from './routes/stylebrief.$token'
-import { Route as Storage1SplatRouteImport } from './routes/storage1.$'
-import { Route as StorageSplatRouteImport } from './routes/storage.$'
-import { Route as SofasSplatRouteImport } from './routes/sofas.$'
-import { Route as ServewareSplatRouteImport } from './routes/serveware.$'
-import { Route as Seating1SplatRouteImport } from './routes/seating1.$'
-import { Route as SeatingSplatRouteImport } from './routes/seating.$'
-import { Route as RugsSplatRouteImport } from './routes/rugs.$'
-import { Route as PillowsThrowsSplatRouteImport } from './routes/pillows-throws.$'
-import { Route as LoungeSplatRouteImport } from './routes/lounge.$'
-import { Route as Lighting1SplatRouteImport } from './routes/lighting1.$'
-import { Route as LightingSplatRouteImport } from './routes/lighting.$'
-import { Route as LightSplatRouteImport } from './routes/light.$'
-import { Route as LargeDecor1SplatRouteImport } from './routes/large-decor1.$'
-import { Route as LargeDecorSplatRouteImport } from './routes/large-decor.$'
-import { Route as GallerySlugRouteImport } from './routes/gallery_.$slug'
-import { Route as FursPeltsSplatRouteImport } from './routes/furs-pelts.$'
-import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
-import { Route as DiningSplatRouteImport } from './routes/dining.$'
-import { Route as CollectionSlugRouteImport } from './routes/collection_.$slug'
-import { Route as CocktailBarSplatRouteImport } from './routes/cocktail-bar.$'
-import { Route as ChandeliersSplatRouteImport } from './routes/chandeliers.$'
-import { Route as ChairsSplatRouteImport } from './routes/chairs.$'
-import { Route as ChairsStools1SplatRouteImport } from './routes/chairs-stools1.$'
-import { Route as CandlelightSplatRouteImport } from './routes/candlelight.$'
-import { Route as BarsSplatRouteImport } from './routes/bars.$'
-import { Route as ApiAdminRenderRouteImport } from './routes/api/admin-render'
-import { Route as ApiAdminChatRouteImport } from './routes/api/admin-chat'
-import { Route as AdminVariantsRouteImport } from './routes/admin.variants'
-import { Route as AdminUploadHeroRouteImport } from './routes/admin.upload-hero'
-import { Route as AdminTeamRouteImport } from './routes/admin.team'
-import { Route as AdminTaxonomyRouteImport } from './routes/admin.taxonomy'
-import { Route as AdminStudioRouteImport } from './routes/admin.studio'
-import { Route as AdminRenderRouteImport } from './routes/admin.render'
-import { Route as AdminProductsRouteImport } from './routes/admin.products'
-import { Route as AdminPhotosRouteImport } from './routes/admin.photos'
-import { Route as AdminNewProductRouteImport } from './routes/admin.new-product'
-import { Route as AdminInsightsRouteImport } from './routes/admin.insights'
-import { Route as AdminInquiriesRouteImport } from './routes/admin.inquiries'
-import { Route as AdminIncomingRouteImport } from './routes/admin.incoming'
-import { Route as AdminImageQaRouteImport } from './routes/admin.image-qa'
-import { Route as AdminImageHealthRouteImport } from './routes/admin.image-health'
-import { Route as AdminGuideRouteImport } from './routes/admin.guide'
-import { Route as AdminGalleryRouteImport } from './routes/admin.gallery'
-import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
-import { Route as AdminColorsRouteImport } from './routes/admin.colors'
 import { Route as AdminAdminRouteImport } from './routes/admin.admin'
-import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
-import { Route as ApiPublicNotifyInquiryRouteImport } from './routes/api/public/notify-inquiry'
+import { Route as AdminColorsRouteImport } from './routes/admin.colors'
+import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
+import { Route as AdminGalleryRouteImport } from './routes/admin.gallery'
+import { Route as AdminGuideRouteImport } from './routes/admin.guide'
+import { Route as AdminImageHealthRouteImport } from './routes/admin.image-health'
+import { Route as AdminImageQaRouteImport } from './routes/admin.image-qa'
+import { Route as AdminIncomingRouteImport } from './routes/admin.incoming'
+import { Route as AdminInquiriesRouteImport } from './routes/admin.inquiries'
+import { Route as AdminInsightsRouteImport } from './routes/admin.insights'
+import { Route as AdminNewProductRouteImport } from './routes/admin.new-product'
+import { Route as AdminPhotosRouteImport } from './routes/admin.photos'
+import { Route as AdminProductsRouteImport } from './routes/admin.products'
+import { Route as AdminRenderRouteImport } from './routes/admin.render'
+import { Route as AdminStudioRouteImport } from './routes/admin.studio'
+import { Route as AdminTaxonomyRouteImport } from './routes/admin.taxonomy'
+import { Route as AdminTeamRouteImport } from './routes/admin.team'
+import { Route as AdminUploadHeroRouteImport } from './routes/admin.upload-hero'
+import { Route as AdminVariantsRouteImport } from './routes/admin.variants'
+import { Route as ApiAdminChatRouteImport } from './routes/api/admin-chat'
+import { Route as ApiAdminRenderRouteImport } from './routes/api/admin-render'
+import { Route as BarsIndexRouteImport } from './routes/bars.index'
+import { Route as BarsSplatRouteImport } from './routes/bars.$'
+import { Route as CandlelightSplatRouteImport } from './routes/candlelight.$'
+import { Route as ChairsStools1SplatRouteImport } from './routes/chairs-stools1.$'
+import { Route as ChairsSplatRouteImport } from './routes/chairs.$'
+import { Route as ChandeliersSplatRouteImport } from './routes/chandeliers.$'
+import { Route as CocktailBarSplatRouteImport } from './routes/cocktail-bar.$'
+import { Route as CollectionSlugRouteImport } from './routes/collection_.$slug'
+import { Route as DiningSplatRouteImport } from './routes/dining.$'
+import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
+import { Route as FursPeltsSplatRouteImport } from './routes/furs-pelts.$'
+import { Route as GallerySlugRouteImport } from './routes/gallery_.$slug'
+import { Route as LargeDecorSplatRouteImport } from './routes/large-decor.$'
+import { Route as LargeDecor1SplatRouteImport } from './routes/large-decor1.$'
+import { Route as LightSplatRouteImport } from './routes/light.$'
+import { Route as LightingIndexRouteImport } from './routes/lighting.index'
+import { Route as LightingSplatRouteImport } from './routes/lighting.$'
+import { Route as Lighting1IndexRouteImport } from './routes/lighting1.index'
+import { Route as Lighting1SplatRouteImport } from './routes/lighting1.$'
+import { Route as LoungeSplatRouteImport } from './routes/lounge.$'
+import { Route as PillowsThrowsSplatRouteImport } from './routes/pillows-throws.$'
+import { Route as RugsIndexRouteImport } from './routes/rugs.index'
+import { Route as RugsSplatRouteImport } from './routes/rugs.$'
+import { Route as SeatingIndexRouteImport } from './routes/seating.index'
+import { Route as SeatingSplatRouteImport } from './routes/seating.$'
+import { Route as Seating1SplatRouteImport } from './routes/seating1.$'
+import { Route as ServewareSplatRouteImport } from './routes/serveware.$'
+import { Route as SofasSplatRouteImport } from './routes/sofas.$'
+import { Route as StorageSplatRouteImport } from './routes/storage.$'
+import { Route as Storage1SplatRouteImport } from './routes/storage1.$'
+import { Route as StylebriefIndexRouteImport } from './routes/stylebrief.index'
+import { Route as StylebriefTokenRouteImport } from './routes/stylebrief.$token'
+import { Route as StylebriefThanksRouteImport } from './routes/stylebrief.thanks'
+import { Route as StylebriefThreeRouteImport } from './routes/stylebrief.three'
+import { Route as StylingIndexRouteImport } from './routes/styling.index'
+import { Route as StylingSplatRouteImport } from './routes/styling.$'
+import { Route as Tables1SplatRouteImport } from './routes/tables1.$'
+import { Route as TablewareIndexRouteImport } from './routes/tableware.index'
+import { Route as TablewareSplatRouteImport } from './routes/tableware.$'
+import { Route as TestVariantUploadSplatRouteImport } from './routes/test-variant-upload.$'
+import { Route as TextilesSplatRouteImport } from './routes/textiles.$'
+import { Route as UtNewArrivalsSplatRouteImport } from './routes/ut-new-arrivals.$'
 import { Route as AdminAdminThreadIdRouteImport } from './routes/admin.admin.$threadId'
-import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
-import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
+import { Route as ApiPublicNotifyInquiryRouteImport } from './routes/api/public/notify-inquiry'
+import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
+import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
+import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 
-const UtInventoryRoute = UtInventoryRouteImport.update({
-  id: '/ut-inventory',
-  path: '/ut-inventory',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TheHive3Route = TheHive3RouteImport.update({
-  id: '/the-hive3',
-  path: '/the-hive3',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TheHiveRoute = TheHiveRouteImport.update({
-  id: '/the-hive',
-  path: '/the-hive',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TheEditRoute = TheEditRouteImport.update({
-  id: '/the-edit',
-  path: '/the-edit',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SketchRoute = SketchRouteImport.update({
-  id: '/sketch',
-  path: '/sketch',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProcessRoute = ProcessRouteImport.update({
-  id: '/process',
-  path: '/process',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacyRoute = PrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const Portfolio1Route = Portfolio1RouteImport.update({
-  id: '/portfolio-1',
-  path: '/portfolio-1',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const InventoryRoute = InventoryRouteImport.update({
-  id: '/inventory',
-  path: '/inventory',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const Gallery1Route = Gallery1RouteImport.update({
-  id: '/gallery-1',
-  path: '/gallery-1',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GalleryRoute = GalleryRouteImport.update({
-  id: '/gallery',
-  path: '/gallery',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FaqRoute = FaqRouteImport.update({
-  id: '/faq',
-  path: '/faq',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EventGalleryRoute = EventGalleryRouteImport.update({
-  id: '/event-gallery',
-  path: '/event-gallery',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EventCrewRoute = EventCrewRouteImport.update({
-  id: '/event-crew',
-  path: '/event-crew',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EmailPreviewRoute = EmailPreviewRouteImport.update({
-  id: '/email-preview',
-  path: '/email-preview',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoRoute = DemoRouteImport.update({
-  id: '/demo',
-  path: '/demo',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ComposeRoute = ComposeRouteImport.update({
-  id: '/compose',
-  path: '/compose',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const Colorado1Route = Colorado1RouteImport.update({
-  id: '/colorado-1',
-  path: '/colorado-1',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CollectionRoute = CollectionRouteImport.update({
-  id: '/collection',
-  path: '/collection',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CohomeRoute = CohomeRouteImport.update({
-  id: '/cohome',
-  path: '/cohome',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CareersRoute = CareersRouteImport.update({
-  id: '/careers',
-  path: '/careers',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AtelierRoute = AtelierRouteImport.update({
-  id: '/atelier',
-  path: '/atelier',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -249,49 +119,139 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TablewareIndexRoute = TablewareIndexRouteImport.update({
-  id: '/tableware/',
-  path: '/tableware/',
+const AtelierRoute = AtelierRouteImport.update({
+  id: '/atelier',
+  path: '/atelier',
   getParentRoute: () => rootRouteImport,
 } as any)
-const StylingIndexRoute = StylingIndexRouteImport.update({
-  id: '/styling/',
-  path: '/styling/',
+const CareersRoute = CareersRouteImport.update({
+  id: '/careers',
+  path: '/careers',
   getParentRoute: () => rootRouteImport,
 } as any)
-const StylebriefIndexRoute = StylebriefIndexRouteImport.update({
-  id: '/stylebrief/',
-  path: '/stylebrief/',
+const CohomeRoute = CohomeRouteImport.update({
+  id: '/cohome',
+  path: '/cohome',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SeatingIndexRoute = SeatingIndexRouteImport.update({
-  id: '/seating/',
-  path: '/seating/',
+const CollectionRoute = CollectionRouteImport.update({
+  id: '/collection',
+  path: '/collection',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RugsIndexRoute = RugsIndexRouteImport.update({
-  id: '/rugs/',
-  path: '/rugs/',
+const Colorado1Route = Colorado1RouteImport.update({
+  id: '/colorado-1',
+  path: '/colorado-1',
   getParentRoute: () => rootRouteImport,
 } as any)
-const Lighting1IndexRoute = Lighting1IndexRouteImport.update({
-  id: '/lighting1/',
-  path: '/lighting1/',
+const ComposeRoute = ComposeRouteImport.update({
+  id: '/compose',
+  path: '/compose',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LightingIndexRoute = LightingIndexRouteImport.update({
-  id: '/lighting/',
-  path: '/lighting/',
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BarsIndexRoute = BarsIndexRouteImport.update({
-  id: '/bars/',
-  path: '/bars/',
+const DemoRoute = DemoRouteImport.update({
+  id: '/demo',
+  path: '/demo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmailPreviewRoute = EmailPreviewRouteImport.update({
+  id: '/email-preview',
+  path: '/email-preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventCrewRoute = EventCrewRouteImport.update({
+  id: '/event-crew',
+  path: '/event-crew',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventGalleryRoute = EventGalleryRouteImport.update({
+  id: '/event-gallery',
+  path: '/event-gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Gallery1Route = Gallery1RouteImport.update({
+  id: '/gallery-1',
+  path: '/gallery-1',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InventoryRoute = InventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Portfolio1Route = Portfolio1RouteImport.update({
+  id: '/portfolio-1',
+  path: '/portfolio-1',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProcessRoute = ProcessRouteImport.update({
+  id: '/process',
+  path: '/process',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SketchRoute = SketchRouteImport.update({
+  id: '/sketch',
+  path: '/sketch',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TheEditRoute = TheEditRouteImport.update({
+  id: '/the-edit',
+  path: '/the-edit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TheHiveRoute = TheHiveRouteImport.update({
+  id: '/the-hive',
+  path: '/the-hive',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TheHive3Route = TheHive3RouteImport.update({
+  id: '/the-hive3',
+  path: '/the-hive3',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UtInventoryRoute = UtInventoryRouteImport.update({
+  id: '/ut-inventory',
+  path: '/ut-inventory',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -299,269 +259,9 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
-const UtNewArrivalsSplatRoute = UtNewArrivalsSplatRouteImport.update({
-  id: '/ut-new-arrivals/$',
-  path: '/ut-new-arrivals/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TextilesSplatRoute = TextilesSplatRouteImport.update({
-  id: '/textiles/$',
-  path: '/textiles/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TestVariantUploadSplatRoute = TestVariantUploadSplatRouteImport.update({
-  id: '/test-variant-upload/$',
-  path: '/test-variant-upload/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TablewareSplatRoute = TablewareSplatRouteImport.update({
-  id: '/tableware/$',
-  path: '/tableware/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const Tables1SplatRoute = Tables1SplatRouteImport.update({
-  id: '/tables1/$',
-  path: '/tables1/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const StylingSplatRoute = StylingSplatRouteImport.update({
-  id: '/styling/$',
-  path: '/styling/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const StylebriefThreeRoute = StylebriefThreeRouteImport.update({
-  id: '/stylebrief/three',
-  path: '/stylebrief/three',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const StylebriefThanksRoute = StylebriefThanksRouteImport.update({
-  id: '/stylebrief/thanks',
-  path: '/stylebrief/thanks',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const StylebriefTokenRoute = StylebriefTokenRouteImport.update({
-  id: '/stylebrief/$token',
-  path: '/stylebrief/$token',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const Storage1SplatRoute = Storage1SplatRouteImport.update({
-  id: '/storage1/$',
-  path: '/storage1/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const StorageSplatRoute = StorageSplatRouteImport.update({
-  id: '/storage/$',
-  path: '/storage/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SofasSplatRoute = SofasSplatRouteImport.update({
-  id: '/sofas/$',
-  path: '/sofas/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ServewareSplatRoute = ServewareSplatRouteImport.update({
-  id: '/serveware/$',
-  path: '/serveware/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const Seating1SplatRoute = Seating1SplatRouteImport.update({
-  id: '/seating1/$',
-  path: '/seating1/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SeatingSplatRoute = SeatingSplatRouteImport.update({
-  id: '/seating/$',
-  path: '/seating/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RugsSplatRoute = RugsSplatRouteImport.update({
-  id: '/rugs/$',
-  path: '/rugs/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PillowsThrowsSplatRoute = PillowsThrowsSplatRouteImport.update({
-  id: '/pillows-throws/$',
-  path: '/pillows-throws/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoungeSplatRoute = LoungeSplatRouteImport.update({
-  id: '/lounge/$',
-  path: '/lounge/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const Lighting1SplatRoute = Lighting1SplatRouteImport.update({
-  id: '/lighting1/$',
-  path: '/lighting1/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LightingSplatRoute = LightingSplatRouteImport.update({
-  id: '/lighting/$',
-  path: '/lighting/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LightSplatRoute = LightSplatRouteImport.update({
-  id: '/light/$',
-  path: '/light/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LargeDecor1SplatRoute = LargeDecor1SplatRouteImport.update({
-  id: '/large-decor1/$',
-  path: '/large-decor1/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LargeDecorSplatRoute = LargeDecorSplatRouteImport.update({
-  id: '/large-decor/$',
-  path: '/large-decor/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GallerySlugRoute = GallerySlugRouteImport.update({
-  id: '/gallery_/$slug',
-  path: '/gallery/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FursPeltsSplatRoute = FursPeltsSplatRouteImport.update({
-  id: '/furs-pelts/$',
-  path: '/furs-pelts/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
-  id: '/email/unsubscribe',
-  path: '/email/unsubscribe',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DiningSplatRoute = DiningSplatRouteImport.update({
-  id: '/dining/$',
-  path: '/dining/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CollectionSlugRoute = CollectionSlugRouteImport.update({
-  id: '/collection_/$slug',
-  path: '/collection/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CocktailBarSplatRoute = CocktailBarSplatRouteImport.update({
-  id: '/cocktail-bar/$',
-  path: '/cocktail-bar/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ChandeliersSplatRoute = ChandeliersSplatRouteImport.update({
-  id: '/chandeliers/$',
-  path: '/chandeliers/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ChairsSplatRoute = ChairsSplatRouteImport.update({
-  id: '/chairs/$',
-  path: '/chairs/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ChairsStools1SplatRoute = ChairsStools1SplatRouteImport.update({
-  id: '/chairs-stools1/$',
-  path: '/chairs-stools1/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CandlelightSplatRoute = CandlelightSplatRouteImport.update({
-  id: '/candlelight/$',
-  path: '/candlelight/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BarsSplatRoute = BarsSplatRouteImport.update({
-  id: '/bars/$',
-  path: '/bars/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiAdminRenderRoute = ApiAdminRenderRouteImport.update({
-  id: '/api/admin-render',
-  path: '/api/admin-render',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiAdminChatRoute = ApiAdminChatRouteImport.update({
-  id: '/api/admin-chat',
-  path: '/api/admin-chat',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminVariantsRoute = AdminVariantsRouteImport.update({
-  id: '/variants',
-  path: '/variants',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminUploadHeroRoute = AdminUploadHeroRouteImport.update({
-  id: '/upload-hero',
-  path: '/upload-hero',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminTeamRoute = AdminTeamRouteImport.update({
-  id: '/team',
-  path: '/team',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminTaxonomyRoute = AdminTaxonomyRouteImport.update({
-  id: '/taxonomy',
-  path: '/taxonomy',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminStudioRoute = AdminStudioRouteImport.update({
-  id: '/studio',
-  path: '/studio',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminRenderRoute = AdminRenderRouteImport.update({
-  id: '/render',
-  path: '/render',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminProductsRoute = AdminProductsRouteImport.update({
-  id: '/products',
-  path: '/products',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminPhotosRoute = AdminPhotosRouteImport.update({
-  id: '/photos',
-  path: '/photos',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminNewProductRoute = AdminNewProductRouteImport.update({
-  id: '/new-product',
-  path: '/new-product',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminInsightsRoute = AdminInsightsRouteImport.update({
-  id: '/insights',
-  path: '/insights',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminInquiriesRoute = AdminInquiriesRouteImport.update({
-  id: '/inquiries',
-  path: '/inquiries',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminIncomingRoute = AdminIncomingRouteImport.update({
-  id: '/incoming',
-  path: '/incoming',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminImageQaRoute = AdminImageQaRouteImport.update({
-  id: '/image-qa',
-  path: '/image-qa',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminImageHealthRoute = AdminImageHealthRouteImport.update({
-  id: '/image-health',
-  path: '/image-health',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminGuideRoute = AdminGuideRouteImport.update({
-  id: '/guide',
-  path: '/guide',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminGalleryRoute = AdminGalleryRouteImport.update({
-  id: '/gallery',
-  path: '/gallery',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminDashboardRoute = AdminDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const AdminAdminRoute = AdminAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminColorsRoute = AdminColorsRouteImport.update({
@@ -569,19 +269,309 @@ const AdminColorsRoute = AdminColorsRouteImport.update({
   path: '/colors',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminAdminRoute = AdminAdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
+const AdminDashboardRoute = AdminDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => AdminRoute,
 } as any)
-const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
-  id: '/lovable/email/suppression',
-  path: '/lovable/email/suppression',
+const AdminGalleryRoute = AdminGalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminGuideRoute = AdminGuideRouteImport.update({
+  id: '/guide',
+  path: '/guide',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminImageHealthRoute = AdminImageHealthRouteImport.update({
+  id: '/image-health',
+  path: '/image-health',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminImageQaRoute = AdminImageQaRouteImport.update({
+  id: '/image-qa',
+  path: '/image-qa',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminIncomingRoute = AdminIncomingRouteImport.update({
+  id: '/incoming',
+  path: '/incoming',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminInquiriesRoute = AdminInquiriesRouteImport.update({
+  id: '/inquiries',
+  path: '/inquiries',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminInsightsRoute = AdminInsightsRouteImport.update({
+  id: '/insights',
+  path: '/insights',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminNewProductRoute = AdminNewProductRouteImport.update({
+  id: '/new-product',
+  path: '/new-product',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPhotosRoute = AdminPhotosRouteImport.update({
+  id: '/photos',
+  path: '/photos',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProductsRoute = AdminProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRenderRoute = AdminRenderRouteImport.update({
+  id: '/render',
+  path: '/render',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminStudioRoute = AdminStudioRouteImport.update({
+  id: '/studio',
+  path: '/studio',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTaxonomyRoute = AdminTaxonomyRouteImport.update({
+  id: '/taxonomy',
+  path: '/taxonomy',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTeamRoute = AdminTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUploadHeroRoute = AdminUploadHeroRouteImport.update({
+  id: '/upload-hero',
+  path: '/upload-hero',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminVariantsRoute = AdminVariantsRouteImport.update({
+  id: '/variants',
+  path: '/variants',
+  getParentRoute: () => AdminRoute,
+} as any)
+const ApiAdminChatRoute = ApiAdminChatRouteImport.update({
+  id: '/api/admin-chat',
+  path: '/api/admin-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicNotifyInquiryRoute = ApiPublicNotifyInquiryRouteImport.update({
-  id: '/api/public/notify-inquiry',
-  path: '/api/public/notify-inquiry',
+const ApiAdminRenderRoute = ApiAdminRenderRouteImport.update({
+  id: '/api/admin-render',
+  path: '/api/admin-render',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BarsIndexRoute = BarsIndexRouteImport.update({
+  id: '/bars/',
+  path: '/bars/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BarsSplatRoute = BarsSplatRouteImport.update({
+  id: '/bars/$',
+  path: '/bars/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CandlelightSplatRoute = CandlelightSplatRouteImport.update({
+  id: '/candlelight/$',
+  path: '/candlelight/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChairsStools1SplatRoute = ChairsStools1SplatRouteImport.update({
+  id: '/chairs-stools1/$',
+  path: '/chairs-stools1/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChairsSplatRoute = ChairsSplatRouteImport.update({
+  id: '/chairs/$',
+  path: '/chairs/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChandeliersSplatRoute = ChandeliersSplatRouteImport.update({
+  id: '/chandeliers/$',
+  path: '/chandeliers/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CocktailBarSplatRoute = CocktailBarSplatRouteImport.update({
+  id: '/cocktail-bar/$',
+  path: '/cocktail-bar/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CollectionSlugRoute = CollectionSlugRouteImport.update({
+  id: '/collection_/$slug',
+  path: '/collection/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiningSplatRoute = DiningSplatRouteImport.update({
+  id: '/dining/$',
+  path: '/dining/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
+  id: '/email/unsubscribe',
+  path: '/email/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FursPeltsSplatRoute = FursPeltsSplatRouteImport.update({
+  id: '/furs-pelts/$',
+  path: '/furs-pelts/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GallerySlugRoute = GallerySlugRouteImport.update({
+  id: '/gallery_/$slug',
+  path: '/gallery/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LargeDecorSplatRoute = LargeDecorSplatRouteImport.update({
+  id: '/large-decor/$',
+  path: '/large-decor/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LargeDecor1SplatRoute = LargeDecor1SplatRouteImport.update({
+  id: '/large-decor1/$',
+  path: '/large-decor1/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LightSplatRoute = LightSplatRouteImport.update({
+  id: '/light/$',
+  path: '/light/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LightingIndexRoute = LightingIndexRouteImport.update({
+  id: '/lighting/',
+  path: '/lighting/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LightingSplatRoute = LightingSplatRouteImport.update({
+  id: '/lighting/$',
+  path: '/lighting/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Lighting1IndexRoute = Lighting1IndexRouteImport.update({
+  id: '/lighting1/',
+  path: '/lighting1/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Lighting1SplatRoute = Lighting1SplatRouteImport.update({
+  id: '/lighting1/$',
+  path: '/lighting1/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoungeSplatRoute = LoungeSplatRouteImport.update({
+  id: '/lounge/$',
+  path: '/lounge/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PillowsThrowsSplatRoute = PillowsThrowsSplatRouteImport.update({
+  id: '/pillows-throws/$',
+  path: '/pillows-throws/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RugsIndexRoute = RugsIndexRouteImport.update({
+  id: '/rugs/',
+  path: '/rugs/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RugsSplatRoute = RugsSplatRouteImport.update({
+  id: '/rugs/$',
+  path: '/rugs/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SeatingIndexRoute = SeatingIndexRouteImport.update({
+  id: '/seating/',
+  path: '/seating/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SeatingSplatRoute = SeatingSplatRouteImport.update({
+  id: '/seating/$',
+  path: '/seating/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Seating1SplatRoute = Seating1SplatRouteImport.update({
+  id: '/seating1/$',
+  path: '/seating1/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServewareSplatRoute = ServewareSplatRouteImport.update({
+  id: '/serveware/$',
+  path: '/serveware/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SofasSplatRoute = SofasSplatRouteImport.update({
+  id: '/sofas/$',
+  path: '/sofas/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StorageSplatRoute = StorageSplatRouteImport.update({
+  id: '/storage/$',
+  path: '/storage/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Storage1SplatRoute = Storage1SplatRouteImport.update({
+  id: '/storage1/$',
+  path: '/storage1/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StylebriefIndexRoute = StylebriefIndexRouteImport.update({
+  id: '/stylebrief/',
+  path: '/stylebrief/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StylebriefTokenRoute = StylebriefTokenRouteImport.update({
+  id: '/stylebrief/$token',
+  path: '/stylebrief/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StylebriefThanksRoute = StylebriefThanksRouteImport.update({
+  id: '/stylebrief/thanks',
+  path: '/stylebrief/thanks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StylebriefThreeRoute = StylebriefThreeRouteImport.update({
+  id: '/stylebrief/three',
+  path: '/stylebrief/three',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StylingIndexRoute = StylingIndexRouteImport.update({
+  id: '/styling/',
+  path: '/styling/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StylingSplatRoute = StylingSplatRouteImport.update({
+  id: '/styling/$',
+  path: '/styling/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Tables1SplatRoute = Tables1SplatRouteImport.update({
+  id: '/tables1/$',
+  path: '/tables1/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TablewareIndexRoute = TablewareIndexRouteImport.update({
+  id: '/tableware/',
+  path: '/tableware/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TablewareSplatRoute = TablewareSplatRouteImport.update({
+  id: '/tableware/$',
+  path: '/tableware/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TestVariantUploadSplatRoute = TestVariantUploadSplatRouteImport.update({
+  id: '/test-variant-upload/$',
+  path: '/test-variant-upload/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TextilesSplatRoute = TextilesSplatRouteImport.update({
+  id: '/textiles/$',
+  path: '/textiles/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UtNewArrivalsSplatRoute = UtNewArrivalsSplatRouteImport.update({
+  id: '/ut-new-arrivals/$',
+  path: '/ut-new-arrivals/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminAdminThreadIdRoute = AdminAdminThreadIdRouteImport.update({
@@ -589,10 +579,20 @@ const AdminAdminThreadIdRoute = AdminAdminThreadIdRouteImport.update({
   path: '/$threadId',
   getParentRoute: () => AdminAdminRoute,
 } as any)
-const LovableEmailTransactionalSendRoute =
-  LovableEmailTransactionalSendRouteImport.update({
-    id: '/lovable/email/transactional/send',
-    path: '/lovable/email/transactional/send',
+const ApiPublicNotifyInquiryRoute = ApiPublicNotifyInquiryRouteImport.update({
+  id: '/api/public/notify-inquiry',
+  path: '/api/public/notify-inquiry',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
+  id: '/lovable/email/suppression',
+  path: '/lovable/email/suppression',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailQueueProcessRoute =
+  LovableEmailQueueProcessRouteImport.update({
+    id: '/lovable/email/queue/process',
+    path: '/lovable/email/queue/process',
     getParentRoute: () => rootRouteImport,
   } as any)
 const LovableEmailTransactionalPreviewRoute =
@@ -601,10 +601,10 @@ const LovableEmailTransactionalPreviewRoute =
     path: '/lovable/email/transactional/preview',
     getParentRoute: () => rootRouteImport,
   } as any)
-const LovableEmailQueueProcessRoute =
-  LovableEmailQueueProcessRouteImport.update({
-    id: '/lovable/email/queue/process',
-    path: '/lovable/email/queue/process',
+const LovableEmailTransactionalSendRoute =
+  LovableEmailTransactionalSendRouteImport.update({
+    id: '/lovable/email/transactional/send',
+    path: '/lovable/email/transactional/send',
     getParentRoute: () => rootRouteImport,
   } as any)
 
@@ -1299,193 +1299,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/ut-inventory': {
-      id: '/ut-inventory'
-      path: '/ut-inventory'
-      fullPath: '/ut-inventory'
-      preLoaderRoute: typeof UtInventoryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/the-hive3': {
-      id: '/the-hive3'
-      path: '/the-hive3'
-      fullPath: '/the-hive3'
-      preLoaderRoute: typeof TheHive3RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/the-hive': {
-      id: '/the-hive'
-      path: '/the-hive'
-      fullPath: '/the-hive'
-      preLoaderRoute: typeof TheHiveRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/the-edit': {
-      id: '/the-edit'
-      path: '/the-edit'
-      fullPath: '/the-edit'
-      preLoaderRoute: typeof TheEditRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sketch': {
-      id: '/sketch'
-      path: '/sketch'
-      fullPath: '/sketch'
-      preLoaderRoute: typeof SketchRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/process': {
-      id: '/process'
-      path: '/process'
-      fullPath: '/process'
-      preLoaderRoute: typeof ProcessRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/portfolio-1': {
-      id: '/portfolio-1'
-      path: '/portfolio-1'
-      fullPath: '/portfolio-1'
-      preLoaderRoute: typeof Portfolio1RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/inventory': {
-      id: '/inventory'
-      path: '/inventory'
-      fullPath: '/inventory'
-      preLoaderRoute: typeof InventoryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/gallery-1': {
-      id: '/gallery-1'
-      path: '/gallery-1'
-      fullPath: '/gallery-1'
-      preLoaderRoute: typeof Gallery1RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/gallery': {
-      id: '/gallery'
-      path: '/gallery'
-      fullPath: '/gallery'
-      preLoaderRoute: typeof GalleryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/faq': {
-      id: '/faq'
-      path: '/faq'
-      fullPath: '/faq'
-      preLoaderRoute: typeof FaqRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/event-gallery': {
-      id: '/event-gallery'
-      path: '/event-gallery'
-      fullPath: '/event-gallery'
-      preLoaderRoute: typeof EventGalleryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/event-crew': {
-      id: '/event-crew'
-      path: '/event-crew'
-      fullPath: '/event-crew'
-      preLoaderRoute: typeof EventCrewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/email-preview': {
-      id: '/email-preview'
-      path: '/email-preview'
-      fullPath: '/email-preview'
-      preLoaderRoute: typeof EmailPreviewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo': {
-      id: '/demo'
-      path: '/demo'
-      fullPath: '/demo'
-      preLoaderRoute: typeof DemoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/compose': {
-      id: '/compose'
-      path: '/compose'
-      fullPath: '/compose'
-      preLoaderRoute: typeof ComposeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/colorado-1': {
-      id: '/colorado-1'
-      path: '/colorado-1'
-      fullPath: '/colorado-1'
-      preLoaderRoute: typeof Colorado1RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/collection': {
-      id: '/collection'
-      path: '/collection'
-      fullPath: '/collection'
-      preLoaderRoute: typeof CollectionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cohome': {
-      id: '/cohome'
-      path: '/cohome'
-      fullPath: '/cohome'
-      preLoaderRoute: typeof CohomeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/careers': {
-      id: '/careers'
-      path: '/careers'
-      fullPath: '/careers'
-      preLoaderRoute: typeof CareersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/atelier': {
-      id: '/atelier'
-      path: '/atelier'
-      fullPath: '/atelier'
-      preLoaderRoute: typeof AtelierRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -1495,67 +1313,193 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/tableware/': {
-      id: '/tableware/'
-      path: '/tableware'
-      fullPath: '/tableware/'
-      preLoaderRoute: typeof TablewareIndexRouteImport
+    '/atelier': {
+      id: '/atelier'
+      path: '/atelier'
+      fullPath: '/atelier'
+      preLoaderRoute: typeof AtelierRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/styling/': {
-      id: '/styling/'
-      path: '/styling'
-      fullPath: '/styling/'
-      preLoaderRoute: typeof StylingIndexRouteImport
+    '/careers': {
+      id: '/careers'
+      path: '/careers'
+      fullPath: '/careers'
+      preLoaderRoute: typeof CareersRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/stylebrief/': {
-      id: '/stylebrief/'
-      path: '/stylebrief'
-      fullPath: '/stylebrief/'
-      preLoaderRoute: typeof StylebriefIndexRouteImport
+    '/cohome': {
+      id: '/cohome'
+      path: '/cohome'
+      fullPath: '/cohome'
+      preLoaderRoute: typeof CohomeRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/seating/': {
-      id: '/seating/'
-      path: '/seating'
-      fullPath: '/seating/'
-      preLoaderRoute: typeof SeatingIndexRouteImport
+    '/collection': {
+      id: '/collection'
+      path: '/collection'
+      fullPath: '/collection'
+      preLoaderRoute: typeof CollectionRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/rugs/': {
-      id: '/rugs/'
-      path: '/rugs'
-      fullPath: '/rugs/'
-      preLoaderRoute: typeof RugsIndexRouteImport
+    '/colorado-1': {
+      id: '/colorado-1'
+      path: '/colorado-1'
+      fullPath: '/colorado-1'
+      preLoaderRoute: typeof Colorado1RouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/lighting1/': {
-      id: '/lighting1/'
-      path: '/lighting1'
-      fullPath: '/lighting1/'
-      preLoaderRoute: typeof Lighting1IndexRouteImport
+    '/compose': {
+      id: '/compose'
+      path: '/compose'
+      fullPath: '/compose'
+      preLoaderRoute: typeof ComposeRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/lighting/': {
-      id: '/lighting/'
-      path: '/lighting'
-      fullPath: '/lighting/'
-      preLoaderRoute: typeof LightingIndexRouteImport
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/bars/': {
-      id: '/bars/'
-      path: '/bars'
-      fullPath: '/bars/'
-      preLoaderRoute: typeof BarsIndexRouteImport
+    '/demo': {
+      id: '/demo'
+      path: '/demo'
+      fullPath: '/demo'
+      preLoaderRoute: typeof DemoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/email-preview': {
+      id: '/email-preview'
+      path: '/email-preview'
+      fullPath: '/email-preview'
+      preLoaderRoute: typeof EmailPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/event-crew': {
+      id: '/event-crew'
+      path: '/event-crew'
+      fullPath: '/event-crew'
+      preLoaderRoute: typeof EventCrewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/event-gallery': {
+      id: '/event-gallery'
+      path: '/event-gallery'
+      fullPath: '/event-gallery'
+      preLoaderRoute: typeof EventGalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery-1': {
+      id: '/gallery-1'
+      path: '/gallery-1'
+      fullPath: '/gallery-1'
+      preLoaderRoute: typeof Gallery1RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inventory': {
+      id: '/inventory'
+      path: '/inventory'
+      fullPath: '/inventory'
+      preLoaderRoute: typeof InventoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portfolio-1': {
+      id: '/portfolio-1'
+      path: '/portfolio-1'
+      fullPath: '/portfolio-1'
+      preLoaderRoute: typeof Portfolio1RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/process': {
+      id: '/process'
+      path: '/process'
+      fullPath: '/process'
+      preLoaderRoute: typeof ProcessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sketch': {
+      id: '/sketch'
+      path: '/sketch'
+      fullPath: '/sketch'
+      preLoaderRoute: typeof SketchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/the-edit': {
+      id: '/the-edit'
+      path: '/the-edit'
+      fullPath: '/the-edit'
+      preLoaderRoute: typeof TheEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/the-hive': {
+      id: '/the-hive'
+      path: '/the-hive'
+      fullPath: '/the-hive'
+      preLoaderRoute: typeof TheHiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/the-hive3': {
+      id: '/the-hive3'
+      path: '/the-hive3'
+      fullPath: '/the-hive3'
+      preLoaderRoute: typeof TheHive3RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ut-inventory': {
+      id: '/ut-inventory'
+      path: '/ut-inventory'
+      fullPath: '/ut-inventory'
+      preLoaderRoute: typeof UtInventoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -1565,375 +1509,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/ut-new-arrivals/$': {
-      id: '/ut-new-arrivals/$'
-      path: '/ut-new-arrivals/$'
-      fullPath: '/ut-new-arrivals/$'
-      preLoaderRoute: typeof UtNewArrivalsSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/textiles/$': {
-      id: '/textiles/$'
-      path: '/textiles/$'
-      fullPath: '/textiles/$'
-      preLoaderRoute: typeof TextilesSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/test-variant-upload/$': {
-      id: '/test-variant-upload/$'
-      path: '/test-variant-upload/$'
-      fullPath: '/test-variant-upload/$'
-      preLoaderRoute: typeof TestVariantUploadSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/tableware/$': {
-      id: '/tableware/$'
-      path: '/tableware/$'
-      fullPath: '/tableware/$'
-      preLoaderRoute: typeof TablewareSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/tables1/$': {
-      id: '/tables1/$'
-      path: '/tables1/$'
-      fullPath: '/tables1/$'
-      preLoaderRoute: typeof Tables1SplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/styling/$': {
-      id: '/styling/$'
-      path: '/styling/$'
-      fullPath: '/styling/$'
-      preLoaderRoute: typeof StylingSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/stylebrief/three': {
-      id: '/stylebrief/three'
-      path: '/stylebrief/three'
-      fullPath: '/stylebrief/three'
-      preLoaderRoute: typeof StylebriefThreeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/stylebrief/thanks': {
-      id: '/stylebrief/thanks'
-      path: '/stylebrief/thanks'
-      fullPath: '/stylebrief/thanks'
-      preLoaderRoute: typeof StylebriefThanksRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/stylebrief/$token': {
-      id: '/stylebrief/$token'
-      path: '/stylebrief/$token'
-      fullPath: '/stylebrief/$token'
-      preLoaderRoute: typeof StylebriefTokenRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/storage1/$': {
-      id: '/storage1/$'
-      path: '/storage1/$'
-      fullPath: '/storage1/$'
-      preLoaderRoute: typeof Storage1SplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/storage/$': {
-      id: '/storage/$'
-      path: '/storage/$'
-      fullPath: '/storage/$'
-      preLoaderRoute: typeof StorageSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sofas/$': {
-      id: '/sofas/$'
-      path: '/sofas/$'
-      fullPath: '/sofas/$'
-      preLoaderRoute: typeof SofasSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/serveware/$': {
-      id: '/serveware/$'
-      path: '/serveware/$'
-      fullPath: '/serveware/$'
-      preLoaderRoute: typeof ServewareSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/seating1/$': {
-      id: '/seating1/$'
-      path: '/seating1/$'
-      fullPath: '/seating1/$'
-      preLoaderRoute: typeof Seating1SplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/seating/$': {
-      id: '/seating/$'
-      path: '/seating/$'
-      fullPath: '/seating/$'
-      preLoaderRoute: typeof SeatingSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/rugs/$': {
-      id: '/rugs/$'
-      path: '/rugs/$'
-      fullPath: '/rugs/$'
-      preLoaderRoute: typeof RugsSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pillows-throws/$': {
-      id: '/pillows-throws/$'
-      path: '/pillows-throws/$'
-      fullPath: '/pillows-throws/$'
-      preLoaderRoute: typeof PillowsThrowsSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lounge/$': {
-      id: '/lounge/$'
-      path: '/lounge/$'
-      fullPath: '/lounge/$'
-      preLoaderRoute: typeof LoungeSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lighting1/$': {
-      id: '/lighting1/$'
-      path: '/lighting1/$'
-      fullPath: '/lighting1/$'
-      preLoaderRoute: typeof Lighting1SplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lighting/$': {
-      id: '/lighting/$'
-      path: '/lighting/$'
-      fullPath: '/lighting/$'
-      preLoaderRoute: typeof LightingSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/light/$': {
-      id: '/light/$'
-      path: '/light/$'
-      fullPath: '/light/$'
-      preLoaderRoute: typeof LightSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/large-decor1/$': {
-      id: '/large-decor1/$'
-      path: '/large-decor1/$'
-      fullPath: '/large-decor1/$'
-      preLoaderRoute: typeof LargeDecor1SplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/large-decor/$': {
-      id: '/large-decor/$'
-      path: '/large-decor/$'
-      fullPath: '/large-decor/$'
-      preLoaderRoute: typeof LargeDecorSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/gallery_/$slug': {
-      id: '/gallery_/$slug'
-      path: '/gallery/$slug'
-      fullPath: '/gallery/$slug'
-      preLoaderRoute: typeof GallerySlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/furs-pelts/$': {
-      id: '/furs-pelts/$'
-      path: '/furs-pelts/$'
-      fullPath: '/furs-pelts/$'
-      preLoaderRoute: typeof FursPeltsSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/email/unsubscribe': {
-      id: '/email/unsubscribe'
-      path: '/email/unsubscribe'
-      fullPath: '/email/unsubscribe'
-      preLoaderRoute: typeof EmailUnsubscribeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dining/$': {
-      id: '/dining/$'
-      path: '/dining/$'
-      fullPath: '/dining/$'
-      preLoaderRoute: typeof DiningSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/collection_/$slug': {
-      id: '/collection_/$slug'
-      path: '/collection/$slug'
-      fullPath: '/collection/$slug'
-      preLoaderRoute: typeof CollectionSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cocktail-bar/$': {
-      id: '/cocktail-bar/$'
-      path: '/cocktail-bar/$'
-      fullPath: '/cocktail-bar/$'
-      preLoaderRoute: typeof CocktailBarSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/chandeliers/$': {
-      id: '/chandeliers/$'
-      path: '/chandeliers/$'
-      fullPath: '/chandeliers/$'
-      preLoaderRoute: typeof ChandeliersSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/chairs/$': {
-      id: '/chairs/$'
-      path: '/chairs/$'
-      fullPath: '/chairs/$'
-      preLoaderRoute: typeof ChairsSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/chairs-stools1/$': {
-      id: '/chairs-stools1/$'
-      path: '/chairs-stools1/$'
-      fullPath: '/chairs-stools1/$'
-      preLoaderRoute: typeof ChairsStools1SplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/candlelight/$': {
-      id: '/candlelight/$'
-      path: '/candlelight/$'
-      fullPath: '/candlelight/$'
-      preLoaderRoute: typeof CandlelightSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/bars/$': {
-      id: '/bars/$'
-      path: '/bars/$'
-      fullPath: '/bars/$'
-      preLoaderRoute: typeof BarsSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/admin-render': {
-      id: '/api/admin-render'
-      path: '/api/admin-render'
-      fullPath: '/api/admin-render'
-      preLoaderRoute: typeof ApiAdminRenderRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/admin-chat': {
-      id: '/api/admin-chat'
-      path: '/api/admin-chat'
-      fullPath: '/api/admin-chat'
-      preLoaderRoute: typeof ApiAdminChatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/variants': {
-      id: '/admin/variants'
-      path: '/variants'
-      fullPath: '/admin/variants'
-      preLoaderRoute: typeof AdminVariantsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/upload-hero': {
-      id: '/admin/upload-hero'
-      path: '/upload-hero'
-      fullPath: '/admin/upload-hero'
-      preLoaderRoute: typeof AdminUploadHeroRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/team': {
-      id: '/admin/team'
-      path: '/team'
-      fullPath: '/admin/team'
-      preLoaderRoute: typeof AdminTeamRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/taxonomy': {
-      id: '/admin/taxonomy'
-      path: '/taxonomy'
-      fullPath: '/admin/taxonomy'
-      preLoaderRoute: typeof AdminTaxonomyRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/studio': {
-      id: '/admin/studio'
-      path: '/studio'
-      fullPath: '/admin/studio'
-      preLoaderRoute: typeof AdminStudioRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/render': {
-      id: '/admin/render'
-      path: '/render'
-      fullPath: '/admin/render'
-      preLoaderRoute: typeof AdminRenderRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/products': {
-      id: '/admin/products'
-      path: '/products'
-      fullPath: '/admin/products'
-      preLoaderRoute: typeof AdminProductsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/photos': {
-      id: '/admin/photos'
-      path: '/photos'
-      fullPath: '/admin/photos'
-      preLoaderRoute: typeof AdminPhotosRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/new-product': {
-      id: '/admin/new-product'
-      path: '/new-product'
-      fullPath: '/admin/new-product'
-      preLoaderRoute: typeof AdminNewProductRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/insights': {
-      id: '/admin/insights'
-      path: '/insights'
-      fullPath: '/admin/insights'
-      preLoaderRoute: typeof AdminInsightsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/inquiries': {
-      id: '/admin/inquiries'
-      path: '/inquiries'
-      fullPath: '/admin/inquiries'
-      preLoaderRoute: typeof AdminInquiriesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/incoming': {
-      id: '/admin/incoming'
-      path: '/incoming'
-      fullPath: '/admin/incoming'
-      preLoaderRoute: typeof AdminIncomingRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/image-qa': {
-      id: '/admin/image-qa'
-      path: '/image-qa'
-      fullPath: '/admin/image-qa'
-      preLoaderRoute: typeof AdminImageQaRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/image-health': {
-      id: '/admin/image-health'
-      path: '/image-health'
-      fullPath: '/admin/image-health'
-      preLoaderRoute: typeof AdminImageHealthRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/guide': {
-      id: '/admin/guide'
-      path: '/guide'
-      fullPath: '/admin/guide'
-      preLoaderRoute: typeof AdminGuideRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/gallery': {
-      id: '/admin/gallery'
-      path: '/gallery'
-      fullPath: '/admin/gallery'
-      preLoaderRoute: typeof AdminGalleryRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/dashboard': {
-      id: '/admin/dashboard'
-      path: '/dashboard'
-      fullPath: '/admin/dashboard'
-      preLoaderRoute: typeof AdminDashboardRouteImport
+    '/admin/admin': {
+      id: '/admin/admin'
+      path: '/admin'
+      fullPath: '/admin/admin'
+      preLoaderRoute: typeof AdminAdminRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/colors': {
@@ -1943,25 +1523,431 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminColorsRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/admin': {
-      id: '/admin/admin'
-      path: '/admin'
-      fullPath: '/admin/admin'
-      preLoaderRoute: typeof AdminAdminRouteImport
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/lovable/email/suppression': {
-      id: '/lovable/email/suppression'
-      path: '/lovable/email/suppression'
-      fullPath: '/lovable/email/suppression'
-      preLoaderRoute: typeof LovableEmailSuppressionRouteImport
+    '/admin/gallery': {
+      id: '/admin/gallery'
+      path: '/gallery'
+      fullPath: '/admin/gallery'
+      preLoaderRoute: typeof AdminGalleryRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/guide': {
+      id: '/admin/guide'
+      path: '/guide'
+      fullPath: '/admin/guide'
+      preLoaderRoute: typeof AdminGuideRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/image-health': {
+      id: '/admin/image-health'
+      path: '/image-health'
+      fullPath: '/admin/image-health'
+      preLoaderRoute: typeof AdminImageHealthRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/image-qa': {
+      id: '/admin/image-qa'
+      path: '/image-qa'
+      fullPath: '/admin/image-qa'
+      preLoaderRoute: typeof AdminImageQaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/incoming': {
+      id: '/admin/incoming'
+      path: '/incoming'
+      fullPath: '/admin/incoming'
+      preLoaderRoute: typeof AdminIncomingRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/inquiries': {
+      id: '/admin/inquiries'
+      path: '/inquiries'
+      fullPath: '/admin/inquiries'
+      preLoaderRoute: typeof AdminInquiriesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/insights': {
+      id: '/admin/insights'
+      path: '/insights'
+      fullPath: '/admin/insights'
+      preLoaderRoute: typeof AdminInsightsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/new-product': {
+      id: '/admin/new-product'
+      path: '/new-product'
+      fullPath: '/admin/new-product'
+      preLoaderRoute: typeof AdminNewProductRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/photos': {
+      id: '/admin/photos'
+      path: '/photos'
+      fullPath: '/admin/photos'
+      preLoaderRoute: typeof AdminPhotosRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/products': {
+      id: '/admin/products'
+      path: '/products'
+      fullPath: '/admin/products'
+      preLoaderRoute: typeof AdminProductsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/render': {
+      id: '/admin/render'
+      path: '/render'
+      fullPath: '/admin/render'
+      preLoaderRoute: typeof AdminRenderRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/studio': {
+      id: '/admin/studio'
+      path: '/studio'
+      fullPath: '/admin/studio'
+      preLoaderRoute: typeof AdminStudioRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/taxonomy': {
+      id: '/admin/taxonomy'
+      path: '/taxonomy'
+      fullPath: '/admin/taxonomy'
+      preLoaderRoute: typeof AdminTaxonomyRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/team': {
+      id: '/admin/team'
+      path: '/team'
+      fullPath: '/admin/team'
+      preLoaderRoute: typeof AdminTeamRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/upload-hero': {
+      id: '/admin/upload-hero'
+      path: '/upload-hero'
+      fullPath: '/admin/upload-hero'
+      preLoaderRoute: typeof AdminUploadHeroRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/variants': {
+      id: '/admin/variants'
+      path: '/variants'
+      fullPath: '/admin/variants'
+      preLoaderRoute: typeof AdminVariantsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/api/admin-chat': {
+      id: '/api/admin-chat'
+      path: '/api/admin-chat'
+      fullPath: '/api/admin-chat'
+      preLoaderRoute: typeof ApiAdminChatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/notify-inquiry': {
-      id: '/api/public/notify-inquiry'
-      path: '/api/public/notify-inquiry'
-      fullPath: '/api/public/notify-inquiry'
-      preLoaderRoute: typeof ApiPublicNotifyInquiryRouteImport
+    '/api/admin-render': {
+      id: '/api/admin-render'
+      path: '/api/admin-render'
+      fullPath: '/api/admin-render'
+      preLoaderRoute: typeof ApiAdminRenderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bars/': {
+      id: '/bars/'
+      path: '/bars'
+      fullPath: '/bars/'
+      preLoaderRoute: typeof BarsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bars/$': {
+      id: '/bars/$'
+      path: '/bars/$'
+      fullPath: '/bars/$'
+      preLoaderRoute: typeof BarsSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/candlelight/$': {
+      id: '/candlelight/$'
+      path: '/candlelight/$'
+      fullPath: '/candlelight/$'
+      preLoaderRoute: typeof CandlelightSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chairs-stools1/$': {
+      id: '/chairs-stools1/$'
+      path: '/chairs-stools1/$'
+      fullPath: '/chairs-stools1/$'
+      preLoaderRoute: typeof ChairsStools1SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chairs/$': {
+      id: '/chairs/$'
+      path: '/chairs/$'
+      fullPath: '/chairs/$'
+      preLoaderRoute: typeof ChairsSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chandeliers/$': {
+      id: '/chandeliers/$'
+      path: '/chandeliers/$'
+      fullPath: '/chandeliers/$'
+      preLoaderRoute: typeof ChandeliersSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cocktail-bar/$': {
+      id: '/cocktail-bar/$'
+      path: '/cocktail-bar/$'
+      fullPath: '/cocktail-bar/$'
+      preLoaderRoute: typeof CocktailBarSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/collection_/$slug': {
+      id: '/collection_/$slug'
+      path: '/collection/$slug'
+      fullPath: '/collection/$slug'
+      preLoaderRoute: typeof CollectionSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dining/$': {
+      id: '/dining/$'
+      path: '/dining/$'
+      fullPath: '/dining/$'
+      preLoaderRoute: typeof DiningSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/email/unsubscribe': {
+      id: '/email/unsubscribe'
+      path: '/email/unsubscribe'
+      fullPath: '/email/unsubscribe'
+      preLoaderRoute: typeof EmailUnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/furs-pelts/$': {
+      id: '/furs-pelts/$'
+      path: '/furs-pelts/$'
+      fullPath: '/furs-pelts/$'
+      preLoaderRoute: typeof FursPeltsSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery_/$slug': {
+      id: '/gallery_/$slug'
+      path: '/gallery/$slug'
+      fullPath: '/gallery/$slug'
+      preLoaderRoute: typeof GallerySlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/large-decor/$': {
+      id: '/large-decor/$'
+      path: '/large-decor/$'
+      fullPath: '/large-decor/$'
+      preLoaderRoute: typeof LargeDecorSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/large-decor1/$': {
+      id: '/large-decor1/$'
+      path: '/large-decor1/$'
+      fullPath: '/large-decor1/$'
+      preLoaderRoute: typeof LargeDecor1SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/light/$': {
+      id: '/light/$'
+      path: '/light/$'
+      fullPath: '/light/$'
+      preLoaderRoute: typeof LightSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lighting/': {
+      id: '/lighting/'
+      path: '/lighting'
+      fullPath: '/lighting/'
+      preLoaderRoute: typeof LightingIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lighting/$': {
+      id: '/lighting/$'
+      path: '/lighting/$'
+      fullPath: '/lighting/$'
+      preLoaderRoute: typeof LightingSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lighting1/': {
+      id: '/lighting1/'
+      path: '/lighting1'
+      fullPath: '/lighting1/'
+      preLoaderRoute: typeof Lighting1IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lighting1/$': {
+      id: '/lighting1/$'
+      path: '/lighting1/$'
+      fullPath: '/lighting1/$'
+      preLoaderRoute: typeof Lighting1SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lounge/$': {
+      id: '/lounge/$'
+      path: '/lounge/$'
+      fullPath: '/lounge/$'
+      preLoaderRoute: typeof LoungeSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pillows-throws/$': {
+      id: '/pillows-throws/$'
+      path: '/pillows-throws/$'
+      fullPath: '/pillows-throws/$'
+      preLoaderRoute: typeof PillowsThrowsSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rugs/': {
+      id: '/rugs/'
+      path: '/rugs'
+      fullPath: '/rugs/'
+      preLoaderRoute: typeof RugsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rugs/$': {
+      id: '/rugs/$'
+      path: '/rugs/$'
+      fullPath: '/rugs/$'
+      preLoaderRoute: typeof RugsSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/seating/': {
+      id: '/seating/'
+      path: '/seating'
+      fullPath: '/seating/'
+      preLoaderRoute: typeof SeatingIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/seating/$': {
+      id: '/seating/$'
+      path: '/seating/$'
+      fullPath: '/seating/$'
+      preLoaderRoute: typeof SeatingSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/seating1/$': {
+      id: '/seating1/$'
+      path: '/seating1/$'
+      fullPath: '/seating1/$'
+      preLoaderRoute: typeof Seating1SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/serveware/$': {
+      id: '/serveware/$'
+      path: '/serveware/$'
+      fullPath: '/serveware/$'
+      preLoaderRoute: typeof ServewareSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sofas/$': {
+      id: '/sofas/$'
+      path: '/sofas/$'
+      fullPath: '/sofas/$'
+      preLoaderRoute: typeof SofasSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/storage/$': {
+      id: '/storage/$'
+      path: '/storage/$'
+      fullPath: '/storage/$'
+      preLoaderRoute: typeof StorageSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/storage1/$': {
+      id: '/storage1/$'
+      path: '/storage1/$'
+      fullPath: '/storage1/$'
+      preLoaderRoute: typeof Storage1SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/stylebrief/': {
+      id: '/stylebrief/'
+      path: '/stylebrief'
+      fullPath: '/stylebrief/'
+      preLoaderRoute: typeof StylebriefIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/stylebrief/$token': {
+      id: '/stylebrief/$token'
+      path: '/stylebrief/$token'
+      fullPath: '/stylebrief/$token'
+      preLoaderRoute: typeof StylebriefTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/stylebrief/thanks': {
+      id: '/stylebrief/thanks'
+      path: '/stylebrief/thanks'
+      fullPath: '/stylebrief/thanks'
+      preLoaderRoute: typeof StylebriefThanksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/stylebrief/three': {
+      id: '/stylebrief/three'
+      path: '/stylebrief/three'
+      fullPath: '/stylebrief/three'
+      preLoaderRoute: typeof StylebriefThreeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/styling/': {
+      id: '/styling/'
+      path: '/styling'
+      fullPath: '/styling/'
+      preLoaderRoute: typeof StylingIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/styling/$': {
+      id: '/styling/$'
+      path: '/styling/$'
+      fullPath: '/styling/$'
+      preLoaderRoute: typeof StylingSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tables1/$': {
+      id: '/tables1/$'
+      path: '/tables1/$'
+      fullPath: '/tables1/$'
+      preLoaderRoute: typeof Tables1SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tableware/': {
+      id: '/tableware/'
+      path: '/tableware'
+      fullPath: '/tableware/'
+      preLoaderRoute: typeof TablewareIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tableware/$': {
+      id: '/tableware/$'
+      path: '/tableware/$'
+      fullPath: '/tableware/$'
+      preLoaderRoute: typeof TablewareSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/test-variant-upload/$': {
+      id: '/test-variant-upload/$'
+      path: '/test-variant-upload/$'
+      fullPath: '/test-variant-upload/$'
+      preLoaderRoute: typeof TestVariantUploadSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/textiles/$': {
+      id: '/textiles/$'
+      path: '/textiles/$'
+      fullPath: '/textiles/$'
+      preLoaderRoute: typeof TextilesSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ut-new-arrivals/$': {
+      id: '/ut-new-arrivals/$'
+      path: '/ut-new-arrivals/$'
+      fullPath: '/ut-new-arrivals/$'
+      preLoaderRoute: typeof UtNewArrivalsSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/admin/$threadId': {
@@ -1971,11 +1957,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAdminThreadIdRouteImport
       parentRoute: typeof AdminAdminRoute
     }
-    '/lovable/email/transactional/send': {
-      id: '/lovable/email/transactional/send'
-      path: '/lovable/email/transactional/send'
-      fullPath: '/lovable/email/transactional/send'
-      preLoaderRoute: typeof LovableEmailTransactionalSendRouteImport
+    '/api/public/notify-inquiry': {
+      id: '/api/public/notify-inquiry'
+      path: '/api/public/notify-inquiry'
+      fullPath: '/api/public/notify-inquiry'
+      preLoaderRoute: typeof ApiPublicNotifyInquiryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/suppression': {
+      id: '/lovable/email/suppression'
+      path: '/lovable/email/suppression'
+      fullPath: '/lovable/email/suppression'
+      preLoaderRoute: typeof LovableEmailSuppressionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/queue/process': {
+      id: '/lovable/email/queue/process'
+      path: '/lovable/email/queue/process'
+      fullPath: '/lovable/email/queue/process'
+      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lovable/email/transactional/preview': {
@@ -1985,11 +1985,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/lovable/email/queue/process': {
-      id: '/lovable/email/queue/process'
-      path: '/lovable/email/queue/process'
-      fullPath: '/lovable/email/queue/process'
-      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
+    '/lovable/email/transactional/send': {
+      id: '/lovable/email/transactional/send'
+      path: '/lovable/email/transactional/send'
+      fullPath: '/lovable/email/transactional/send'
+      preLoaderRoute: typeof LovableEmailTransactionalSendRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
