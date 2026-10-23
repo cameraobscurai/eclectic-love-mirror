@@ -23,7 +23,7 @@ export const Route = createFileRoute("/sketch")({
   errorComponent: ({ error }) => (
     <div className="min-h-screen bg-[#d4cdc4] flex items-center justify-center p-8">
       <p className="text-[10px] tracking-[0.4em] uppercase text-[#1a1a1a]/60 font-serif">
-        Archive Unavailable — {error.message}
+        Archive Unavailable — {error instanceof Error ? error.message : String(error)}
       </p>
     </div>
   ),
