@@ -1,4 +1,9 @@
-import { createFileRoute, useNavigate, ErrorComponent } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  useNavigate,
+  ErrorComponent,
+  stripSearchParams,
+} from "@tanstack/react-router";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import type React from "react";
@@ -170,6 +175,8 @@ export const Route = createFileRoute("/collection")({
     ],
   }),
   validateSearch: zodValidator(searchSchema),
+  // Keep the archive canonical directly reachable while preserving active filters.
+  search: { middlewares: [stripSearchParams(searchSchema.parse({}))] },
   // Loader returns the baked catalog only (zero network). The Supabase
   // overlay merge runs post-mount via useEffect — see CollectionPage. This
   // shaves 200–800ms off cold LCP since paint no longer waits on the
