@@ -12,11 +12,9 @@
 // behind a single canonical URL (/collection?group=...) with no per-category
 // share preview. Routing each parent to /collection/<parent> with its own
 // head() gives Google + social platforms a real page to attribute the
-// category title, description, and editorial cover image to. The page
-// itself client-side-navigates back into the archive with the parent
-// pre-applied, so the existing UX is untouched.
+// category title, description, and editorial cover image to. Each landing
+// links to the archive with that category selected.
 
-import { useEffect } from "react";
 import {
   createFileRoute,
   Link,
@@ -219,38 +217,15 @@ export const Route = createFileRoute("/collection_/$slug")({
     const img = product.primaryImage?.url;
     const url = productUrl(slug);
 
-    const jsonLd: Record<string, unknown> = {
+    // These pieces are rented by inquiry. Describe the page without advertising
+    // a purchasable offer or a price the customer cannot obtain here.
+    const jsonLd = {
       "@context": "https://schema.org",
-      "@type": "Product",
+      "@type": "ItemPage",
       name: product.title,
       description: desc,
-      sku: product.id,
-      category: product.displayCategory,
       url,
-      brand: { "@type": "Brand", name: "Eclectic Hive" },
-    };
-    if (img) jsonLd.image = img;
-    if (product.dimensions) {
-      (jsonLd as { additionalProperty?: unknown }).additionalProperty = [
-        { "@type": "PropertyValue", name: "Dimensions", value: product.dimensions },
-      ];
-    }
-    // Rental inventory has no list price and no purchasable stock. Emitting
-    // price:"0" + InStock made rich results advertise free products, so the
-    // offer now carries a quote-only PriceSpecification and no fake price.
-    jsonLd.offers = {
-      "@type": "Offer",
-      availability: product.isCustomOrder
-        ? "https://schema.org/PreOrder"
-        : "https://schema.org/LimitedAvailability",
-      priceCurrency: "USD",
-      priceSpecification: {
-        "@type": "PriceSpecification",
-        priceCurrency: "USD",
-        description: "Rental — pricing on request",
-      },
-      url,
-      seller: { "@type": "Organization", name: "Eclectic Hive" },
+      ...(img ? { image: img } : {}),
     };
 
     return {
@@ -304,34 +279,15 @@ function SlugRoutePage() {
   return <ProductDetailPage product={data.product} />;
 }
 
-// Category landing: SSR emits real h1 + intro copy for crawlers; on mount,
-// the client hands off into the existing /collection archive with the
-// parent pre-applied so the UX is identical to the legacy URL.
+// Keep the sitemap landing URL stable. The Browse link opens the filtered archive.
 function ParentLandingPage({ parent }: { parent: ParentId }) {
-  const navigate = useNavigate();
   const label = PARENT_LABELS[parent];
   const desc = PARENT_DESCRIPTIONS[parent];
   const img = absoluteCover(parent);
 
-  useEffect(() => {
-    navigate({
-      to: "/collection",
-      search: {
-        group: parent,
-        subcategory: "all",
-        q: "",
-        sort: "type",
-        layout: "grid",
-        view: "",
-      },
-      replace: true,
-    });
-  }, [navigate, parent]);
-
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Navigation />
-      <main className="mx-auto max-w-4xl px-6 py-32 text-center">
+      <main id="main-content" className="mx-auto max-w-4xl px-6 py-32 text-center">
         <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-6">
           The Collection
         </p>
